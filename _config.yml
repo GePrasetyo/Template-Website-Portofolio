@@ -6,7 +6,7 @@
 title: Portfolio
 
 # Bump when style.css or main.js change so browsers fetch the new file.
-asset_version: 1
+asset_version: 2
 
 collections:
   work:

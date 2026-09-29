@@ -15,7 +15,6 @@ facts:
   - { label: Studio, value: "Another Studio, City" }
   - { label: Engine, value: "Unity · C#" }
   - { label: Platform, value: "Android · iOS" }
-nav_cut: cd
 sections:
   - type: video
     youtube: aqz-KE-bpKQ

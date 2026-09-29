@@ -11,7 +11,6 @@ card:
 eyebrow: "2015–2019 · Archive"
 role: "Training · Mobile · Prototypes"
 lede: "Smaller or older projects, one gallery per studio. Each gallery has its own heading, and tiles can be a third, half, two thirds or a full row wide."
-nav_cut: cd
 sections:
   - type: gallery
     cap: "2017–2019 · First Studio, City"

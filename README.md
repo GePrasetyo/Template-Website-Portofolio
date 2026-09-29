@@ -69,25 +69,28 @@ Your copy starts with example text and placeholder pictures. Replace them with y
 
 On the left of the editor you'll see two things:
 
-- **Home page:** your main page, split into parts:
-  - **Profile:** your name, tagline, email and résumé (PDF)
-  - **Hero:** the big intro at the top: your title lines, a short "about me" and your links
-  - **Work section, Experience, Skills, Recognition and quick facts, Contact:** the rest of the page, in order
-- **Work:** your projects. Each project gets its own page and a card on the home page.
+- **Projects:** each project gets its own page and a card on the home page.
+- **Home page:** your main page, split into parts in the same order as on the page:
+  - **Profile:** your name, job title, email and résumé (PDF)
+  - **Intro (top of page):** your title lines, a short "about me" and your links
+  - **Work section (heading), Experience, Skills, Recognition and quick facts, Contact:** the rest of the page
+
+Every field has a short explanation in grey underneath it. Fields marked with a star (*) must be filled in.
 
 **To change something:** open it, edit the fields, then click **Save**. Your website updates by itself about a minute later. Refresh the page to see it.
 
 **Projects:**
-- To **add a project**, open **Work** and click **New**.
+- To **add a project**, open **Projects** and click **New**.
 - The **Order** number decides where a project appears: 1 comes first.
-- Tick **Featured** to make the project's card extra wide on the home page.
-- A project page is built from **Sections**, which you can add, remove and reorder:
+- Switch on **Featured (wide card)** to make the project's card extra wide on the home page.
+- A project page is built from **Page sections**, which you can add, remove and reorder:
   - a big video
+  - a big 3D model
   - a row of awards
-  - two columns side by side
-  - a wide block of text
-  - a gallery of pictures and videos
-- To hide an example project, untick **Show on site** and save. Or delete it.
+  - two boxes side by side (text, a picture, a video or a 3D model)
+  - a wide text box
+  - a gallery of pictures, videos and 3D models
+- To hide an example project, switch off **Show on site** and save. Or delete it.
 
 **Pictures:**
 - JPG, PNG, WebP or AVIF, up to **5 MB** each.
@@ -99,12 +102,18 @@ On the left of the editor you'll see two things:
 - "Unlisted" YouTube videos work too.
 - Video files can't be uploaded to your site. If one gets in, the website won't update until it's removed.
 
+**3D models:**
+- 3D models come from **Sketchfab** or **ArtStation**. Upload yours there first.
+- **Sketchfab:** open the model and copy the link from your browser's address bar, e.g. `https://sketchfab.com/3d-models/my-model-1a2b3c…`
+- **ArtStation:** open your artwork, copy the **embed code** under the 3D viewer and paste all of it. The artwork's page link on its own doesn't work.
+- Sketchfab tends to be more reliable. ArtStation's viewer is sometimes blocked by its bot protection, and those visitors see an empty box.
+
 **Text styling:**
 - Put two stars on each side to make text **bold**: `**like this**`
 - One star on each side makes it *italic*: `*like this*`
 - For a link: `[the words people click](https://the-address.com)`
 
-**Panel shape:** each box on the page has a slightly slanted, comic-book edge. You can pick a shape, or leave it empty and the site picks one for you.
+**Panel shape:** each box on the page has a slightly slanted, comic-book edge. It's only decoration: leave it empty and the site picks one for you. To choose yourself, click **See the shapes** under the field for a picture of each shape and which ones go together.
 
 ## 6. When your key runs out
 

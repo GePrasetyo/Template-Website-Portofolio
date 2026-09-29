@@ -5,6 +5,13 @@
 # Uploads are stills only: every image field accepts jpg/png/webp/avif up to 5 MB, and video is
 # always a YouTube link. The asset library itself cannot be restricted by type, so
 # .github/workflows/pages.yml refuses to deploy if anything else lands under assets/.
+#
+# The people editing this are not developers. Labels say what a field is on the page, and every
+# field that isn't obvious has a hint. Hints are rendered as Markdown, so show literal syntax in
+# `backticks`. The panel-shape guide linked from the hints is admin/shapes.html.
+#
+# 3D models are a pasted Sketchfab link / embed code or ArtStation embed code; _includes/model.html
+# pulls the model ID out of it. The pattern below must accept exactly what that include can parse.
 
 # On <user>.github.io/<repo>/admin/, admin/index.html fills in backend.repo, site_url and
 # display_url from the address, so a fork works without editing this file. On a custom domain,
@@ -31,9 +38,10 @@ collections:
 
   # ------------------------------------------------------------------ work pages
   - name: work
-    label: Work
+    label: Projects
     label_singular: Project
-    description: One page per project. The home page lists them by Order, and Previous / Next follow the same order.
+    icon: work
+    description: Each project gets its own page and a card in the Work section of your home page. Click New to add one.
     folder: _work
     extension: md
     format: yaml-frontmatter
@@ -48,103 +56,138 @@ collections:
     thumbnail: image
     preview_path: "work/{{slug}}.html"
     fields:
-      - { name: title, label: Title, hint: Page heading and home card title. }
-      - { name: order, label: Order, widget: number, value_type: int, min: 1, hint: 1 is first on the home page. }
-      - { name: published, label: Show on site, widget: boolean, default: true, required: false }
-      - { name: description, label: Share description, widget: text, hint: Used by search engines and link previews (WhatsApp, LinkedIn, Slack). }
+      - { name: title, label: Project name, hint: The big heading on the project page and the name on its home page card. }
+      - name: order
+        label: Order
+        widget: number
+        value_type: int
+        min: 1
+        hint: "1 comes first. This sets the order of the cards on your home page, and where the Previous / Next buttons at the bottom of each project page go."
+      - { name: published, label: Show on site, widget: boolean, default: true, required: false, hint: Switch off to hide this project without deleting it. }
+      - name: description
+        label: Share description
+        widget: text
+        hint: &share_hint "One sentence. Google shows it in search results, and WhatsApp, LinkedIn or Slack show it under the link when someone shares this page."
       - name: image
-        label: Card and share image
+        label: Main picture
         widget: image
         accept: image/jpeg,image/png,image/webp,image/avif
         choose_url: false
-        hint: Home page card and link-preview thumbnail. Landscape, about 1600 px wide.
+        hint: "Shown on this project's card on the home page, and as the preview picture when someone shares the link. A wide (landscape) picture, about 1600 px across, works best."
       - name: card
         label: Home page card
         widget: object
-        collapsed: true
+        collapsed: auto
+        hint: The card for this project in the Work section of your home page. Click to open.
         fields:
-          - { name: cap, label: Tag, hint: "e.g. 2024 · Lead Developer" }
-          - { name: subtitle, label: Subtitle, hint: "e.g. Multiplayer racing game · Unity · PC" }
-          - { name: alt, label: Image description, hint: Alt text for screen readers. }
-          - { name: featured, label: Featured (wide card), widget: boolean, default: false, required: false }
+          - { name: cap, label: Small label, hint: "Shown above the project name on the card, e.g. 2024 · Lead Developer" }
+          - { name: subtitle, label: Subtitle, hint: "Shown under the project name, e.g. Multiplayer racing game · Unity · PC" }
+          - &alt
+            name: alt
+            label: Picture description
+            hint: &alt_hint "A few words about what the picture shows, e.g. Key art of a car racing through a city. Blind visitors hear this read aloud, and it appears if the picture can't load."
+          - { name: featured, label: Featured (wide card), widget: boolean, default: false, required: false, hint: Makes this card twice as wide. Use it for your one or two best projects. }
           - &cut
             name: cut
-            label: Panel shape
+            label: Panel shape (optional)
             widget: select
             required: false
-            options: [a, b, c, d, m1, m2, w, w2]
-            hint: "Comic panel cut. Neighbours pair up as a|b, c|d, c|m1|b and c|m1|m2|d; w and w2 are full width. Leave empty to let the site pick."
-      - { name: eyebrow, label: Dates tag, required: false, hint: "Blue tag above the title, e.g. 2024 · PC & Console" }
-      - { name: role, label: Role tag, required: false, hint: "e.g. Lead Developer" }
-      -
-        name: lede
+            options:
+              - { label: "a · left box, before b or m2", value: a }
+              - { label: "b · right box, after a or m1", value: b }
+              - { label: "c · left box, before d or m1", value: c }
+              - { label: "d · right box, after c or m2", value: d }
+              - { label: "m1 · middle box, after c", value: m1 }
+              - { label: "m2 · middle box, before d", value: m2 }
+              - { label: "w · full width", value: w }
+              - { label: "w2 · full width, other slant", value: w2 }
+            hint: "Only decoration: the slanted comic-book edge of this box. **Leave it empty if you're not sure** and the site picks one. [See the shapes and which ones go together](shapes.html)"
+      - { name: eyebrow, label: Dates label, required: false, hint: "Optional. Small blue label above the project name, e.g. 2024 · PC & Console" }
+      - { name: role, label: Role label, required: false, hint: "Optional. Small label next to the dates, e.g. Lead Developer" }
+      - name: lede
         label: Intro
         widget: text
         required: false
-        hint: "Markdown: **bold**, *italic*, [link](https://…)"
+        hint: "Optional. A few sentences under the project name. Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link."
       - name: facts
-        label: Facts
+        label: Quick facts
+        label_singular: Fact
         widget: list
         required: false
         summary: "{{fields.label}}: {{fields.value}}"
+        hint: "Optional. Short label and value pairs shown under the intro, e.g. Engine: Unity."
         fields:
-          - { name: label, label: Label, hint: "e.g. Studio, Engine, Netcode" }
-          - { name: value, label: Value }
-      - { name: stores_label, label: Store links heading, required: false, default: Get the game }
+          - { name: label, label: Label, hint: "e.g. Studio, Engine, Platforms" }
+          - { name: value, label: Value, hint: "e.g. Unity · C#" }
+      - { name: stores_label, label: Store buttons heading, required: false, default: Get the game, hint: Small label above the store buttons. }
       - name: stores
-        label: Store links
+        label: Store buttons
+        label_singular: Store button
         widget: list
         required: false
         summary: "{{fields.label}}"
+        hint: "Optional. Buttons to where people can get the game, e.g. Steam or the App Store."
         fields:
-          - { name: label, label: Label }
-          - { name: url, label: URL, pattern: ['^https?://', 'Must start with https://'] }
-      - name: nav_cut
-        label: Previous / Next panel shapes
-        widget: select
-        required: false
-        default: ab
-        options: [ab, cd]
-        hint: Pick cd when the panels right above end in a|b.
+          - { name: label, label: Button text, hint: "e.g. Steam" }
+          -
+            name: url
+            label: Web address
+            pattern: ['^https?://', 'Must start with https://']
+            hint: "Copy it from your browser's address bar. It starts with https://"
       - name: sections
-        label: Sections
+        label: Page sections
         label_singular: Section
         widget: list
         required: false
         collapsed: true
+        hint: "The rest of the project page, built from blocks: a big video (e.g. your trailer), a big 3D model, a row of awards, two boxes side by side (text, picture, video or 3D model), a wide text box, or a gallery of pictures, videos and 3D models. Click **Add Section** and pick a type. Click a block to open it, and drag the ═ handle to change the order."
         types:
 
           - name: video
-            label: Video (full width)
+            label: Big video (full width)
             widget: object
-            summary: "Video · {{fields.title}}"
+            summary: "Big video · {{fields.title}}"
             fields:
               - &youtube
                 name: youtube
                 label: YouTube link
-                hint: Paste the video URL (youtube.com/watch?v=…, youtu.be/…, /shorts/…) or the 11-character ID. Video files cannot be uploaded.
-                pattern: ['^\s*((https?://)?(www\.|m\.)?(youtube\.com/(watch\?(.*&)?v=|shorts/|embed/|live/)|youtu\.be/)[\w-]{11}\S*|[\w-]{11})\s*$', 'Must be a YouTube URL or video ID']
+                hint: "Upload the video to YouTube first (Unlisted is fine), then copy its link from your browser and paste it here. Video files can't be uploaded to this site."
+                pattern: ['^\s*((https?://)?(www\.|m\.)?(youtube\.com/(watch\?(.*&)?v=|shorts/|embed/|live/)|youtu\.be/)[\w-]{11}\S*|[\w-]{11})\s*$', 'Must be a YouTube link, e.g. https://www.youtube.com/watch?v=…']
               - &vtitle
-                { name: title, label: Video title, hint: Read out by screen readers and used as the player title. }
+                { name: title, label: Video title, hint: "What the video is, e.g. Launch trailer. Blind visitors hear this read aloud." }
               - &vlabel
-                { name: label, label: Caption tag, required: false, hint: "Small tag on the tile, e.g. Official trailer" }
+                { name: label, label: Small label (optional), required: false, hint: "Shown on the video, e.g. Official trailer" }
               - &vplay
-                { name: play, label: Play button text, required: false, hint: "Defaults to Play video (full width) or Play (grid)." }
+                { name: play, label: Play button text (optional), required: false, hint: "Leave empty for Play video (big video) or Play (smaller ones)." }
               - &thumbnail
                 name: thumbnail
-                label: Thumbnail
+                label: Cover picture (optional)
                 widget: image
                 required: false
                 accept: image/jpeg,image/png,image/webp,image/avif
                 choose_url: false
-                hint: Optional. Leave empty to use YouTube's own thumbnail.
+                hint: Shown before the video plays. Leave empty to use the one from YouTube.
               - &valt
-                { name: alt, label: Thumbnail description, required: false, hint: Defaults to the video title. }
+                { name: alt, label: Cover picture description (optional), required: false, hint: Leave empty to use the video title. }
+
+          - name: model
+            label: Big 3D model (full width)
+            widget: object
+            summary: "Big 3D model · {{fields.title}}"
+            fields:
+              - &model
+                name: model
+                label: Sketchfab or ArtStation link
+                widget: text
+                hint: "**Sketchfab:** open the model on sketchfab.com and copy the link from your browser's address bar. **ArtStation:** open your artwork, copy the embed code under the 3D viewer and paste all of it here. The artwork's page link on its own won't work. Sketchfab tends to load more reliably for visitors."
+                pattern: ['(sketchfab\.com/(3d-models/[^\s"''?#/]*-|models/)[0-9a-f]{32}|artstation\.com/embed/\d+)', "This isn't a Sketchfab model link or an ArtStation embed code. For ArtStation, copy the embed code under the 3D viewer, not the page link."]
+              - &mtitle
+                { name: title, label: Model title, hint: "What the model is, e.g. Hero character, game-ready. Blind visitors hear this read aloud." }
 
           - name: awards
-            label: Awards
+            label: Awards row
             widget: object
-            summary: Awards
+            summary: Awards row
             fields:
               - name: items
                 label: Awards
@@ -152,29 +195,30 @@ collections:
                 widget: list
                 summary: "{{fields.title}}"
                 fields:
-                  - { name: badge, label: Badge text, required: false, hint: "Blue tag, e.g. Best Game. Shown when there is no logo." }
+                  - { name: badge, label: Badge text, required: false, hint: "Small blue label, e.g. Winner or Best Game. Only shown when there's no logo." }
                   - name: logo
-                    label: Logo
+                    label: Logo (optional)
                     widget: image
                     required: false
                     accept: image/jpeg,image/png,image/webp,image/avif
                     choose_url: false
-                    hint: Optional. Black on transparent PNG; it is inverted in dark mode.
-                  - { name: logo_alt, label: Logo description, required: false }
-                  - { name: title, label: Award }
-                  - { name: subtitle, label: Detail, required: false }
+                    hint: Shown instead of the badge. A black logo on a see-through background (PNG) works best. It turns white automatically in dark mode.
+                  - { name: logo_alt, label: Logo description, required: false, hint: "The name of the award or organiser, for blind visitors." }
+                  - { name: title, label: Award name }
+                  - { name: subtitle, label: Details (optional), required: false, hint: "e.g. 2025 · Best Multiplayer" }
                   - *cut
 
           - name: columns
-            label: Two columns
+            label: Two boxes side by side
             widget: object
-            summary: Two columns
+            summary: Two boxes side by side
             fields:
               - name: items
-                label: Panels
-                label_singular: Panel
+                label: Boxes
+                label_singular: Box
                 widget: list
                 max: 2
+                hint: Add up to two. The first one goes on the left.
                 types:
                   - name: text
                     label: Text
@@ -182,41 +226,46 @@ collections:
                     summary: "Text · {{fields.heading}}"
                     fields:
                       - &heading
-                        { name: heading, label: Heading, hint: Numbered 01, 02… automatically. }
+                        { name: heading, label: Heading, hint: "The number in front (01, 02…) is added for you." }
                       - &bullets
                         name: bullets
                         label: Bullet points
+                        label_singular: Bullet point
                         widget: list
-                        field: { name: bullet, label: Bullet, widget: text, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+                        field: { name: bullet, label: Bullet point, widget: text, hint: &fmt_short "Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link." }
                       - *cut
                   - name: image
-                    label: Image
+                    label: Picture
                     widget: object
-                    summary: "Image · {{fields.caption}}"
+                    summary: "Picture · {{fields.caption}}"
                     fields:
                       - &image
                         name: image
-                        label: Image
+                        label: Picture
                         widget: image
                         accept: image/jpeg,image/png,image/webp,image/avif
                         choose_url: false
-                      - &alt
-                        { name: alt, label: Image description, hint: Alt text for screen readers. }
+                      - *alt
                       - &caption
-                        { name: caption, label: Caption tag, required: false }
+                        { name: caption, label: Small label (optional), required: false, hint: "Shown on the picture, e.g. Lobby · UI" }
                       - &stitle
-                        { name: title, label: Caption title, required: false }
+                        { name: title, label: Caption (optional), required: false, hint: Bold text next to the small label. }
                       - &contain
-                        { name: contain, label: Show whole image (no crop), widget: boolean, default: false, required: false, hint: For portrait phone screenshots. }
+                        { name: contain, label: Show the whole picture, widget: boolean, default: false, required: false, hint: "Pictures are normally cropped to fill the box. Switch this on for tall pictures, such as phone screenshots, so nothing gets cut off." }
                       - *cut
                   - name: video
                     label: Video
                     widget: object
                     summary: "Video · {{fields.title}}"
                     fields: [*youtube, *vtitle, *vlabel, *vplay, *thumbnail, *valt, *cut]
+                  - name: model
+                    label: 3D model
+                    widget: object
+                    summary: "3D model · {{fields.title}}"
+                    fields: [*model, *mtitle, *cut]
 
           - name: text
-            label: Text (full width)
+            label: Text box (full width)
             widget: object
             summary: "Text · {{fields.heading}}"
             fields: [*heading, *bullets, *cut]
@@ -226,18 +275,19 @@ collections:
             widget: object
             summary: "Gallery · {{fields.heading}}"
             fields:
-              - { name: cap, label: Tag, required: false, hint: "Optional section heading tag, e.g. 2018–2020 · Studio name, City" }
-              - { name: heading, label: Heading, required: false }
-              - { name: intro, label: Intro, required: false }
+              - { name: cap, label: Small label (optional), required: false, hint: "Shown above the heading, e.g. 2018–2020 · Studio name, City" }
+              - { name: heading, label: Heading (optional), required: false }
+              - { name: intro, label: Intro (optional), required: false, hint: One line shown next to the heading. }
               - name: items
                 label: Tiles
                 label_singular: Tile
                 widget: list
+                hint: Tiles fill each row from left to right, then start a new row.
                 types:
                   - name: image
-                    label: Image
+                    label: Picture
                     widget: object
-                    summary: "Image · {{fields.caption}} ({{fields.width}}/6)"
+                    summary: "Picture · {{fields.caption}}"
                     fields:
                       - &width
                         name: width
@@ -245,11 +295,11 @@ collections:
                         widget: select
                         default: 3
                         options:
-                          - { label: 1/3 row, value: 2 }
-                          - { label: Half row, value: 3 }
-                          - { label: 2/3 row, value: 4 }
+                          - { label: ⅓ of a row, value: 2 }
+                          - { label: Half a row, value: 3 }
+                          - { label: ⅔ of a row, value: 4 }
                           - { label: Full row, value: 6 }
-                        hint: Make each row add up to a full row.
+                        hint: "Make each row add up to a full row, e.g. Half + Half, ⅓ + ⅓ + ⅓, or ⅔ + ⅓."
                       - *image
                       - *alt
                       - *caption
@@ -259,81 +309,94 @@ collections:
                   - name: video
                     label: Video
                     widget: object
-                    summary: "Video · {{fields.title}} ({{fields.width}}/6)"
+                    summary: "Video · {{fields.title}}"
                     fields: [*width, *youtube, *vtitle, *vlabel, *vplay, *thumbnail, *valt, *cut]
+                  - name: model
+                    label: 3D model
+                    widget: object
+                    summary: "3D model · {{fields.title}}"
+                    fields: [*width, *model, *mtitle, *cut]
 
   # ------------------------------------------------------------------ home page
   - name: home
     label: Home page
+    icon: home
+    description: Your main page, one part at a time, in order from top to bottom. The project cards come from Projects.
     files:
 
       - name: profile
         label: Profile
+        icon: person
         file: _data/profile.yml
         fields:
           - { name: first_name, label: First name }
           - { name: last_name, label: Last name }
-          - { name: tagline, label: Tagline, hint: Shown next to the name in the top bar. }
-          - { name: email, label: Email, pattern: ['^[^@\s]+@[^@\s]+$', 'Must be an email address'] }
+          - { name: tagline, label: Job title, hint: "Shown next to your name at the top of every page, e.g. Game Developer" }
+          - { name: email, label: Email, pattern: ['^[^@\s]+@[^@\s]+$', 'Must be an email address'], hint: All the email links on your site use this address. }
           - name: resume
-            label: Résumé PDF
+            label: Résumé (PDF)
             widget: file
             accept: application/pdf,.pdf
             choose_url: false
             media_folder: /assets/doc
             public_folder: /assets/doc
-            hint: Linked from the top bar, the hero and the contact section.
+            hint: Upload your résumé as a PDF. Every résumé link on your site opens this file.
 
       - name: hero
-        label: Hero
+        label: Intro (top of page)
+        icon: waving_hand
         file: _data/home/hero.yml
         fields:
-          - { name: meta_title, label: Browser tab title }
-          - { name: meta_description, label: Share description, widget: text }
+          - { name: meta_title, label: Browser tab title, hint: "Shown on the browser tab and as your site's title in Google, e.g. Your Name — Game Developer" }
+          - { name: meta_description, label: Share description, widget: text, hint: *share_hint }
           - name: share_image
-            label: Share image
+            label: Share picture
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             choose_url: false
-            hint: Link-preview thumbnail for the home page.
+            hint: The preview picture shown when someone shares a link to your home page. A wide (landscape) picture works best.
           - name: title_lines
             label: Title lines
+            label_singular: Line
             widget: list
-            hint: "Separate items with ' · ' (space, middle dot, space)."
+            hint: "Short lines shown under your name, e.g. Game Developer · Tech Lead. To get the dot, copy it from here: ·"
             field: { name: line, label: Line }
-          - { name: about, label: About, widget: text, hint: "Blank line between paragraphs. Markdown: **bold**, *italic*, [link](https://…)" }
+          - { name: about, label: About me, widget: text, hint: "Leave an empty line between paragraphs. Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link." }
           - &links
             name: links
             label: Links
             label_singular: Link
             widget: list
             summary: "{{fields.label}} ({{fields.kind}})"
+            hint: "e.g. LinkedIn, GitHub, your email and your résumé."
             fields:
               - name: kind
-                label: Kind
+                label: Link type
                 widget: select
                 default: link
                 options:
-                  - { label: Web link, value: link }
-                  - { label: Email (from Profile), value: email }
-                  - { label: Résumé PDF (from Profile), value: resume }
-              - { name: label, label: Label, required: false, hint: Email links default to the address. }
-              - { name: url, label: URL, required: false, hint: Web links only. }
+                  - { label: Web address, value: link }
+                  - { label: My email (the one in Profile), value: email }
+                  - { label: My résumé (the PDF in Profile), value: resume }
+              - { name: label, label: Link text, required: false, hint: "The words people click, e.g. LinkedIn. For email, leave empty to show the address itself." }
+              - { name: url, label: Web address, required: false, hint: "Only for the Web address type. Copy it from your browser, e.g. https://www.linkedin.com/in/yourname" }
 
       - name: work
-        label: Work section
+        label: Work section (heading)
+        icon: grid_view
         file: _data/home/work.yml
         fields:
-          - &sec_cap { name: cap, label: Tag }
-          - &sec_heading { name: heading, label: Heading }
-          - &sec_note { name: note, label: Note, required: false, hint: Small text on the right of the heading. }
+          - &sec_cap { name: cap, label: Small label, hint: Small blue label above the section heading. }
+          - { name: heading, label: Heading, hint: "The project cards under this heading come from Projects." }
+          - &sec_note { name: note, label: Note (optional), required: false, hint: "Small text to the right of the heading, e.g. Newest first." }
 
       - name: experience
         label: Experience
+        icon: work_history
         file: _data/home/experience.yml
         fields:
           - *sec_cap
-          - *sec_heading
+          - &sec_heading { name: heading, label: Heading }
           - *sec_note
           - name: jobs
             label: Jobs
@@ -341,59 +404,65 @@ collections:
             widget: list
             collapsed: true
             summary: "{{fields.company}} · {{fields.dates}}"
+            hint: Newest first. Click a job to open it, and drag the ═ handle to change the order.
             fields:
               - { name: dates, label: Dates, hint: "e.g. Jan 2022 – present" }
               - { name: company, label: Company }
-              - { name: location, label: Location }
+              - { name: location, label: Location, hint: "e.g. Stockholm, Sweden" }
               - name: roles
-                label: Roles
+                label: Job titles
+                label_singular: Job title
                 widget: list
-                field: { name: role, label: Role, hint: "e.g. Lead Developer · Mar 2023 – present" }
+                hint: Add one line per title if you were promoted.
+                field: { name: role, label: Job title, hint: "e.g. Lead Developer · Mar 2023 – present" }
               - name: bullets
                 label: Bullet points
+                label_singular: Bullet point
                 widget: list
-                field: { name: bullet, label: Bullet, widget: text, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
-              - { name: wide, label: Wide panel, widget: boolean, default: false, required: false, hint: Full width, heading on the left. Use for the current job. }
+                field: { name: bullet, label: Bullet point, widget: text, hint: *fmt_short }
+              - { name: wide, label: Wide box, widget: boolean, default: false, required: false, hint: "Makes this job full width, with the heading on the left. Good for your current job." }
               - *cut
           - name: education
             label: Education
             widget: object
             fields:
-              - { name: dates, label: Dates }
+              - { name: dates, label: Dates, hint: "e.g. 2013 – 2017" }
               - { name: degree, label: Degree }
               - { name: school, label: School }
-              - { name: note, label: Note, required: false }
+              - { name: note, label: Note (optional), required: false, hint: "e.g. Honours, a scholarship or your thesis topic" }
               - *cut
 
       - name: skills
         label: Skills
+        icon: handyman
         file: _data/home/skills.yml
         fields:
           - *sec_cap
           - *sec_heading
           - *sec_note
           - name: groups
-            label: Groups
+            label: Skill groups
             label_singular: Group
             widget: list
             summary: "{{fields.name}}"
             fields:
-              - { name: name, label: Name }
-              - { name: top, label: Deepest experience (dark tags), widget: list, required: false, field: { name: skill, label: Skill } }
-              - { name: other, label: Other skills, widget: list, required: false, field: { name: skill, label: Skill } }
+              - { name: name, label: Group name, hint: "e.g. Engines & languages" }
+              - { name: top, label: Main skills (dark tags), label_singular: Skill, widget: list, required: false, hint: "Your strongest skills in this group. They're shown first, in dark tags.", field: { name: skill, label: Skill } }
+              - { name: other, label: Other skills (light tags), label_singular: Skill, widget: list, required: false, field: { name: skill, label: Skill } }
               - *cut
 
       - name: about
         label: Recognition and quick facts
+        icon: emoji_events
         file: _data/home/about.yml
         fields:
           - *sec_cap
           - *sec_heading
           - name: recognition
-            label: Recognition
+            label: Recognition box (left)
             widget: object
             fields:
-              - { name: title, label: Panel title }
+              - { name: title, label: Box title, hint: "e.g. Recognition" }
               - *cut
               - name: items
                 label: Awards
@@ -401,15 +470,15 @@ collections:
                 widget: list
                 summary: "{{fields.badge}} · {{fields.title}}"
                 fields:
-                  - { name: badge, label: Badge }
-                  - { name: accent, label: Blue badge, widget: boolean, default: true, required: false }
-                  - { name: title, label: Award }
-                  - { name: project, label: Project, required: false }
+                  - { name: badge, label: Badge, hint: "Small label, e.g. Winner or Nominee" }
+                  - { name: accent, label: Blue badge, widget: boolean, default: true, required: false, hint: Switch off for a grey badge. }
+                  - { name: title, label: Award name }
+                  - { name: project, label: Project (optional), required: false, hint: Which project it was for. }
           - name: facts
-            label: Quick facts
+            label: Quick facts box (right)
             widget: object
             fields:
-              - { name: title, label: Panel title }
+              - { name: title, label: Box title, hint: "e.g. Quick facts" }
               - *cut
               - name: items
                 label: Facts
@@ -417,15 +486,16 @@ collections:
                 widget: list
                 summary: "{{fields.label}}"
                 fields:
-                  - { name: label, label: Label }
-                  - { name: text, label: Text, widget: text, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+                  - { name: label, label: Label, hint: "e.g. Location" }
+                  - { name: text, label: Text, widget: text, hint: *fmt_short }
 
       - name: contact
         label: Contact
+        icon: mail
         file: _data/home/contact.yml
         fields:
           - *sec_cap
-          - { name: heading, label: Heading }
-          - { name: heading_accent, label: Heading (blue part), required: false }
-          - { name: text, label: Text, widget: text, required: false, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+          - { name: heading, label: Heading, hint: "e.g. Hiring for your next project?" }
+          - { name: heading_accent, label: "Heading, blue part (optional)", required: false, hint: "Shown in blue right after the heading, e.g. Let's talk." }
+          - { name: text, label: Text (optional), widget: text, required: false, hint: *fmt_short }
           - *links

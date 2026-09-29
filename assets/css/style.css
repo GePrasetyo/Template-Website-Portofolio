@@ -407,6 +407,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   position: absolute; left: 40px; bottom: 36px; max-width: calc(100% - 80px);
 }
 
+/* 3D model (Sketchfab / ArtStation iframe). Fills its panel; on its own it keeps a 16:9 shape. */
+.model { position: relative; width: 100%; height: 100%; min-height: 200px; aspect-ratio: 16 / 9; background: #000; }
+.model iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
 .chapter-nav { display: grid; gap: var(--gutter); grid-template-columns: repeat(2, minmax(0,1fr)); margin-top: clamp(24px, 4vw, 40px); }
 .chapter-nav a { display: block; padding: 22px 24px; background: var(--paper); height: 100%; }
 .chapter-nav a small { display: block; font: 700 .7rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }

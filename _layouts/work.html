@@ -3,8 +3,9 @@ layout: default
 ---
 {%- comment -%}
   One project page, built from the front matter of a file in _work/ (edited through /admin).
-  `sections` is a list of blocks: video (full-width splash), awards, columns (two equal panels),
-  text (full-width text panel) and gallery (6-column grid, each item sets its width).
+  `sections` is a list of blocks: video or model (full-width splash), awards, columns (two equal
+  panels), text (full-width text panel) and gallery (6-column grid, each item sets its width).
+  Columns and gallery items are image, video or model (a Sketchfab / ArtStation 3D viewer).
   Text panels are numbered 01, 02… in page order. `cut` picks the comic panel shape; blank lets
   main.js choose.
 {%- endcomment -%}
@@ -51,6 +52,14 @@ layout: default
     </div>
   </section>
 
+{%- when 'model' %}
+
+  <section class="splash reveal">
+    <div class="panel" data-cut="{{ s.cut | default: 'w' }}">
+      {% include model.html m=s %}
+    </div>
+  </section>
+
 {%- when 'awards' %}
 
   <section class="section tight">
@@ -83,7 +92,7 @@ layout: default
       </div>
       {%- else %}
       <div class="panel reveal"{% if it.cut %} data-cut="{{ it.cut }}"{% endif %}>
-        {% if it.type == 'video' %}{% include video.html v=it play='Play' %}{% else %}{% include shot.html s=it %}{% endif %}
+        {% if it.type == 'video' %}{% include video.html v=it play='Play' %}{% elsif it.type == 'model' %}{% include model.html m=it %}{% else %}{% include shot.html s=it %}{% endif %}
       </div>
       {%- endif %}
       {%- endfor %}
@@ -106,7 +115,7 @@ layout: default
       {%- for it in s.items %}
       {%- if sec_first and forloop.index <= 2 %}{% assign eager = true %}{% else %}{% assign eager = false %}{% endif %}
       <div class="panel span-{{ it.width | default: 3 }} reveal"{% if it.cut %} data-cut="{{ it.cut }}"{% endif %}>
-        {% if it.type == 'video' %}{% include video.html v=it eager=eager play='Play' %}{% else %}{% include shot.html s=it eager=eager %}{% endif %}
+        {% if it.type == 'video' %}{% include video.html v=it eager=eager play='Play' %}{% elsif it.type == 'model' %}{% include model.html m=it %}{% else %}{% include shot.html s=it eager=eager %}{% endif %}
       </div>
       {%- endfor %}
     </div>
@@ -120,7 +129,11 @@ layout: default
 {%- assign prev_i = idx | minus: 1 -%}
 {%- assign next_i = idx | plus: 1 -%}
 {%- assign next = works[next_i] -%}
-{%- if page.nav_cut == 'cd' -%}{%- assign c1 = 'c' -%}{%- assign c2 = 'd' -%}{%- else -%}{%- assign c1 = 'a' -%}{%- assign c2 = 'b' -%}{%- endif %}
+{%- comment -%} Previous / Next are an a|b pair, or c|d when the last panel above is an a or b. {%- endcomment -%}
+{%- assign last_sec = page.sections | last -%}
+{%- assign last_item = last_sec.items | last -%}
+{%- assign last_cut = last_item.cut | default: last_sec.cut -%}
+{%- if last_cut == 'a' or last_cut == 'b' -%}{%- assign c1 = 'c' -%}{%- assign c2 = 'd' -%}{%- else -%}{%- assign c1 = 'a' -%}{%- assign c2 = 'b' -%}{%- endif %}
 
   <nav class="chapter-nav" aria-label="More work">
     {%- if idx > 0 %}{% assign prev = works[prev_i] %}
