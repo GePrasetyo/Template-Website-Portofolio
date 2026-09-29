@@ -1,4 +1,9 @@
-# Builds and deploys the site to GitHub Pages on every push to main, including commits made from /admin.
+# Builds and deploys the site to GitHub Pages. Runs on:
+#   - "Publish Changes" in the editor (/admin), which sends the sveltia-cms-publish event. Saving in
+#     the editor doesn't deploy: admin/config.yml sets skip_ci, so those commits say [skip ci].
+#     Deleting something in the editor does deploy straight away, so it's gone from the site.
+#   - pushes to main that aren't marked [skip ci], e.g. changes to the code;
+#   - Run workflow in the Actions tab.
 # Requires Settings → Pages → Build and deployment → Source: GitHub Actions.
 #
 # The upload check runs first: CMS uploads are meant to be stills (and the résumé PDF) only, video is
@@ -8,6 +13,8 @@ name: Deploy site
 on:
   push:
     branches: [main]
+  repository_dispatch:
+    types: [sveltia-cms-publish]
   workflow_dispatch:
 
 permissions:

@@ -79,9 +79,11 @@ On the left of the editor you'll see:
 
 Every field has a short explanation in grey underneath it. Fields marked with a star (*) must be filled in.
 
-**To change something:** open it, edit the fields, then click **Save**. Your website updates by itself about a minute later. Refresh the page to see it.
+**To change something:** open it, edit the fields, then click **Save**. Saving keeps your changes but doesn't update your website yet, so you can make lots of changes without waiting.
 
-**Preview:** the right half of the editor shows the page you're editing in your site's theme, and changes as you type. It's a close preview: the real site is built a minute after you save, and small details such as curly quotes can differ.
+**To update your website:** click **Publish Changes** at the top of the editor. Your website updates about a minute later; refresh the page to see it. To save and publish in one go, click the arrow next to **Save** and choose **Save and Publish**. Deleting a project or picture publishes straight away, so it's gone from your site.
+
+**Preview:** the right half of the editor shows the page you're editing in your site's theme, and changes as you type. It includes everything you've saved, even before you publish. It's a close preview: small details such as curly quotes can differ on the real site.
 
 **Look & feel:**
 - **Theme:** how the whole site is laid out. **Comic** has slanted comic-book boxes, **Showcase** puts your pictures and videos first, and **Editorial** looks like a magazine. Your words, pictures and videos stay the same when you switch.
@@ -162,14 +164,15 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 - Check that the token hasn't expired ([step 6](#6-when-your-key-runs-out)).
 
 **I saved, but my website hasn't changed**
-- Wait for the green ✓ in the **Actions** tab.
+- Saving doesn't update your website on its own. Click **Publish Changes** at the top of the editor.
+- Then wait for the green ✓ in the **Actions** tab.
 - Then reload your site with **Ctrl + Shift + R**, or **Cmd + Shift + R** on a Mac.
 
 ---
 
 ## For developers
 
-- **How it's built:** the site is built with Jekyll by GitHub Actions (`.github/workflows/pages.yml`). Content lives in `_data/` and `_work/`, and templates in `index.html`, `_layouts/` and `_includes/`. The editor is [Sveltia CMS](https://github.com/sveltia/sveltia-cms), configured in `admin/config.yml`.
+- **How it's built:** the site is built with Jekyll by GitHub Actions (`.github/workflows/pages.yml`). Content lives in `_data/` and `_work/`, and templates in `index.html`, `_layouts/` and `_includes/`. The editor is [Sveltia CMS](https://github.com/sveltia/sveltia-cms), configured in `admin/config.yml`. Editor saves are committed with `[skip ci]` (`skip_ci` in `admin/config.yml`) and deploy when someone clicks Publish Changes, which sends the `sveltia-cms-publish` event the workflow listens for; other pushes to `main` deploy as usual.
 - **Themes:** content never says how it looks. `_layouts/default.html` reads Look & feel (`_data/look.yml`) and hands the page to the chosen theme: `_includes/themes/<theme>/` (`frame.html`, `home.html`, `work.html`), styled by `assets/css/<theme>.css`. Project items share one markup, `_includes/item.html`, which also documents the content model. Colours and fonts reach every theme as CSS custom properties (`_includes/look.html`), from the presets in `_data/palettes.yml` and `_data/fonts.yml`.
 - **Adding a theme:** add its folder under `_includes/themes/` and its stylesheet, register it in `_data/themes.yml`, add it to the Theme options in `admin/config.yml`, and add screenshots to `admin/looks/`.
 - **Editor preview:** `admin/preview.js` renders the page being edited in the browser with [LiquidJS](https://liquidjs.com), from the same templates Jekyll uses. `_tools/preview_bundle.py` packs `_includes/` and `_layouts/` into `admin/preview/templates.json` before each build (`.github/workflows/pages.yml`), and Jekyll writes the saved data to `admin/preview/site.json`. Keep templates to Liquid that both Jekyll and LiquidJS understand, and don't name fields `size`, `first` or `last` (Liquid reads those as list properties).

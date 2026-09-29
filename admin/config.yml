@@ -20,11 +20,16 @@
 # On <user>.github.io/<repo>/admin/, admin/index.html fills in backend.repo, site_url and
 # display_url from the address, so a fork works without editing this file. On a custom domain,
 # set them here.
+#
+# skip_ci: saving doesn't rebuild the site. Changes go live when someone clicks Publish Changes in
+# the editor's top bar (or picks Save and Publish next to Save), which starts
+# .github/workflows/pages.yml. Deletions always publish straight away.
 backend:
   name: github
   repo: your-username/your-repo
   branch: main
   auth_methods: [token]
+  skip_ci: true
 
 app_title: Portfolio Admin
 logo:

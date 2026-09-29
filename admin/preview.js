@@ -1,9 +1,11 @@
 /* Live preview for the editor. Sveltia CMS shows the page being edited in its preview pane, drawn
    with the site's own theme while you type: the Liquid templates in _includes/ and _layouts/
    (bundled into preview/templates.json by _tools/preview_bundle.py when the site is built) are
-   rendered with LiquidJS the way Jekyll renders them, with the saved site data
-   (preview/site.json) and the entry being edited. Jekyll still builds the real site, so small
-   differences are possible, such as straight instead of curly quotes.
+   rendered with LiquidJS the way Jekyll renders them. The content is the entry being edited, the
+   latest saved version of everything else as the editor holds it, and for what the editor doesn't
+   manage (colour and font presets, the site address) the data Jekyll published in
+   preview/site.json. Jekyll still builds the real site, so small differences are possible, such as
+   straight instead of curly quotes.
    window.SitePreview.renderer() gives the renderer, e.g. to try a render in the browser console. */
 (function () {
   'use strict';
@@ -25,6 +27,9 @@
     about: ['home', 'about'],
     contact: ['home', 'contact']
   };
+  /* Editor collections holding data files, and the projects. Keep in step with admin/config.yml. */
+  var DATA_COLLECTIONS = ['_singletons', 'home'];
+  var PROJECTS = 'work';
   var SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
   function loadScript(src) {
@@ -62,15 +67,51 @@
     return value === '' || value === null ? undefined : value;
   }
 
+  function contentOf(entry) {
+    var data = entry.get('data');
+    return prune(data && data.toJS ? data.toJS() : data) || {};
+  }
+
+  function setPath(obj, path, value) {
+    path.slice(0, -1).forEach(function (k) { obj = obj[k] = obj[k] || {}; });
+    obj[path[path.length - 1]] = value;
+  }
+
+  /* The latest saved data files and projects from the editor, so a preview shows what was saved a
+     moment ago elsewhere instead of waiting for the site to be rebuilt. */
+  async function editorContent(getCollection) {
+    var content = { files: [], work: null };
+    if (!getCollection) { return content; }
+    var lists = await Promise.all(DATA_COLLECTIONS.concat([PROJECTS]).map(function (name) {
+      return getCollection(name).catch(function () { return null; });
+    }));
+    var projects = lists.pop();
+    lists.forEach(function (list) {
+      (list || []).forEach(function (entry) {
+        var file = /^_data\/(.+)\.ya?ml$/.exec(entry.get('path') || '');
+        if (file) { content.files.push({ path: file[1].split('/'), data: contentOf(entry) }); }
+      });
+    });
+    if (projects && projects.length) {
+      content.work = projects.map(function (entry) {
+        var stem = (entry.get('path') || '').split('/').pop().replace(/\.[^.]+$/, '') || entry.get('slug');
+        return Object.assign(contentOf(entry), { url: '/work/' + stem + '.html' });
+      }).filter(function (project) { return project.published !== false; });
+    }
+    return content;
+  }
+
   function createRenderer(bundle, saved) {
     var root = (saved.baseurl || '').replace(/\/$/, '');
-    var findAsset = null;   // the editor's getAsset during a render, for pictures not saved yet
+    var findAsset = null;   // the editor's getAsset during a render
 
+    /* Pictures come from the editor's own copy when it has one (a blob: address): that covers
+       pictures not saved yet, and saved ones the site hasn't published yet. */
     function siteUrl(value) {
       var v = value == null ? '' : String(value);
       if (SCHEME.test(v)) { return v; }
       var asset = findAsset && v && findAsset(v);
-      if (asset && asset.fileObj) { return asset.url; }
+      if (asset && /^blob:/.test(asset.url)) { return asset.url; }
       return root + '/' + v.replace(/^\//, '');
     }
 
@@ -93,9 +134,12 @@
     }
 
     /* The whole page, as Jekyll would write it, for the editor file `name` holding `data`. */
-    async function render(name, data, slug, getAsset) {
+    async function render(name, data, slug, getAsset, getCollection) {
       var site = JSON.parse(JSON.stringify(saved));
       site.time = new Date();
+      var latest = await editorContent(getCollection);
+      latest.files.forEach(function (file) { setPath(site.data, file.path, file.data); });
+      if (latest.work) { site.work = latest.work; }
       findAsset = getAsset || null;
       try {
         if (name === 'work') {
@@ -103,9 +147,7 @@
           site.work = site.work.filter(function (w) { return w.url !== page.url; }).concat([page]);
           return await withLayouts('work', '', { site: site, page: page });
         }
-        var path = DATA_FILES[name], parent = site.data;
-        path.slice(0, -1).forEach(function (k) { parent = parent[k] = parent[k] || {}; });
-        parent[path[path.length - 1]] = data;
+        setPath(site.data, DATA_FILES[name], data);
         var home = bundle.pages['index.html'], scope = { site: site, page: { url: '/' } };
         return await withLayouts(home.layout, await engine.parseAndRender(home.body, scope), scope);
       } finally {
@@ -181,7 +223,7 @@
         var stale = false;
         var timer = setTimeout(function () {
           renderer()
-            .then(function (r) { return r.render(name, prune(data ? data.toJS() : {}) || {}, props.entry.get('slug'), props.getAsset); })
+            .then(function (r) { return r.render(name, contentOf(props.entry), props.entry.get('slug'), props.getAsset, props.getCollection); })
             .then(function (html) { if (!stale) { setPage(splitPage(html)); } })
             .catch(function (err) { if (!stale) { setPage({ error: err.message }); } });
         }, 150);

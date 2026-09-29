@@ -68,7 +68,7 @@
 {%- comment -%}
   Welcome screen (_includes/welcome.html): home page only. The inline script below opens it before
   the page draws, unless the visitor already went in this session, came from another page of this
-  site or followed a link to a section.
+  site (the editor in /admin/ doesn't count) or followed a link to a section.
 {%- endcomment -%}
 {%- assign welcome_on = false -%}
 {%- if page.url == '/' and site.data.home.welcome.show -%}{%- assign welcome_on = true -%}{%- endif -%}
@@ -103,7 +103,7 @@
   <link rel="icon" href="{{ '/favicon.svg' | relative_url }}?v={{ site.asset_version }}" type="image/svg+xml">
   <script>document.documentElement.className+=' js';
     {%- if mode_switch %}try{var m=localStorage.getItem('mode');if(m)document.documentElement.setAttribute('data-mode',m);}catch(e){}{% endif %}
-    {%- if welcome_on %}try{if(!location.hash&&!sessionStorage.getItem('{{ welcome_key }}')&&document.referrer.indexOf(location.origin+'{{ site_root }}')!==0)document.documentElement.classList.add('welcome-open');}catch(e){}{% endif -%}
+    {%- if welcome_on %}try{var r=document.referrer,b=location.origin+'{{ site_root }}';if(!location.hash&&!sessionStorage.getItem('{{ welcome_key }}')&&!(r.indexOf(b)===0&&r.indexOf(b+'admin/')!==0))document.documentElement.classList.add('welcome-open');}catch(e){}{% endif -%}
   </script>
   {% include look.html %}
   {%- if welcome_on %}
