@@ -318,7 +318,14 @@ body { margin: 0; background: var(--bg); }
 .dest-panel .links a { border-color: var(--bg); }
 .dest-panel .links li:first-child a { background: var(--fg); border-color: var(--fg); color: var(--bg); }
 .sign-off { display: block; margin-top: 26px; padding-top: 16px; border-top: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent); font: 700 12px/1 var(--font-sign); letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
-.flag { position: absolute; left: 190px; bottom: calc(var(--road-b) - var(--stand)); width: 44px; height: var(--road-h); background: repeating-conic-gradient(var(--fg) 0 25%, var(--bg) 0 50%) 0 0 / 22px 22px; opacity: .9; }
+/* the finish line: roadtrip.js moves it under the car's front wheel for the end of the drive. It sits
+   on the zoomed destination but must match the unzoomed road, hence the / var(--z). */
+.flag {
+  position: absolute; left: 190px; bottom: calc((var(--road-b) - var(--stand)) / var(--z, 1));
+  width: calc(44px / var(--z, 1)); height: calc(var(--road-h) / var(--z, 1));
+  background: repeating-conic-gradient(var(--fg) 0 25%, var(--bg) 0 50%) 0 0 / calc(22px / var(--z, 1)) calc(22px / var(--z, 1));
+  opacity: .9;
+}
 
 /* scroll hint */
 .hint { display: none; }

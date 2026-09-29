@@ -17,6 +17,7 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var MIN_W = 960, MIN_H = 600, MIN_Z = 0.6, MAX_Z = 1.12;
+  var WHEEL = 0.78;   // the car's front wheel, as a share of its width from the back
   var rt, drive, stage, track, band, car, trip, route;   // this page's parts, see find()
   var on = false, travel = 0, driveTop = 0, lastP = 0, stopX = {}, moveTimer = 0, ticking = false;
 
@@ -54,6 +55,16 @@
     return clamp(el.getBoundingClientRect().left - trackLeft - vw * 0.36, 0, travel);
   }
 
+  /* the finish line goes under the car's front wheel where the drive ends, on any screen width */
+  function placeFlag(dest, trackLeft) {
+    var flag = dest.querySelector('.flag');
+    if (!flag || !car) { return; }
+    var c = car.getBoundingClientRect(), f = flag.getBoundingClientRect();
+    var destEnd = dest.getBoundingClientRect().left - trackLeft - travel;   // its left edge on screen then
+    var z = parseFloat(rt.style.getPropertyValue('--z')) || 1;              // the flag's left is in zoomed px
+    flag.style.left = ((c.left + c.width * WHEEL - f.width / 2 - destEnd) / z).toFixed(1) + 'px';
+  }
+
   function layout() {
     if (!here()) { return; }
     if (!drive) { update(); return; }
@@ -77,10 +88,16 @@
     }
 
     if (on) {
+      /* drive until the destination is in full view, but stop sooner on a narrow window, where
+         going on would push its left edge off the screen */
+      var trackLeft = track.getBoundingClientRect().left, dest = track.querySelector('.destination');
       travel = Math.max(0, track.scrollWidth - vw);
+      if (dest) {
+        travel = Math.min(travel, Math.max(0, dest.getBoundingClientRect().left - trackLeft - 24));
+        placeFlag(dest, trackLeft);
+      }
       drive.style.height = (travel + vh) + 'px';
       driveTop = drive.getBoundingClientRect().top + window.scrollY;
-      var trackLeft = track.getBoundingClientRect().left;
       stopX = {};
       rt.querySelectorAll('[data-target]').forEach(function (a) {
         var id = a.getAttribute('data-target'), el = item(id);
