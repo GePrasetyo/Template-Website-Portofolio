@@ -1,127 +1,167 @@
 # Website-Portofolio
 
-A portfolio site for GitHub Pages with a built-in content editor. Comic-panel layout, light and dark mode, no build tools to install. You edit everything from your browser, and only you can sign in to the editor.
+A free portfolio website that you run yourself. It's hosted on GitHub, and you update the words, pictures and videos from a simple editor in your browser. No coding needed.
 
-**Contents:** [1. Make your copy](#1-make-your-copy) · [2. Turn on GitHub Pages](#2-turn-on-github-pages) · [3. Create an access token](#3-create-an-access-token) · [4. Sign in to the editor](#4-sign-in-to-the-editor) · [5. Add your content](#5-add-your-content) · [6. When the token expires](#6-when-the-token-expires) · [Troubleshooting](#troubleshooting)
+Setup takes about 15 minutes, and you only do it once. All you need is a free [GitHub account](https://github.com/signup).
 
----
-
-## 1. Make your copy
-
-1. At the top of this repository, click **Use this template → Create a new repository**. (A fork works too.)
-2. Pick a name:
-   - `<username>.github.io` puts the site at `https://<username>.github.io/`
-   - any other name, e.g. `portfolio`, puts it at `https://<username>.github.io/portfolio/`
-3. Keep it **Public**. GitHub Pages is free for public repositories.
-
-On a fork, open the **Actions** tab once and click **I understand my workflows, go ahead and enable them**.
-
-## 2. Turn on GitHub Pages
-
-In your new repository, go to **Settings → Pages**. Under **Build and deployment → Source**, choose **GitHub Actions**.
-
-![Settings → Pages with Source set to GitHub Actions](docs/images/enable-pages.png)
-
-Don't click **Configure** on the suggested workflows. The repository already has its own, called **Deploy site**.
-
-Then open the **Actions** tab, select **Deploy site**, and click **Run workflow**. When it shows a green check (about a minute), your site is live at the address from step 1.
-
-## 3. Create an access token
-
-The editor saves your changes straight to your repository, so it needs a key that allows exactly that and nothing more.
-
-Open [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new) (GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token) and fill in:
-
-| Field | Value |
-| --- | --- |
-| Token name | anything, e.g. `Portfolio Admin` |
-| Resource owner | your account |
-| Expiration | e.g. 30 or 90 days (see [step 6](#6-when-the-token-expires)) |
-| Repository access | **Only select repositories** → the repository you created in step 1 |
-| Permissions | **Add permissions → Contents → Access: Read and write** |
-
-**Metadata: Read-only** is added automatically and is required. Leave everything else out.
-
-![New fine-grained token with one repository selected, Contents read and write, Metadata read-only](docs/images/generate-token.png)
-
-Click **Generate token**, then click the copy button next to the token right away. GitHub shows it only once.
-
-Treat the token like a password. Don't paste it into issues, chats or screenshots. Don't use a classic token, because its `repo` scope unlocks every repository you own.
-
-## 4. Sign in to the editor
-
-1. Open `https://<username>.github.io/<repository>/admin/` (for a `<username>.github.io` repository: `https://<username>.github.io/admin/`).
-2. Click **Sign In with Token**, paste the token, and click **Sign In**.
-
-![Sign In Using Access Token dialog](docs/images/sign-in-token.png)
-
-The token is kept in that browser only. Nobody visiting your site needs it; the site itself stays public. On a shared computer, sign out from the account menu when you're done.
-
-## 5. Add your content
-
-The editor has two sections:
-
-- **Home page:**
-  - **Profile:** name, tagline, email and résumé PDF
-  - **Hero:** title lines, intro and links
-  - **Work section, Experience, Skills, Recognition and quick facts, Contact**
-- **Work:** one entry per project.
-  - **Order** sets its place on the home page and in the Previous / Next links, with 1 first.
-  - **Featured** makes the card wide.
-  - A project page is built from **Sections**, which you add, remove and reorder: full-width video, awards, two columns, full-width text and galleries.
-
-Things to know:
-
-- **Saving publishes.** Every save is a commit to your repository, and the site updates about a minute later. You can follow it in the Actions tab.
-- **Images** can be jpg, png, webp or avif, up to 5 MB.
-- **Videos** are YouTube links only. Paste the video URL (`youtube.com/watch?v=…`, `youtu.be/…` or `/shorts/…`). Video files can't be uploaded, and the deploy stops if a video or any other disallowed file lands under `assets/`.
-- **Text** fields take Markdown: `**bold**`, `*italic*`, `[link](https://…)`.
-- **Panel shape** picks the comic-panel cut. Leave it empty and the site chooses one.
-
-When all the placeholders are replaced, delete `assets/img/placeholder/` and `assets/doc/resume.pdf` if nothing uses them any more.
-
-## 6. When the token expires
-
-You don't need a new token. Open the token on the [Fine-grained tokens](https://github.com/settings/personal-access-tokens) page and click **Regenerate token**. It keeps the same name, repository and permissions, and you pick a new expiration date.
-
-![Token details page with the Regenerate token button](docs/images/regenerate-token.png)
-
-Regenerating gives you a new token and the old one stops working. In the editor, sign out, then sign in again with the new token.
-
-If a token ever leaks, click **Delete** on the same page. It stops working immediately.
+**Steps:** [1. Get your own copy](#1-get-your-own-copy) · [2. Put your website online](#2-put-your-website-online) · [3. Make a key for the editor](#3-make-a-key-for-the-editor) · [4. Open the editor](#4-open-the-editor) · [5. Make it yours](#5-make-it-yours) · [6. When your key runs out](#6-when-your-key-runs-out) · [Something not working?](#something-not-working)
 
 ---
 
-## Troubleshooting
+## 1. Get your own copy
 
-| Problem | Fix |
-| --- | --- |
-| The site shows 404 | Check the latest **Deploy site** run in the Actions tab, and that Settings → Pages → Source is **GitHub Actions**. Give it a minute after the green check. |
-| Deploy failed at **Setup Pages** | Pages isn't switched to GitHub Actions yet. Do [step 2](#2-turn-on-github-pages), then run the workflow again. |
-| Deploy failed at **Check uploads** | The log lists the files that aren't allowed (videos, other file types, or files over 5 MB). Delete them and save again. |
-| Sign-in says *Not Found* or *Bad credentials* | The token doesn't include this repository, doesn't have Contents: Read and write, or has expired. |
-| An edit doesn't show up | Wait for the Actions run to finish, then reload the page without the cache (Ctrl+Shift+R, or Cmd+Shift+R on a Mac). |
+Everything for your site lives in a *repository*, which is simply a project folder on GitHub. First, make your own copy of this one.
 
-## Custom domain
+1. Sign in to GitHub, then click the green **Use this template** button at the top of this page and choose **Create a new repository**.
+2. Give it a name. The name becomes part of your website address:
+   - Name it **`yourusername.github.io`** (with your own GitHub username) and your site will be at `https://yourusername.github.io/`
+   - Any other name, for example **`portfolio`**, gives you `https://yourusername.github.io/portfolio/`
+3. Leave it set to **Public**, then click **Create repository**.
 
-On `github.io`, the site address and repository are detected automatically. On a custom domain, set `url` and `baseurl` in `_config.yml`, and `backend.repo`, `site_url` and `display_url` in `admin/config.yml`.
+## 2. Put your website online
 
-## Local preview (optional)
+1. In your new repository, click **Settings** (top menu), then **Pages** (left menu).
+2. Under **Build and deployment**, change **Source** to **GitHub Actions**. It saves by itself.
 
-```sh
-pip install python-liquid markdown pyyaml
-python _tools/render.py
-python -m http.server -d _site 8765
-```
+   ![Pages settings, with Source set to GitHub Actions](docs/images/enable-pages.png)
 
-Then open `http://localhost:8765/`.
+   GitHub will suggest some options below it, such as "GitHub Pages Jekyll". **Ignore them**; don't click Configure. Your copy already has everything it needs.
+
+3. Click the **Actions** tab (top menu). On the left, click **Deploy site**, then click **Run workflow**, and **Run workflow** again in the box that opens.
+4. Wait about a minute until it shows a green ✓. Your website is now online at the address from step 1.
+
+You might also see an earlier red ✗ in that list. That's normal: it ran before you switched Pages on.
+
+## 3. Make a key for the editor
+
+The editor needs permission to save changes to your website. You give it that permission with a *token*: a long password that works only for this one website and can only change its content.
+
+1. Open **[this link to create a token](https://github.com/settings/personal-access-tokens/new)**. (Or: your profile picture → **Settings** → **Developer settings** at the bottom of the left menu → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.)
+2. Fill in the form:
+   - **Token name:** anything you'll recognise, e.g. `Portfolio editor`
+   - **Expiration:** how long the key works, e.g. 30 or 90 days. You can renew it later ([step 6](#6-when-your-key-runs-out)).
+   - **Repository access:** choose **Only select repositories**, open **Select repositories** and pick the repository you made in step 1.
+   - **Permissions:** click **Add permissions**, tick **Contents**, then set its **Access** to **Read and write**.
+
+     **Metadata** gets added by itself as "Required". That's expected, so leave it. Don't add anything else.
+
+   ![Token form with one repository selected, Contents set to Read and write, and Metadata read-only](docs/images/generate-token.png)
+
+3. Click **Generate token** at the bottom.
+4. GitHub shows your token **once**. Click the copy button next to it and keep it somewhere safe, such as your password manager.
+
+Keep this token private, like a password. Don't post it or share screenshots of it.
+
+## 4. Open the editor
+
+1. Go to your website address with **`/admin/`** added to the end, for example `https://yourusername.github.io/portfolio/admin/`. Bookmark this page.
+2. Click **Sign In with Token**, paste your token, and click **Sign In**.
+
+   ![The Sign In Using Access Token box](docs/images/sign-in-token.png)
+
+Anyone can open the `/admin/` page, but without your token they can't see or change anything. Visitors to your website never need to sign in.
+
+Your browser remembers you. On a shared computer, sign out when you're finished: click the account icon in the top-right corner, then **Sign Out**.
+
+## 5. Make it yours
+
+Your copy starts with example text and placeholder pictures. Replace them with your own.
+
+On the left of the editor you'll see two things:
+
+- **Home page:** your main page, split into parts:
+  - **Profile:** your name, tagline, email and résumé (PDF)
+  - **Hero:** the big intro at the top: your title lines, a short "about me" and your links
+  - **Work section, Experience, Skills, Recognition and quick facts, Contact:** the rest of the page, in order
+- **Work:** your projects. Each project gets its own page and a card on the home page.
+
+**To change something:** open it, edit the fields, then click **Save**. Your website updates by itself about a minute later. Refresh the page to see it.
+
+**Projects:**
+- To **add a project**, open **Work** and click **New**.
+- The **Order** number decides where a project appears: 1 comes first.
+- Tick **Featured** to make the project's card extra wide on the home page.
+- A project page is built from **Sections**, which you can add, remove and reorder:
+  - a big video
+  - a row of awards
+  - two columns side by side
+  - a wide block of text
+  - a gallery of pictures and videos
+- To hide an example project, untick **Show on site** and save. Or delete it.
+
+**Pictures:**
+- JPG, PNG, WebP or AVIF, up to **5 MB** each.
+- If a picture is too big, shrink it for free at [squoosh.app](https://squoosh.app).
+- Wide pictures (landscape) work best for project cards.
+
+**Videos:**
+- Videos come from **YouTube**. Upload yours there first, then paste its link into the video field.
+- "Unlisted" YouTube videos work too.
+- Video files can't be uploaded to your site. If one gets in, the website won't update until it's removed.
+
+**Text styling:**
+- Put two stars on each side to make text **bold**: `**like this**`
+- One star on each side makes it *italic*: `*like this*`
+- For a link: `[the words people click](https://the-address.com)`
+
+**Panel shape:** each box on the page has a slightly slanted, comic-book edge. You can pick a shape, or leave it empty and the site picks one for you.
+
+## 6. When your key runs out
+
+When your token expires, the editor stops letting you in. Your website stays online the whole time. You don't have to make a new token; you can renew the old one:
+
+1. Open your [tokens page](https://github.com/settings/personal-access-tokens) and click your token's name.
+2. Click **Regenerate token**, choose a new expiration, and confirm.
+
+   ![A token's page, with the Regenerate token button on the right](docs/images/regenerate-token.png)
+
+3. Copy the new token. The old one stops working.
+4. In the editor, sign out, then sign in again with the new token.
+
+If your token was ever seen by someone else, click **Delete** on the same page. It stops working right away. Then make a new one as in [step 3](#3-make-a-key-for-the-editor).
+
+---
+
+## Something not working?
+
+**My website shows "404" or "Site not found"**
+- Open the **Actions** tab and check that the newest **Deploy site** has a green ✓.
+- Also check that **Settings → Pages → Source** says **GitHub Actions**.
+- After the first green ✓, it can take another minute or two to appear.
+
+**Deploy site has a red ✗**
+- Click it to see which step failed.
+- **Setup Pages:** Pages isn't switched on yet. Do [step 2](#2-put-your-website-online), then run it again.
+- **Check uploads:** a file that isn't allowed got in, such as a video, another file type, or a file over 5 MB. The details list which file. In the editor, open **Assets**, delete that file, and the site updates again.
+
+**The editor won't let me sign in**
+- Check that the token includes the right repository and has **Contents: Read and write**.
+- Check that the token hasn't expired ([step 6](#6-when-your-key-runs-out)).
+
+**I saved, but my website hasn't changed**
+- Wait for the green ✓ in the **Actions** tab.
+- Then reload your site with **Ctrl + Shift + R**, or **Cmd + Shift + R** on a Mac.
+
+---
+
+## For developers
+
+- **How it's built:** the site is built with Jekyll by GitHub Actions (`.github/workflows/pages.yml`). Content lives in `_data/` and `_work/`, and templates in `index.html`, `_layouts/` and `_includes/`. The editor is [Sveltia CMS](https://github.com/sveltia/sveltia-cms), configured in `admin/config.yml`.
+- **Custom domain:** on `github.io`, the site address and repository are detected automatically. On a custom domain, set `url` and `baseurl` in `_config.yml`, and `backend.repo`, `site_url` and `display_url` in `admin/config.yml`.
+- **Local preview:**
+
+  ```sh
+  pip install python-liquid markdown pyyaml
+  python _tools/render.py
+  python -m http.server -d _site 8765
+  ```
 
 ## Credits
 
-- Content editor: [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (MIT), loaded from unpkg.
-- Placeholder videos: open movies by the [Blender Foundation](https://studio.blender.org/films/).
-- Fonts: Archivo, IBM Plex Sans and Anton from Google Fonts (SIL Open Font License).
+- Editor: [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (MIT licence)
+- Placeholder videos: open movies by the [Blender Foundation](https://studio.blender.org/films/)
+- Fonts: Archivo, IBM Plex Sans and Anton from Google Fonts (SIL Open Font Licence)
 
-## License
+## Licence
 
-[MIT](LICENSE)
+Free to use and change under the [MIT licence](LICENSE).
