@@ -1,18 +1,17 @@
 label: About
-heading: Recognition and quick facts
+heading: My Treats
 boxes:
-  - heading: Recognition
-    rows:
-      - { label: Winner, title: Award Name 2025, text: Project One, highlight: true }
-      - { label: Nominee, title: Another Award · Category, text: Project One, highlight: true }
-      - { label: Featured, title: Festival or showcase, text: Project Two }
   - heading: Quick facts
     rows:
       - label: Location
-        text: "**City, Country.** Work authorisation, time zone, or whether you relocate."
+        highlight: false
+        text: '**City, Country.** Work authorisation, time zone, or whether you relocate.'
       - label: Looking for
+        highlight: false
         text: The roles you want, on which platforms. On-site, hybrid or remote.
       - label: Working style
+        highlight: false
         text: One sentence on how you like to work with a team.
       - label: Elsewhere
-        text: "[LinkedIn](https://www.linkedin.com/), [GitHub](https://github.com/) or anywhere else people can find you."
+        highlight: false
+        text: '[LinkedIn](https://www.linkedin.com/), [GitHub](https://github.com/) or anywhere else people can find you.'
