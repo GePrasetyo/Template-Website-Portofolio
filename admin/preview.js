@@ -31,6 +31,8 @@
   var DATA_COLLECTIONS = ['_singletons', 'home'];
   var PROJECTS = 'work';
   var SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+  /* The preview's own light/dark choice, kept apart from the one visitors make on the site. */
+  var MODE_KEY = 'preview-mode';
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
@@ -199,6 +201,22 @@
     if (media) {
       media.onload = function () { welcome.classList.add('loaded'); };
       media.src = media.getAttribute('data-src');
+    }
+    /* The site's light/dark button switches the preview too, and the choice stays while you move
+       between pages in the editor. Without the button (Look & feel fixes one mode) it has no effect. */
+    var saved;
+    try { saved = localStorage.getItem(MODE_KEY); } catch (e) {}
+    if (saved) { doc.documentElement.setAttribute('data-mode', saved); }
+    if (!doc.__modeButton) {
+      doc.__modeButton = true;
+      doc.addEventListener('click', function (e) {
+        if (!e.target.closest || !e.target.closest('.mode-btn')) { return; }
+        var root = doc.documentElement, current = root.getAttribute('data-mode');
+        var dark = current ? current === 'dark' : win.matchMedia('(prefers-color-scheme: dark)').matches;
+        var next = dark ? 'light' : 'dark';
+        root.setAttribute('data-mode', next);
+        try { localStorage.setItem(MODE_KEY, next); } catch (err) {}
+      });
     }
     /* Theme scripts (see _data/themes.yml) load once, then redraw after every render. */
     page.scripts.forEach(function (src) {
