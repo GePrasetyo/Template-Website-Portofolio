@@ -1,8 +1,8 @@
-theme: comic
-palette: theme
+theme: showcase
+palette: custom
+custom:
+  background: '#F4F2EC'
+  text: '#15151A'
+  accent: '#2648D1'
 fonts: theme
 mode: auto
-custom:
-  background: "#F4F2EC"
-  text: "#15151A"
-  accent: "#2648D1"
