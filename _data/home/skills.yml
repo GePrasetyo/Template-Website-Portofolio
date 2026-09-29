@@ -2,15 +2,17 @@ label: Skills
 heading: What I work with
 note: Highlighted tags mark the deepest experience.
 groups:
-  - name: Engines & languages
-    top: [Unity, "C#"]
-    other: [Unreal Engine, "C++", Python]
-  - name: Multiplayer & backend
-    top: [Netcode]
-    other: [Cloud services, REST APIs, Databases]
-  - name: Performance & live ops
-    top: []
-    other: [Profiling, Memory optimisation, Crash reporting, Analytics]
+  - name: Tools & Engines
+    top:
+      - Unity
+      - Blender
+    other:
+      - Unreal Engine
   - name: Pipeline & collaboration
-    top: []
-    other: [Git, CI/CD, Jira, Figma]
+    top:
+      - Plastic/ Unity Version Control
+    other:
+      - Git
+      - Jira
+      - Figma
+      - Favro
