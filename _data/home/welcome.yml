@@ -1,7 +1,6 @@
 show: true
-background: model
+background: colour
 picture: /assets/img/placeholder/project-one.jpg
-model: https://sketchfab.com/3d-models/fantasy-environment-b534ab213462417c83d968e5a533ddba
 phones: true
 title: Hello
 text: Game Developer
