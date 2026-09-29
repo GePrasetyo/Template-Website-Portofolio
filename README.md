@@ -13,6 +13,9 @@ Setup takes about 15 minutes, and you only do it once. All you need is a free [G
 Everything for your site lives in a *repository*, which is simply a project folder on GitHub. First, make your own copy of this one.
 
 1. Sign in to GitHub, then click the green **Use this template** button at the top of this page and choose **Create a new repository**.
+
+   ![The green Use this template button at the top right of the repository page](docs/images/use-template.png)
+
 2. Give it a name. The name becomes part of your website address:
    - Name it **`yourusername.github.io`** (with your own GitHub username) and your site will be at `https://yourusername.github.io/`
    - Any other name, for example **`portfolio`**, gives you `https://yourusername.github.io/portfolio/`
