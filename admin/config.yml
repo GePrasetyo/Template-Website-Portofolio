@@ -59,9 +59,8 @@ singletons:
       - name: theme
         label: Theme
         widget: select
-        default: comic
+        default: showcase
         options:
-          - { label: "Comic: slanted comic-book boxes, bold and playful", value: comic }
           - { label: "Showcase: big pictures and videos, few words, dark", value: showcase }
           - { label: "Editorial: large type and lots of space, like a magazine", value: editorial }
         hint: "How your whole site is laid out. Your words, pictures and videos stay the same when you switch. [See what each theme looks like](looks.html)"
@@ -505,7 +504,7 @@ collections:
                 label_singular: Bullet point
                 widget: list
                 field: { name: bullet, label: Bullet point, widget: text, hint: *fmt_short }
-              - { name: highlight, label: Highlight, widget: boolean, default: false, required: false, hint: "Makes this job stand out, e.g. as a wider box. Good for your current job." }
+              - { name: highlight, label: Highlight, widget: boolean, default: false, required: false, hint: "Makes this job stand out. Good for your current job." }
           - name: education
             label: Education
             widget: object

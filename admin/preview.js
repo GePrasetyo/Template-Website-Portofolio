@@ -200,7 +200,7 @@
       media.onload = function () { welcome.classList.add('loaded'); };
       media.src = media.getAttribute('data-src');
     }
-    /* Theme scripts (e.g. the Comic panel edges) load once, then redraw after every render. */
+    /* Theme scripts (see _data/themes.yml) load once, then redraw after every render. */
     page.scripts.forEach(function (src) {
       if (doc.querySelector('script[data-site-script="' + src + '"]')) {
         if (win.refreshTheme) { win.refreshTheme(); }

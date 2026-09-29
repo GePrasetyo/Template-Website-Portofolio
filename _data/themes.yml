@@ -4,12 +4,6 @@
 # live preview (admin/preview.js) calls after every redraw.
 # `palette` and `fonts` are what "The theme's own" picks; `label` and `about` are shown on
 # admin/looks.html. Keys must match admin/config.yml.
-comic:
-  label: Comic
-  about: Slanted comic-book boxes with ink outlines, tilted labels and hard shadows. Bold and playful.
-  palette: cobalt
-  fonts: grotesk
-  script: true
 showcase:
   label: Showcase
   about: Your pictures and videos, big and edge to edge, with few words around them. Made for artists, animators and VFX.
