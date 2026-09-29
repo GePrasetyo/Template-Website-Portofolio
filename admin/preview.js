@@ -187,11 +187,22 @@
   /* Bring the preview document in line with a rendered page. Stylesheets are only replaced when
      they change, so typing doesn't make the page flash. */
   function update(doc, win, page, showWelcome) {
+    /* Theme scripts (see _data/themes.yml) load once, then redraw the page after every render,
+       and again once new stylesheets have loaded, since they measure what's on screen. */
+    function refreshTheme() {
+      page.scripts.forEach(function (src) {
+        var key = src.split('?')[0].split('/').pop().replace(/\.js$/, '');
+        if (win.themeRefresh && win.themeRefresh[key]) { win.themeRefresh[key](); }
+      });
+    }
     if (doc.__siteHead !== page.head) {
       Array.prototype.forEach.call(doc.head.querySelectorAll('[data-site]'), function (el) { el.parentNode.removeChild(el); });
       var holder = doc.createElement('template');
       holder.innerHTML = page.head;
-      Array.prototype.forEach.call(holder.content.children, function (el) { el.setAttribute('data-site', ''); });
+      Array.prototype.forEach.call(holder.content.children, function (el) {
+        el.setAttribute('data-site', '');
+        if (el.tagName === 'LINK') { el.addEventListener('load', refreshTheme); }
+      });
       doc.head.appendChild(holder.content);
       doc.__siteHead = page.head;
     }
@@ -218,17 +229,14 @@
         try { localStorage.setItem(MODE_KEY, next); } catch (err) {}
       });
     }
-    /* Theme scripts (see _data/themes.yml) load once, then redraw after every render. */
     page.scripts.forEach(function (src) {
-      if (doc.querySelector('script[data-site-script="' + src + '"]')) {
-        if (win.refreshTheme) { win.refreshTheme(); }
-        return;
-      }
+      if (doc.querySelector('script[data-site-script="' + src + '"]')) { return; }
       var s = doc.createElement('script');
       s.src = src;
       s.setAttribute('data-site-script', src);
       doc.head.appendChild(s);
     });
+    refreshTheme();
   }
 
   function previewFor(name) {

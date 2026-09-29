@@ -38,7 +38,7 @@
 
   /* Make every project picture openable. The editor's live preview (admin/preview.js) calls this
      again each time it redraws the page. */
-  window.refreshTheme = function () {
+  function refresh() {
     document.querySelectorAll('.item-picture > img').forEach(function (img) {
       if (img.__lightbox) { return; }
       img.__lightbox = true;
@@ -50,6 +50,7 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(img); }
       });
     });
-  };
-  window.refreshTheme();
+  }
+  (window.themeRefresh = window.themeRefresh || {}).viewport = refresh;
+  refresh();
 })();

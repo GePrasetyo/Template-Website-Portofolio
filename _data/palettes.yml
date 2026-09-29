@@ -1,35 +1,29 @@
 # Colour presets offered under Look & feel in /admin. Keys must match admin/config.yml.
 # Each has a light and a dark set; on_accent is the text colour on accent-coloured backgrounds.
-# `label` is shown on admin/looks.html.
 cobalt:
-  label: Cobalt
   light: { background: "#f4f2ec", text: "#15151a", accent: "#2648d1", on_accent: "#ffffff" }
   dark: { background: "#141417", text: "#ecebe6", accent: "#7590ff", on_accent: "#0f1330" }
 night:
-  label: Night
   light: { background: "#f3f3f1", text: "#111113", accent: "#4d7c0f", on_accent: "#ffffff" }
   dark: { background: "#0b0b0c", text: "#f0f0ee", accent: "#c8f135", on_accent: "#141a02" }
 paper:
-  label: Paper
   light: { background: "#faf7f2", text: "#1c1a17", accent: "#b3261e", on_accent: "#ffffff" }
   dark: { background: "#161412", text: "#ece7de", accent: "#ff8a7a", on_accent: "#2b0d09" }
 forest:
-  label: Forest
   light: { background: "#eef0e8", text: "#142018", accent: "#1f7a4d", on_accent: "#ffffff" }
   dark: { background: "#0f1611", text: "#e3eae1", accent: "#5fd394", on_accent: "#06210f" }
 tangerine:
-  label: Tangerine
   light: { background: "#fbf5ec", text: "#1c1712", accent: "#c2410c", on_accent: "#ffffff" }
   dark: { background: "#17120e", text: "#f0e8de", accent: "#fb923c", on_accent: "#2a1204" }
 plum:
-  label: Plum
   light: { background: "#f6f1f5", text: "#1d1420", accent: "#7b2cbf", on_accent: "#ffffff" }
   dark: { background: "#140f17", text: "#eee6f2", accent: "#c69cf5", on_accent: "#25103a" }
 mono:
-  label: Black and white
   light: { background: "#ffffff", text: "#111111", accent: "#111111", on_accent: "#ffffff" }
   dark: { background: "#0e0e0e", text: "#f2f2f2", accent: "#f2f2f2", on_accent: "#0e0e0e" }
 graphite:
-  label: Graphite
   light: { background: "#ebeae6", text: "#16171a", accent: "#a83c08", on_accent: "#ffffff" }
   dark: { background: "#1a1b1e", text: "#ecebe7", accent: "#ff8a3d", on_accent: "#1e0e03" }
+roadtrip:
+  light: { background: "#f6eee2", text: "#231c30", accent: "#b8391c", on_accent: "#ffffff" }
+  dark: { background: "#151331", text: "#f5ecdf", accent: "#ffb43d", on_accent: "#2a1600" }

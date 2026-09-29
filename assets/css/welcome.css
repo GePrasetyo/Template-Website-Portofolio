@@ -5,6 +5,7 @@
    which loads after this one.
    ------------------------------------------------------------------ */
 
+.welcome, .welcome * { box-sizing: border-box; }
 .welcome {
   display: none;
   position: fixed; inset: 0; z-index: 1000; overflow: hidden;

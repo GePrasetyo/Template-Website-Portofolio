@@ -1,0 +1,32 @@
+{%- comment -%}
+  Road Trip theme: the landscape and the car, behind the home page's drive and the project page's
+  header. Each layer slides by --p (see roadtrip.css). Include it once per page: the car's
+  headlight gradient id must be unique.
+{%- endcomment -%}
+<div class="scenery" aria-hidden="true">
+  <div class="layer stars"></div>
+  <div class="layer clouds"></div>
+  <div class="orb"></div>
+  <div class="layer far"></div>
+  <div class="layer hills"></div>
+  <div class="layer verge"></div>
+  <div class="layer road"></div>
+  <div class="car">
+    <svg viewBox="0 0 200 96">
+      <defs><linearGradient id="rt-beam" x1="0" y1="0" x2="1" y2="0"><stop class="b0" offset="0"/><stop class="b1" offset="1"/></linearGradient></defs>
+      <ellipse class="shadow" cx="104" cy="92" rx="88" ry="5"/>
+      <polygon class="beam" points="192,57 640,14 640,104 192,67"/>
+      <circle class="puff" cx="10" cy="74" r="6"/><circle class="puff two" cx="10" cy="74" r="6"/><circle class="puff three" cx="10" cy="74" r="6"/>
+      <g class="chassis">
+        <path class="body" d="M14 70C12 58 18 50 30 48L58 44L80 22C86 16 92 14 102 14L136 14C146 14 152 18 158 26L172 44C186 46 195 52 195 62L195 70C195 75 191 78 186 78L20 78C16 78 14 75 14 70Z"/>
+        <path class="win" d="M66 46L86 25C89 22 92 21 97 21L112 21L112 46Z"/><path class="win" d="M120 21L136 21C142 21 146 23 150 28L163 46L120 46Z"/>
+        <rect class="trim" x="114" y="48" width="2.5" height="26" rx="1"/><rect class="trim" x="96" y="54" width="12" height="3" rx="1.5"/><rect class="trim" x="140" y="54" width="12" height="3" rx="1.5"/>
+        <rect class="lamp" x="185" y="51" width="9" height="7" rx="2"/><rect class="tail" x="14" y="51" width="6" height="9" rx="2"/>
+        <rect class="trim" x="11" y="70" width="186" height="5" rx="2.5"/>
+      </g>
+      <g class="wheel"><circle class="tyre" cx="52" cy="78" r="17"/><circle class="rim" cx="52" cy="78" r="9"/><line class="spoke" x1="45" y1="78" x2="59" y2="78"/><line class="spoke" x1="52" y1="71" x2="52" y2="85"/></g>
+      <g class="wheel"><circle class="tyre" cx="156" cy="78" r="17"/><circle class="rim" cx="156" cy="78" r="9"/><line class="spoke" x1="149" y1="78" x2="163" y2="78"/><line class="spoke" x1="156" y1="71" x2="156" y2="85"/></g>
+    </svg>
+  </div>
+  <div class="layer front"></div>
+</div>

@@ -1,0 +1,43 @@
+{%- comment -%}
+  Road Trip theme: the top bar, page content, the footer (project pages only: the home page signs
+  off on the destination sign) and the trip strip, the thin road at the bottom where the car shows
+  how far you've read. On the home page the section links are stops on a route line.
+{%- endcomment -%}
+{%- assign home = site.data.home -%}
+{%- capture route_car %}<svg viewBox="0 0 200 96"><path class="body" d="M14 70C12 58 18 50 30 48L58 44L80 22C86 16 92 14 102 14L136 14C146 14 152 18 158 26L172 44C186 46 195 52 195 62L195 70C195 75 191 78 186 78L20 78C16 78 14 75 14 70Z"/><circle class="tyre" cx="52" cy="78" r="17"/><circle class="tyre" cx="156" cy="78" r="17"/></svg>{% endcapture -%}
+<div class="rt" id="top">
+<header class="topbar">
+  <a class="brand" href="{{ '/' | relative_url }}"><b>{{ full_name | escape }}</b>{% if profile.tagline %}<span>{{ profile.tagline | escape }}</span>{% endif %}</a>
+  {%- if page.collection == 'work' %}
+  <span class="spacer"></span>
+  <a class="back" href="{{ '/#work' | relative_url }}" aria-label="Back to the road"><svg viewBox="0 0 18 14" aria-hidden="true"><path d="M17 7H2M8 1L2 7l6 6"/></svg><span>Back to the road</span></a>
+  {%- else %}
+  <nav class="route" aria-label="Primary">
+    <span class="route-line"><i></i></span>
+    <a class="stop" href="{{ '/#work' | relative_url }}" data-target="work"><span class="dot"></span><span class="lbl">{{ home.work.label | escape }}</span></a>
+    <a class="stop" href="{{ '/#experience' | relative_url }}" data-target="experience"><span class="dot"></span><span class="lbl">{{ home.experience.label | escape }}</span></a>
+    <a class="stop" href="{{ '/#skills' | relative_url }}" data-target="skills"><span class="dot"></span><span class="lbl">{{ home.skills.label | escape }}</span></a>
+    <a class="stop" href="{{ '/#contact' | relative_url }}" data-target="contact"><span class="dot"></span><span class="lbl">{{ home.contact.label | escape }}</span></a>
+    <span class="route-car" aria-hidden="true">{{ route_car }}</span>
+  </nav>
+  {%- endif %}
+  <div class="actions">
+    {%- if profile.resume %}
+    <a class="btn primary" href="{{ profile.resume | relative_url }}" target="_blank" rel="noopener">Résumé</a>
+    {%- endif %}
+    {%- if mode_switch %}
+    <button class="mode-btn" type="button" aria-label="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    {%- endif %}
+  </div>
+</header>
+
+{{ content }}
+
+{%- if page.collection == 'work' %}
+<footer class="footer"><span>© {{ site.time | date: '%Y' }} {{ full_name | escape }}</span>{% if profile.tagline %}<span>{{ profile.tagline | escape }}</span>{% endif %}</footer>
+{%- endif %}
+<div class="trip" aria-hidden="true">
+  <div class="mini"><svg viewBox="0 0 200 96"><path class="body" d="M14 70C12 58 18 50 30 48L58 44L80 22C86 16 92 14 102 14L136 14C146 14 152 18 158 26L172 44C186 46 195 52 195 62L195 70C195 75 191 78 186 78L20 78C16 78 14 75 14 70Z"/><path class="win" d="M66 46L86 25C89 22 92 21 97 21L112 21L112 46Z"/><path class="win" d="M120 21L136 21C142 21 146 23 150 28L163 46L120 46Z"/><circle class="tyre" cx="52" cy="78" r="17"/><circle class="rim" cx="52" cy="78" r="8"/><circle class="tyre" cx="156" cy="78" r="17"/><circle class="rim" cx="156" cy="78" r="8"/></svg></div>
+  <span class="end"></span>
+</div>
+</div>

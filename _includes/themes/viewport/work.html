@@ -29,7 +29,7 @@
       {%- if page.facts.first %}
       <aside class="panel inspector" aria-label="Project details">
         <div class="item-list">
-          <p class="panel-bar">Details{% include themes/viewport/counts.html w=page row='counts' chip='count' %}</p>
+          <p class="panel-bar">Details{% include counts.html w=page row='counts' %}</p>
           <ul>
             {%- for f in page.facts %}
             <li class="fact"><b>{{ f.label | escape }}</b><span>{{ f.value | escape }}</span></li>

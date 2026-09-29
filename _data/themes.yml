@@ -1,22 +1,19 @@
 # Themes offered under Look & feel in /admin. A theme is _includes/themes/<key>/ (frame.html,
 # home.html, work.html) plus assets/css/<key>.css, and assets/js/<key>.js when `script` is true.
-# A theme script that draws on the page should define window.refreshTheme(), which the editor's
-# live preview (admin/preview.js) calls after every redraw.
-# `palette` and `fonts` are what "The theme's own" picks; `label` and `about` are shown on
-# admin/looks.html. Keys must match admin/config.yml.
+# A theme script that draws on the page registers window.themeRefresh.<key>, a function the
+# editor's live preview (admin/preview.js) calls after every redraw.
+# `palette` and `fonts` are what "The theme's own" picks. Keys must match admin/config.yml.
 showcase:
-  label: Showcase
-  about: Your pictures and videos, big and edge to edge, with few words around them. Made for artists, animators and VFX.
   palette: night
   fonts: modern
 editorial:
-  label: Editorial
-  about: Large type, thin rules and lots of space, like a magazine. Projects read as an index and case studies.
   palette: paper
   fonts: serif
 viewport:
-  label: Viewport
-  about: Your work framed like a 3D editor's viewport, with grey frames, a grid floor and mono labels. Made for 3D, environment and prop artists.
   palette: graphite
   fonts: studio
+  script: true
+roadtrip:
+  palette: roadtrip
+  fonts: roadtrip
   script: true

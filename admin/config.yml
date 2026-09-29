@@ -8,7 +8,7 @@
 #
 # The people editing this are not developers. Labels say what a field is on the page, and every
 # field that isn't obvious has a hint. Hints are rendered as Markdown, so show literal syntax in
-# `backticks`. The picture guide linked from the Look & feel hints is admin/looks.html.
+# `backticks`.
 #
 # Content never says how it looks: the theme chosen under Look & feel lays it out. Project pages are
 # sections of items (see _includes/item.html); the theme, palette and font options below must match
@@ -64,12 +64,13 @@ singletons:
           - { label: "Showcase: big pictures and videos, few words, dark", value: showcase }
           - { label: "Editorial: large type and lots of space, like a magazine", value: editorial }
           - { label: "Viewport: work framed like a 3D editor, for game artists", value: viewport }
-        hint: "How your whole site is laid out. Your words, pictures and videos stay the same when you switch. [See what each theme looks like](looks.html)"
+          - { label: "Road Trip: drive sideways past your work, for game artists", value: roadtrip }
+        hint: "How your whole site is laid out. Your words, pictures and videos stay the same when you switch. The preview on the right shows each choice straight away."
       - name: palette
         label: Colours
         widget: select
         default: theme
-        dropdown_threshold: 10
+        dropdown_threshold: 12
         options:
           - { label: "The theme's own", value: theme }
           - { label: "Cobalt: off-white and blue", value: cobalt }
@@ -80,8 +81,9 @@ singletons:
           - { label: "Plum: purple", value: plum }
           - { label: "Black and white", value: mono }
           - { label: "Graphite: viewport grey and orange", value: graphite }
+          - { label: "Road trip: cream and coral by day, indigo and amber by night", value: roadtrip }
           - { label: "My own colours (below)", value: custom }
-        hint: "Every set has a light and a dark version. [See all the colours](looks.html#colours)"
+        hint: "Every set has a light and a dark version."
       - name: custom
         label: My own colours
         widget: object
@@ -115,8 +117,8 @@ singletons:
           - { label: "Classic: Fraunces (serif) and Inter", value: serif }
           - { label: "Code: JetBrains Mono and Inter", value: mono }
           - { label: "Studio: Geist and Geist Mono", value: studio }
+          - { label: "Road trip: Bricolage Grotesque and Overpass", value: roadtrip }
           - { label: "My own Google Fonts (below)", value: google }
-        hint: "[See the fonts](looks.html#fonts)"
       - name: google_fonts
         label: My own Google Fonts (optional)
         widget: text

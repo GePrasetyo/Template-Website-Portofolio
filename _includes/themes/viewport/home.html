@@ -71,7 +71,7 @@
           <span class="card-media">
             <img src="{{ w.image | relative_url }}" alt="{{ w.image_alt | escape }}" loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}">
             <span class="chip-row tl" aria-hidden="true"><span class="ov">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span></span>
-            {% include themes/viewport/counts.html w=w row='chip-row tr' chip='ov' %}
+            {% include counts.html w=w row='chip-row tr' chip='ov' %}
             <span class="vp-ticks"></span>
           </span>
           <span class="card-body">

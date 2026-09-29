@@ -1,0 +1,84 @@
+{%- comment -%}
+  Road Trip theme: project page. The road becomes the header, a scenery band with the title,
+  intro, buttons and a Trip details ticket (quick facts and content counts); then the sections
+  follow on the template's 6-column grid (see roadtrip.css), with 3D models in a frame. Text
+  headings get a round number when a section has two or more of them.
+{%- endcomment -%}
+{%- assign position = idx | plus: 1 -%}
+<main class="page">
+  <section class="scene-band">
+    {% include themes/roadtrip/scenery.html %}
+    <div class="band-content">
+      <div class="project-hero{% unless page.facts.first %} solo{% endunless %}">
+        <div>
+          <span class="kick">Stop {% if position < 10 %}0{% endif %}{{ position }} of {% if works.size < 10 %}0{% endif %}{{ works.size }}{% if page.dates %} · {{ page.dates | escape }}{% endif %}{% if page.role %} · {{ page.role | escape }}{% endif %}</span>
+          <h1>{{ page.title | escape }}</h1>
+          {%- if page.intro %}
+          <p class="lede">{% include md.html text=page.intro %}</p>
+          {%- endif %}
+          {%- if page.buttons.links.first %}
+          {% include item.html it=page.buttons type='buttons' %}
+          {%- endif %}
+        </div>
+        {%- if page.facts.first %}
+        <aside class="ticket" aria-label="Project details">
+          <div class="ticket-head"><span>Trip details</span>{% include counts.html w=page row='counts' %}</div>
+          <dl>
+            {%- for f in page.facts %}
+            <div><dt>{{ f.label | escape }}</dt><dd>{{ f.value | escape }}</dd></div>
+            {%- endfor %}
+          </dl>
+        </aside>
+        {%- endif %}
+      </div>
+    </div>
+  </section>
+
+  <div class="content">
+{%- for s in page.sections -%}
+{%- assign first_section = forloop.first -%}
+{%- if s.heading %}{% assign item_level = 3 %}{% else %}{% assign item_level = 2 %}{% endif -%}
+{%- assign headed_texts = 0 -%}
+{%- for it in s.items -%}{%- if it.type == 'text' and it.heading -%}{%- assign headed_texts = headed_texts | plus: 1 -%}{%- endif -%}{%- endfor -%}
+{%- assign n = 0 %}
+    <section>
+      {%- if s.label or s.heading or s.intro %}
+      <div class="sec-head">{% if s.label %}<span class="kick">{{ s.label | escape }}</span>{% endif %}{% if s.heading %}<h2>{{ s.heading | escape }}</h2>{% endif %}{% if s.intro %}<p>{{ s.intro | escape }}</p>{% endif %}</div>
+      {%- endif %}
+      <div class="grid cols-{{ s.columns | default: 1 }}">
+        {%- for it in s.items %}
+        {%- if first_section and forloop.index <= 2 %}{% assign eager = true %}{% else %}{% assign eager = false %}{% endif -%}
+        {%- if it.type == 'model' %}
+        {%- capture viewer %}{% include model.html m=it %}{% endcapture -%}
+        {%- if viewer contains 'iframe' %}
+        <div class="cell is-model width-{{ it.width | default: 'normal' }}">
+          <div class="frame"><span class="frame-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>3D{% if it.title %} · {{ it.title | escape }}{% endif %}</span>{{ viewer | strip }}</div>
+        </div>
+        {%- endif %}
+        {%- else %}
+        {%- assign num = nil -%}
+        {%- if it.type == 'text' and it.heading and headed_texts > 1 %}{% assign n = n | plus: 1 %}{% assign num = n %}{% endif %}
+        <div class="cell is-{{ it.type }} width-{{ it.width | default: 'normal' }}">
+          {% include item.html it=it num=num level=item_level eager=eager %}
+        </div>
+        {%- endif %}
+        {%- endfor %}
+      </div>
+    </section>
+{%- endfor %}
+
+    <nav class="pager" aria-label="More work">
+      {%- if prev_work %}
+      <a class="sign" href="{{ prev_work.url | relative_url }}"><div class="sign-panel"><span class="sign-kicker">Previous stop</span><span class="sign-title">{{ prev_work.title | escape }}</span></div></a>
+      {%- else %}
+      <a class="sign" href="{{ '/#work' | relative_url }}"><div class="sign-panel"><span class="sign-kicker">Back</span><span class="sign-title">All work</span></div></a>
+      {%- endif %}
+      {%- if next_work %}
+      {%- assign next_position = position | plus: 1 %}
+      <a class="sign nextstop" href="{{ next_work.url | relative_url }}"><div class="sign-panel"><div><span class="sign-kicker">Next stop · {% if next_position < 10 %}0{% endif %}{{ next_position }}</span><span class="sign-title">{{ next_work.title | escape }}</span></div><img src="{{ next_work.image | relative_url }}" alt="" loading="lazy"></div></a>
+      {%- else %}
+      <a class="sign" href="{{ '/#work' | relative_url }}"><div class="sign-panel"><span class="sign-kicker">Back</span><span class="sign-title">All work</span></div></a>
+      {%- endif %}
+    </nav>
+  </div>
+</main>

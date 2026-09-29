@@ -1,0 +1,168 @@
+{%- comment -%}
+  Road Trip theme: the home page is a drive. Everything by the roadside is a direct child of
+  .track, in route order: the start, then per section a direction sign followed by its items
+  (billboards for projects, mile markers for experience, oldest first, boards for skills and
+  About), and the destination sign for contact. assets/js/roadtrip.js finds the stops by their
+  ids and the data-target / data-dist links; where it can't drive, the same markup is a normal
+  vertical page. No .reveal here: the drive moves things with transforms.
+{%- endcomment -%}
+{%- assign profile = site.data.profile -%}
+{%- capture full_name %}{{ profile.first_name }} {{ profile.last_name }}{% endcapture -%}
+{%- assign home = site.data.home -%}
+{%- assign works = site.work | sort: 'order' -%}
+{%- capture sign_arrow %}<svg class="sign-arrow" viewBox="0 0 44 44" aria-hidden="true"><path d="M8 22h28M24 10l12 12-12 12"/></svg>{% endcapture -%}
+{%- capture ahead %}<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 16h20M18 8l8 8-8 8"/></svg>{% endcapture -%}
+{%- capture exit %}<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 24L24 8M12 8h12v12"/></svg>{% endcapture -%}
+<main class="drive">
+  <div class="stage">
+    {% include themes/roadtrip/scenery.html %}
+    <div class="track">
+
+      <section class="start" id="start">
+        <div class="start-text">
+          <h1 class="hero-name"><span>{{ profile.first_name | escape }}</span><span>{{ profile.last_name | escape }}</span></h1>
+          <ul class="titles" aria-label="Roles, platforms and tools">
+            {%- for line in home.hero.title_lines %}
+            <li>{{ line | escape }}</li>
+            {%- endfor %}
+          </ul>
+          <div class="hero-about">
+            {{ home.hero.about | markdownify }}
+          </div>
+          <ul class="links" aria-label="Profiles">
+            {%- for l in home.hero.links %}
+            {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+            {%- endfor %}
+          </ul>
+        </div>
+        <div class="sign exits">
+          <div class="sign-panel">
+            <span class="sign-kicker">Next stops</span>
+            <a class="exit" href="#work" data-target="work">{{ ahead }}<span>{{ home.work.label | escape }}</span><em data-dist="work"></em></a>
+            <a class="exit" href="#experience" data-target="experience">{{ exit }}<span>{{ home.experience.label | escape }}</span><em data-dist="experience"></em></a>
+            <a class="exit" href="#skills" data-target="skills">{{ exit }}<span>{{ home.skills.label | escape }}</span><em data-dist="skills"></em></a>
+            <a class="exit" href="#contact" data-target="contact">{{ ahead }}<span>{{ home.contact.label | escape }}</span><em data-dist="contact"></em></a>
+          </div>
+          <span class="posts"></span>
+        </div>
+        <span class="start-line" aria-hidden="true"></span>
+      </section>
+
+      <div class="sign section" id="work">
+        <div class="sign-panel">
+          <span class="sign-kicker">01 · {{ home.work.label | escape }}</span>
+          <span class="sign-title">{{ home.work.heading | escape }}</span>
+          {% if home.work.note %}<span class="sign-note">{{ home.work.note | escape }}</span>{% endif %}
+          {{ sign_arrow }}
+        </div>
+        <span class="posts"></span>
+      </div>
+      {%- for w in works %}
+      <a class="billboard{% if w.highlight %} big{% endif %}" href="{{ w.url | relative_url }}">
+        <span class="bb-board">
+          <span class="bb-img"><img src="{{ w.image | relative_url }}" alt="{{ w.image_alt | escape }}" loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"></span>
+          <span class="bb-plate"><span class="bb-title">{{ w.title | escape }}</span>{% if w.dates or w.role %}<span class="bb-meta">{{ w.dates | escape }}{% if w.dates and w.role %} · {% endif %}{{ w.role | escape }}</span>{% endif %}{% if w.summary %}<span class="bb-summary">{{ w.summary | escape }}</span>{% endif %}</span>
+          <span class="bb-num" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          {% include counts.html w=w row='stickers' chip='sticker' %}
+        </span>
+        <span class="posts"></span>
+      </a>
+      {%- endfor %}
+
+      {%- assign xp = home.experience %}
+      <div class="sign section" id="experience">
+        <div class="sign-panel">
+          <span class="sign-kicker">02 · {{ xp.label | escape }}</span>
+          <span class="sign-title">{{ xp.heading | escape }}</span>
+          {% if xp.note %}<span class="sign-note">{{ xp.note | escape }}</span>{% endif %}
+          {{ sign_arrow }}
+        </div>
+        <span class="posts"></span>
+      </div>
+      {%- comment -%} mile markers: oldest first, so you drive toward today; every second one tilts the other way {%- endcomment -%}
+      {%- assign n = 0 -%}
+      {%- if xp.education.degree %}
+      {%- assign n = 1 %}
+      <article class="marker">
+        <div class="postcard">
+          <span class="mm-when">{{ xp.education.dates | escape }}</span>
+          <h3>{{ xp.education.degree | escape }}</h3>
+          <p class="mm-where">{{ xp.education.school | escape }}</p>
+          {% if xp.education.note %}<p class="mm-notes">{{ xp.education.note | escape }}</p>{% endif %}
+        </div>
+        <span class="posts one"><span class="mm-plate"></span></span>
+      </article>
+      {%- endif %}
+      {%- for j in xp.jobs reversed %}
+      {%- assign n = n | plus: 1 -%}
+      {%- assign even = n | modulo: 2 %}
+      <article class="marker{% if j.highlight %} hi{% endif %}{% if even == 0 %} tilt{% endif %}">
+        <div class="postcard">
+          <span class="mm-when">{{ j.dates | escape }}</span>
+          <h3>{{ j.company | escape }}</h3>
+          {% if j.location %}<p class="mm-where">{{ j.location | escape }}</p>{% endif %}
+          <ul class="mm-roles">{% for r in j.roles %}<li>{{ r | escape }}</li>{% endfor %}</ul>
+          <ul class="mm-notes">{% for b in j.bullets %}<li>{% include md.html text=b %}</li>{% endfor %}</ul>
+        </div>
+        <span class="posts one"><span class="mm-plate"></span></span>
+      </article>
+      {%- endfor %}
+
+      {%- assign sk = home.skills %}
+      <div class="sign section" id="skills">
+        <div class="sign-panel">
+          <span class="sign-kicker">03 · {{ sk.label | escape }}</span>
+          <span class="sign-title">{{ sk.heading | escape }}</span>
+          {% if sk.note %}<span class="sign-note">{{ sk.note | escape }}</span>{% endif %}
+          {{ sign_arrow }}
+        </div>
+        <span class="posts"></span>
+      </div>
+      {%- for g in sk.groups %}
+      {%- assign lift = forloop.index0 | modulo: 4 %}
+      <div class="board{% if lift > 0 %} lift-{{ lift }}{% endif %}">
+        <div class="board-panel">
+          <h3><span class="num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>{{ g.name | escape }}</h3>
+          <ul class="chips">{% for c in g.top %}<li class="hi">{{ c | escape }}</li>{% endfor %}{% for c in g.other %}<li>{{ c | escape }}</li>{% endfor %}</ul>
+        </div>
+        <span class="posts"></span>
+      </div>
+      {%- endfor %}
+
+      {%- assign ab = home.about %}
+      <div class="sign section" id="about">
+        <div class="sign-panel">
+          <span class="sign-kicker">04 · {{ ab.label | escape }}</span>
+          <span class="sign-title">{{ ab.heading | escape }}</span>
+          {{ sign_arrow }}
+        </div>
+        <span class="posts"></span>
+      </div>
+      {%- for box in ab.boxes %}
+      <div class="board wide{% if forloop.index == 2 %} lift-3{% endif %}">
+        <div class="board-panel">{% include item.html it=box type='list' %}</div>
+        <span class="posts"></span>
+      </div>
+      {%- endfor %}
+
+      {%- assign ct = home.contact %}
+      <div class="destination" id="contact">
+        <div class="dest-panel">
+          <span class="sign-kicker">05 · {{ ct.label | escape }} · You’ve arrived</span>
+          <h2>{{ ct.heading | escape }}{% if ct.heading_highlight %} <span>{{ ct.heading_highlight | escape }}</span>{% endif %}</h2>
+          {% if ct.text %}<p>{% include md.html text=ct.text %}</p>{% endif %}
+          <ul class="links" aria-label="Contact links">
+            {%- for l in ct.links %}
+            {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+            {%- endfor %}
+          </ul>
+          <span class="sign-off">© {{ site.time | date: '%Y' }} {{ full_name | escape }}{% if profile.tagline %} · {{ profile.tagline | escape }}{% endif %}</span>
+        </div>
+        <span class="posts"></span>
+        <span class="flag" aria-hidden="true"></span>
+      </div>
+
+    </div>
+    <div class="hint" aria-hidden="true">Scroll to drive <svg viewBox="0 0 22 14"><path d="M1 7h18M13 1l6 6-6 6"/></svg></div>
+  </div>
+</main>
