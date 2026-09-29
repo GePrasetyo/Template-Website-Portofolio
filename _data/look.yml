@@ -1,8 +1,8 @@
-theme: editorial
-palette: custom
+theme: showcase
+palette: night
 custom:
-  background: '#F4F2EC'
+  background: '#ffffff'
   text: '#15151A'
   accent: '#2648D1'
-fonts: theme
+fonts: google
 mode: auto
