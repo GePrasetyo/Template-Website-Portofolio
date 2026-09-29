@@ -1,8 +1,8 @@
-theme: showcase
-palette: night
+theme: viewport
+palette: tangerine
 custom:
   background: '#ffffff'
   text: '#15151A'
   accent: '#2648D1'
-fonts: google
+fonts: grotesk
 mode: auto
