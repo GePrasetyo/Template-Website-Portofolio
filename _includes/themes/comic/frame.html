@@ -1,0 +1,15 @@
+{%- comment -%} Comic theme: header, page content, footer. {%- endcomment -%}
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="{{ '/' | relative_url }}">{{ full_name | escape }} <small>{{ profile.tagline | escape }}</small></a>
+    {% include nav.html %}
+  </div>
+</header>
+
+{{ content }}
+
+<footer class="footer">
+  <div class="wrap">
+    <span>© {{ site.time | date: '%Y' }} {{ full_name | escape }}</span>
+  </div>
+</footer>

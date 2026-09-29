@@ -1,6 +1,0 @@
-<div class="shot{% if include.s.contain %} contain{% endif %}">
-          <img src="{{ include.s.image | relative_url }}" alt="{{ include.s.alt | escape }}" loading="{% if include.eager %}eager{% else %}lazy{% endif %}">
-          {%- if include.s.caption or include.s.title %}
-          <div class="label">{% if include.s.caption %}<span class="cap">{{ include.s.caption | escape }}</span>{% endif %}{% if include.s.title %}<b>{{ include.s.title | escape }}</b>{% endif %}</div>
-          {%- endif %}
-        </div>

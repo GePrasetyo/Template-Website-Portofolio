@@ -1,0 +1,32 @@
+# Font presets offered under Look & feel in /admin, all from Google Fonts. Keys must match
+# admin/config.yml. `google` is the family part of a fonts.googleapis.com/css2 address; `hero` is
+# the face for the biggest heading (your name), set at `hero_weight`. `label` is shown on
+# admin/looks.html.
+grotesk:
+  label: "Bold: Archivo and IBM Plex Sans"
+  google: "family=Anton&family=Archivo:wght@500;700;800;900&family=IBM+Plex+Sans:wght@400;500;600"
+  display: '"Archivo", "IBM Plex Sans", system-ui, sans-serif'
+  body: '"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif'
+  hero: '"Anton", "Archivo", system-ui, sans-serif'
+  hero_weight: 400
+modern:
+  label: "Modern: Space Grotesk and Inter"
+  google: "family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700"
+  display: '"Space Grotesk", system-ui, sans-serif'
+  body: '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif'
+  hero: '"Space Grotesk", system-ui, sans-serif'
+  hero_weight: 700
+serif:
+  label: "Classic: Fraunces and Inter"
+  google: "family=Fraunces:opsz,wght@9..144,400..900&family=Inter:wght@400;500;600;700"
+  display: '"Fraunces", Georgia, serif'
+  body: '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif'
+  hero: '"Fraunces", Georgia, serif'
+  hero_weight: 600
+mono:
+  label: "Code: JetBrains Mono and Inter"
+  google: "family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;500;600;700"
+  display: '"JetBrains Mono", ui-monospace, monospace'
+  body: '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif'
+  hero: '"JetBrains Mono", ui-monospace, monospace'
+  hero_weight: 800

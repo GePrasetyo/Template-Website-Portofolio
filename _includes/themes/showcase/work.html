@@ -1,0 +1,81 @@
+{%- comment -%}
+  Showcase theme: project page. The main picture across the top, then the sections on a 6-column
+  grid (the section's columns and each item's width set the span, see showcase.css). Previous /
+  Next show the neighbouring projects' pictures.
+{%- endcomment -%}
+<main>
+
+  <header class="project-hero">
+    <img class="project-hero-img" src="{{ page.image | relative_url }}" alt="{{ page.image_alt | escape }}" fetchpriority="high">
+    <div class="wrap project-hero-text">
+      {%- if page.dates or page.role %}
+      <p class="label">{{ page.dates | escape }}{% if page.dates and page.role %} · {% endif %}{{ page.role | escape }}</p>
+      {%- endif %}
+      <h1>{{ page.title | escape }}</h1>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="project-intro reveal">
+      <div>
+        {%- if page.intro %}
+        <p class="lede">{% include md.html text=page.intro %}</p>
+        {%- endif %}
+        {%- if page.buttons.links.first %}
+        {% include item.html it=page.buttons type='buttons' %}
+        {%- endif %}
+      </div>
+      {%- if page.facts.first %}
+      <dl class="facts">
+        {%- for f in page.facts %}
+        <div><dt>{{ f.label | escape }}</dt><dd>{{ f.value | escape }}</dd></div>
+        {%- endfor %}
+      </dl>
+      {%- endif %}
+    </section>
+
+    {%- for s in page.sections %}
+    {%- assign first_section = forloop.first -%}
+    {%- if s.heading %}{% assign item_level = 3 %}{% else %}{% assign item_level = 2 %}{% endif %}
+    <section class="section tight">
+      {%- if s.label or s.heading or s.intro %}
+      <div class="section-head">
+        <div>
+          {% if s.label %}<p class="label">{{ s.label | escape }}</p>{% endif %}
+          {% if s.heading %}<h2>{{ s.heading | escape }}</h2>{% endif %}
+        </div>
+        {% if s.intro %}<p class="note">{{ s.intro | escape }}</p>{% endif %}
+      </div>
+      {%- endif %}
+      <div class="grid cols-{{ s.columns | default: 1 }}">
+        {%- for it in s.items %}
+        {%- if first_section and forloop.index <= 2 %}{% assign eager = true %}{% else %}{% assign eager = false %}{% endif %}
+        <div class="cell is-{{ it.type }} width-{{ it.width | default: 'normal' }} reveal">
+          {% include item.html it=it level=item_level eager=eager %}
+        </div>
+        {%- endfor %}
+      </div>
+    </section>
+    {%- endfor %}
+
+    <nav class="pager" aria-label="More work">
+      {%- if prev_work %}
+      <a class="pager-link" href="{{ prev_work.url | relative_url }}">
+        <img src="{{ prev_work.image | relative_url }}" alt="" loading="lazy">
+        <span><small>Previous</small>{{ prev_work.title | escape }}</span>
+      </a>
+      {%- else %}
+      <a class="pager-link" href="{{ '/#work' | relative_url }}"><span><small>Back</small>All work</span></a>
+      {%- endif %}
+      {%- if next_work %}
+      <a class="pager-link next" href="{{ next_work.url | relative_url }}">
+        <img src="{{ next_work.image | relative_url }}" alt="" loading="lazy">
+        <span><small>Next</small>{{ next_work.title | escape }}</span>
+      </a>
+      {%- else %}
+      <a class="pager-link next" href="{{ '/#work' | relative_url }}"><span><small>Back</small>All work</span></a>
+      {%- endif %}
+    </nav>
+  </div>
+
+</main>

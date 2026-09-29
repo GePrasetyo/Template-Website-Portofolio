@@ -1,0 +1,69 @@
+{%- comment -%}
+  Editorial theme: project page, laid out like a magazine article. The header sits in a reading
+  column, the main picture leads, and the sections follow on a 6-column grid (the section's
+  columns and each item's width set the span, see editorial.css). Text headings are numbered.
+{%- endcomment -%}
+<main class="wrap">
+
+  <header class="project-head reveal">
+    {%- if page.dates or page.role %}
+    <p class="label">{{ page.dates | escape }}{% if page.dates and page.role %} · {% endif %}{{ page.role | escape }}</p>
+    {%- endif %}
+    <h1>{{ page.title | escape }}</h1>
+    {%- if page.intro %}
+    <p class="lede">{% include md.html text=page.intro %}</p>
+    {%- endif %}
+    {%- if page.facts.first %}
+    <dl class="facts">
+      {%- for f in page.facts %}
+      <div><dt>{{ f.label | escape }}</dt><dd>{{ f.value | escape }}</dd></div>
+      {%- endfor %}
+    </dl>
+    {%- endif %}
+    {%- if page.buttons.links.first %}
+    {% include item.html it=page.buttons type='buttons' %}
+    {%- endif %}
+  </header>
+
+  <figure class="lead-picture reveal">
+    <img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | escape }}" fetchpriority="high">
+  </figure>
+
+{%- assign n = 0 -%}
+{%- for s in page.sections -%}
+{%- if s.heading %}{% assign item_level = 3 %}{% else %}{% assign item_level = 2 %}{% endif %}
+
+  <section class="section">
+    {%- if s.label or s.heading or s.intro %}
+    <div class="section-head">
+      {% if s.label %}<p class="label">{{ s.label | escape }}</p>{% endif %}
+      {% if s.heading %}<h2>{{ s.heading | escape }}</h2>{% endif %}
+      {% if s.intro %}<p class="note">{{ s.intro | escape }}</p>{% endif %}
+    </div>
+    {%- endif %}
+    <div class="grid cols-{{ s.columns | default: 1 }}">
+      {%- for it in s.items %}
+      {%- assign num = nil -%}
+      {%- if it.type == 'text' and it.heading %}{% assign n = n | plus: 1 %}{% assign num = n %}{% endif %}
+      <div class="cell is-{{ it.type }} width-{{ it.width | default: 'normal' }} reveal">
+        {% include item.html it=it num=num level=item_level %}
+      </div>
+      {%- endfor %}
+    </div>
+  </section>
+{%- endfor %}
+
+  <nav class="pager" aria-label="More work">
+    {%- if prev_work %}
+    <a href="{{ prev_work.url | relative_url }}"><small>Previous</small>{{ prev_work.title | escape }}</a>
+    {%- else %}
+    <a href="{{ '/#work' | relative_url }}"><small>Back</small>All work</a>
+    {%- endif %}
+    {%- if next_work %}
+    <a class="next" href="{{ next_work.url | relative_url }}"><small>Next</small>{{ next_work.title | escape }}</a>
+    {%- else %}
+    <a class="next" href="{{ '/#work' | relative_url }}"><small>Back</small>All work</a>
+    {%- endif %}
+  </nav>
+
+</main>

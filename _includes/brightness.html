@@ -1,0 +1,24 @@
+{%- comment -%}
+  Prints the brightness of include.hex, a #rrggbb colour (any case), weighting red, green and blue
+  the way the eye does: 0 is black, 255 is white. Anything that isn't a #rrggbb colour prints 255.
+  Capture the output and turn it into a number with `strip | plus: 0`.
+{%- endcomment -%}
+{%- assign hex = include.hex | remove: '#' | strip | downcase -%}
+{%- assign digits = '0123456789abcdef' -%}
+{%- assign brightness = 255 -%}
+{%- if hex.size == 6 -%}
+  {%- assign weights = '2126,7152,722' | split: ',' -%}
+  {%- assign total = 0 -%}
+  {%- for weight in weights -%}
+    {%- assign at = forloop.index0 | times: 2 -%}
+    {%- assign high = hex | slice: at -%}
+    {%- assign at = at | plus: 1 -%}
+    {%- assign low = hex | slice: at -%}
+    {%- unless digits contains high and digits contains low -%}{%- assign total = nil -%}{%- break -%}{%- endunless -%}
+    {%- assign channel = digits | split: high | first | size | times: 16 -%}
+    {%- assign channel = digits | split: low | first | size | plus: channel -%}
+    {%- assign total = channel | times: weight | plus: total -%}
+  {%- endfor -%}
+  {%- if total -%}{%- assign brightness = total | divided_by: 10000 -%}{%- endif -%}
+{%- endif -%}
+{{ brightness }}

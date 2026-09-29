@@ -2,16 +2,24 @@
 
 Emulates the Jekyll features this site uses: _config.yml, _data/ (nested folders), the `work`
 collection with its permalink and front matter defaults, `published: false`, layout chains,
-_includes/ with Jekyll-style parameters, and the relative_url / absolute_url / markdownify filters.
+Jekyll's include tag (`include.x` parameters, sub-folders of _includes/, and file names built
+from variables such as `themes/{{ site.data.look.theme }}/home.html`), and the relative_url /
+absolute_url / markdownify filters.
 
 Needs:  pip install python-liquid markdown pyyaml
 Usage:  python _tools/render.py   then serve _site/ at the root (e.g. python -m http.server -d _site 8765)
 """
-import datetime, os, re, shutil, sys
+import datetime, io, os, re, shutil, sys
 
 import markdown
 import yaml
 from liquid import DictLoader, Environment
+from liquid.ast import Node
+from liquid.builtin.expressions import parse_primitive, tokenize
+from liquid.exceptions import LiquidSyntaxError
+from liquid.stream import TokenStream
+from liquid.tag import Tag
+from liquid.token import TOKEN_EXPRESSION, TOKEN_TAG
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, '_site')
@@ -37,26 +45,62 @@ def load_data(folder):
     return data
 
 
-# Jekyll `{% include file.html a=b c='d' %}`  ->  python-liquid `{% include 'file.html', a: b, c: 'd' %}`,
-# and `include.x` inside include files -> `x` (python-liquid binds keyword args directly).
-INCLUDE_RE = re.compile(r"\{%(-?)\s*include\s+([\w./-]+)((?:\s+\w+=(?:\"[^\"]*\"|'[^']*'|[\w.\[\]]+))*)\s*(-?)%\}")
-PARAM_RE = re.compile(r"(\w+)=(\"[^\"]*\"|'[^']*'|[\w.\[\]]+)")
+# Jekyll's include tag: `{% include file.html a=b c="d" %}`. The file name may contain `{{ var }}`,
+# and the parameters are only visible as `include.a`, `include.c` inside the included file.
+# The patterns are Jekyll's own (jekyll/tags/include.rb).
+INCLUDE_VARIABLE = re.compile(r'(?P<variable>[^{]*(?:\{\{\s*[\w\-.]+\s*(?:\|.*)?\}\}[^\s{}]*)+)(?P<params>.*)', re.S)
+INCLUDE_PARAM = re.compile(r'([\w-]+)\s*=\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)"|\'([^\'\\]*(?:\\.[^\'\\]*)*)\'|([\w.-]+))')
 
 
-def jekyll_to_liquid(src):
-    def sub(m):
-        params = ''.join(', %s: %s' % p for p in PARAM_RE.findall(m.group(3)))
-        return "{%%%s include '%s'%s %s%%}" % (m.group(1), m.group(2), params, m.group(4))
-    return INCLUDE_RE.sub(sub, src)
+class JekyllIncludeNode(Node):
+    __slots__ = ('markup',)
+
+    def __init__(self, token, markup):
+        super().__init__(token)
+        self.markup = markup.strip()
+        self.blank = False
+
+    def render_to_output(self, context, buffer):
+        m = INCLUDE_VARIABLE.fullmatch(self.markup) if '{{' in self.markup else None
+        if m:
+            out = io.StringIO()
+            context.env.from_string(m.group('variable')).render_with_context(context, out, partial=True)
+            name, params_src = out.getvalue().strip(), m.group('params')
+        else:
+            name, _, params_src = self.markup.partition(' ')
+        params = {}
+        for key, dq, sq, var in INCLUDE_PARAM.findall(params_src):
+            if var:  # a variable path or a literal such as true, 3 or nil, as Liquid reads it
+                expr = parse_primitive(context.env, TokenStream(tokenize(var, parent_token=self.token)))
+                params[key] = expr.evaluate(context)
+            else:
+                params[key] = dq or sq
+        template = context.env.get_template(name, context=context, tag='include')
+        with context.extend({'include': params}, template=template):
+            template.render_with_context(context, buffer, partial=True)
+        return True
+
+
+class JekyllIncludeTag(Tag):
+    name = 'include'
+    block = False
+
+    def parse(self, stream):
+        token = stream.eat(TOKEN_TAG)
+        if stream.current.kind != TOKEN_EXPRESSION:
+            raise LiquidSyntaxError('missing file name', token=token)
+        return JekyllIncludeNode(token, stream.current.value)
 
 
 def make_env(site):
     inc_dir = os.path.join(ROOT, '_includes')
     includes = {}
-    if os.path.isdir(inc_dir):
-        for f in os.listdir(inc_dir):
-            includes[f] = jekyll_to_liquid(re.sub(r'\binclude\.', '', read(os.path.join(inc_dir, f))))
+    for dirpath, _, files in os.walk(inc_dir):
+        for f in files:
+            path = os.path.join(dirpath, f)
+            includes[os.path.relpath(path, inc_dir).replace(os.sep, '/')] = read(path)
     env = Environment(loader=DictLoader(includes))
+    env.add_tag(JekyllIncludeTag)
     base = (site.get('baseurl') or '').rstrip('/')
 
     def relative_url(v):
@@ -88,7 +132,7 @@ def main():
     layouts = {}
     for f in os.listdir(os.path.join(ROOT, '_layouts')):
         fm, body = split_front_matter(read(os.path.join(ROOT, '_layouts', f)))
-        layouts[os.path.splitext(f)[0]] = (fm or {}, env.from_string(jekyll_to_liquid(body)))
+        layouts[os.path.splitext(f)[0]] = (fm or {}, env.from_string(body))
 
     def defaults_for(doc_type):
         out = {}
@@ -134,7 +178,7 @@ def main():
     written = {}
     for page, body, is_md in pages + docs:
         ctx = {'site': site, 'page': page}
-        html = env.from_string(jekyll_to_liquid(body)).render(**ctx)
+        html = env.from_string(body).render(**ctx)
         if is_md: html = markdown.markdown(html)
         layout = page.get('layout')
         while layout:

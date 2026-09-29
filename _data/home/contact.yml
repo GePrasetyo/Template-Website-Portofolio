@@ -1,6 +1,6 @@
-cap: Contact
+label: Contact
 heading: Hiring for your next project?
-heading_accent: Let's talk.
+heading_highlight: Let's talk.
 text: One or two sentences on what you're open to and the best way to reach you.
 links:
   - { kind: email }

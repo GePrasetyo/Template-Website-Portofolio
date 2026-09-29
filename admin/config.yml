@@ -8,7 +8,11 @@
 #
 # The people editing this are not developers. Labels say what a field is on the page, and every
 # field that isn't obvious has a hint. Hints are rendered as Markdown, so show literal syntax in
-# `backticks`. The panel-shape guide linked from the hints is admin/shapes.html.
+# `backticks`. The picture guide linked from the Look & feel hints is admin/looks.html.
+#
+# Content never says how it looks: the theme chosen under Look & feel lays it out. Project pages are
+# sections of items (see _includes/item.html); the theme, palette and font options below must match
+# the keys in _data/themes.yml, _data/palettes.yml and _data/fonts.yml.
 #
 # 3D models are a pasted Sketchfab link / embed code or ArtStation embed code; _includes/model.html
 # pulls the model ID out of it. The pattern below must accept exactly what that include can parse.
@@ -33,6 +37,86 @@ media_libraries:
     config:
       max_file_size: 5242880
       slugify_filename: true
+
+# Leave empty optional fields out of the saved files, so the templates can simply test whether a
+# field is there.
+output:
+  omit_empty_optional_fields: true
+
+singletons:
+
+  # ------------------------------------------------------------------ look & feel
+  - name: look
+    label: Look & feel
+    icon: palette
+    file: _data/look.yml
+    fields:
+      - name: theme
+        label: Theme
+        widget: select
+        default: comic
+        options:
+          - { label: "Comic: slanted comic-book boxes, bold and playful", value: comic }
+          - { label: "Showcase: big pictures and videos, few words, dark", value: showcase }
+          - { label: "Editorial: large type and lots of space, like a magazine", value: editorial }
+        hint: "How your whole site is laid out. Your words, pictures and videos stay the same when you switch. [See what each theme looks like](looks.html)"
+      - name: palette
+        label: Colours
+        widget: select
+        default: theme
+        dropdown_threshold: 10
+        options:
+          - { label: "The theme's own", value: theme }
+          - { label: "Cobalt: off-white and blue", value: cobalt }
+          - { label: "Night: near-black and lime", value: night }
+          - { label: "Paper: warm white and red", value: paper }
+          - { label: "Forest: green", value: forest }
+          - { label: "Tangerine: orange", value: tangerine }
+          - { label: "Plum: purple", value: plum }
+          - { label: "Black and white", value: mono }
+          - { label: "My own colours (below)", value: custom }
+        hint: "Every set has a light and a dark version. [See all the colours](looks.html#colours)"
+      - name: custom
+        label: My own colours
+        widget: object
+        collapsed: true
+        summary: "{{fields.background}} · {{fields.text}} · {{fields.accent}}"
+        hint: "Only used when Colours is set to My own colours."
+        fields:
+          - { name: background, label: Background, widget: color, default: "#F4F2EC" }
+          - { name: text, label: Text, widget: color, default: "#15151A", hint: &text_colour_hint Pick one that is easy to read on the background. }
+          - { name: accent, label: Accent, widget: color, default: "#2648D1", hint: &accent_hint "For highlights such as labels, buttons and links. Pick one that stands out against the background." }
+      - name: custom_dark
+        label: My own colours for dark mode (optional)
+        widget: object
+        collapsed: true
+        summary: "{{fields.background}} · {{fields.text}} · {{fields.accent}}"
+        required: false
+        hint: "Add these to give your own colours a dark version as well. Without them, everyone sees the colours above."
+        fields:
+          - { name: background, label: Background, widget: color, default: "#141417" }
+          - { name: text, label: Text, widget: color, default: "#ECEBE6", hint: *text_colour_hint }
+          - { name: accent, label: Accent, widget: color, default: "#7590FF", hint: *accent_hint }
+      - name: fonts
+        label: Fonts
+        widget: select
+        default: theme
+        options:
+          - { label: "The theme's own", value: theme }
+          - { label: "Bold: Archivo and IBM Plex Sans", value: grotesk }
+          - { label: "Modern: Space Grotesk and Inter", value: modern }
+          - { label: "Classic: Fraunces (serif) and Inter", value: serif }
+          - { label: "Code: JetBrains Mono and Inter", value: mono }
+        hint: "[See the fonts](looks.html#fonts)"
+      - name: mode
+        label: Light and dark
+        widget: select
+        default: auto
+        options:
+          - { label: "Follow the visitor's device, with a switch", value: auto }
+          - { label: Always light, value: light }
+          - { label: Always dark, value: dark }
+        hint: "Phones and computers can be set to dark mode. The first option matches that and adds a button so visitors can switch."
 
 collections:
 
@@ -64,51 +148,28 @@ collections:
         min: 1
         hint: "1 comes first. This sets the order of the cards on your home page, and where the Previous / Next buttons at the bottom of each project page go."
       - { name: published, label: Show on site, widget: boolean, default: true, required: false, hint: Switch off to hide this project without deleting it. }
-      - name: description
-        label: Share description
-        widget: text
-        hint: &share_hint "One sentence. Google shows it in search results, and WhatsApp, LinkedIn or Slack show it under the link when someone shares this page."
+      - { name: dates, label: Dates (optional), required: false, hint: "e.g. 2024 – present. Shown on the project page and its home page card." }
+      - { name: role, label: Your role (optional), required: false, hint: "e.g. Lead Developer. Shown next to the dates." }
+      - { name: summary, label: One-line summary (optional), required: false, hint: "Shown under the project name on its home page card, e.g. Multiplayer racing game · Unity · PC" }
       - name: image
         label: Main picture
         widget: image
         accept: image/jpeg,image/png,image/webp,image/avif
         choose_url: false
         hint: "Shown on this project's card on the home page, and as the preview picture when someone shares the link. A wide (landscape) picture, about 1600 px across, works best."
-      - name: card
-        label: Home page card
-        widget: object
-        collapsed: auto
-        hint: The card for this project in the Work section of your home page. Click to open.
-        fields:
-          - { name: cap, label: Small label, hint: "Shown above the project name on the card, e.g. 2024 · Lead Developer" }
-          - { name: subtitle, label: Subtitle, hint: "Shown under the project name, e.g. Multiplayer racing game · Unity · PC" }
-          - &alt
-            name: alt
-            label: Picture description
-            hint: &alt_hint "A few words about what the picture shows, e.g. Key art of a car racing through a city. Blind visitors hear this read aloud, and it appears if the picture can't load."
-          - { name: featured, label: Featured (wide card), widget: boolean, default: false, required: false, hint: Makes this card twice as wide. Use it for your one or two best projects. }
-          - &cut
-            name: cut
-            label: Panel shape (optional)
-            widget: select
-            required: false
-            options:
-              - { label: "a · left box, before b or m2", value: a }
-              - { label: "b · right box, after a or m1", value: b }
-              - { label: "c · left box, before d or m1", value: c }
-              - { label: "d · right box, after c or m2", value: d }
-              - { label: "m1 · middle box, after c", value: m1 }
-              - { label: "m2 · middle box, before d", value: m2 }
-              - { label: "w · full width", value: w }
-              - { label: "w2 · full width, other slant", value: w2 }
-            hint: "Only decoration: the slanted comic-book edge of this box. **Leave it empty if you're not sure** and the site picks one. [See the shapes and which ones go together](shapes.html)"
-      - { name: eyebrow, label: Dates label, required: false, hint: "Optional. Small blue label above the project name, e.g. 2024 · PC & Console" }
-      - { name: role, label: Role label, required: false, hint: "Optional. Small label next to the dates, e.g. Lead Developer" }
-      - name: lede
-        label: Intro
+      - name: image_alt
+        label: Main picture description
+        hint: &alt_hint "A few words about what the picture shows, e.g. Key art of a car racing through a city. Blind visitors hear this read aloud, and it appears if the picture can't load."
+      - { name: highlight, label: Highlight, widget: boolean, default: false, required: false, hint: "Makes this project stand out on your home page, e.g. with a bigger card. Use it for your one or two best projects." }
+      - name: description
+        label: Share description
+        widget: text
+        hint: &share_hint "One sentence. Google shows it in search results, and WhatsApp, LinkedIn or Slack show it under the link when someone shares this page."
+      - name: intro
+        label: Intro (optional)
         widget: text
         required: false
-        hint: "Optional. A few sentences under the project name. Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link."
+        hint: "A few sentences under the project name. Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link."
       - name: facts
         label: Quick facts
         label_singular: Fact
@@ -119,203 +180,175 @@ collections:
         fields:
           - { name: label, label: Label, hint: "e.g. Studio, Engine, Platforms" }
           - { name: value, label: Value, hint: "e.g. Unity · C#" }
-      - { name: stores_label, label: Store buttons heading, required: false, default: Get the game, hint: Small label above the store buttons. }
-      - name: stores
-        label: Store buttons
-        label_singular: Store button
-        widget: list
+      - name: buttons
+        label: Buttons (optional)
+        widget: object
         required: false
-        summary: "{{fields.label}}"
-        hint: "Optional. Buttons to where people can get the game, e.g. Steam or the App Store."
+        collapsed: auto
+        hint: "Links shown under the intro, e.g. to where people can get the game."
         fields:
-          - { name: label, label: Button text, hint: "e.g. Steam" }
-          -
-            name: url
-            label: Web address
-            pattern: ['^https?://', 'Must start with https://']
-            hint: "Copy it from your browser's address bar. It starts with https://"
+          - &buttons_label { name: label, label: Small label (optional), required: false, hint: "Shown before the buttons, e.g. Get the game" }
+          - &web_links
+            name: links
+            label: Buttons
+            label_singular: Button
+            widget: list
+            summary: "{{fields.label}}"
+            fields:
+              - { name: label, label: Button text, hint: "e.g. Steam" }
+              -
+                name: url
+                label: Web address
+                pattern: ['^https?://', 'Must start with https://']
+                hint: "Copy it from your browser's address bar. It starts with https://"
       - name: sections
         label: Page sections
         label_singular: Section
         widget: list
         required: false
         collapsed: true
-        hint: "The rest of the project page, built from blocks: a big video (e.g. your trailer), a big 3D model, a row of awards, two boxes side by side (text, picture, video or 3D model), a wide text box, or a gallery of pictures, videos and 3D models. Click **Add Section** and pick a type. Click a block to open it, and drag the ═ handle to change the order."
-        types:
+        summary: "Section · {{fields.heading}}"
+        hint: "The rest of the project page. A section has an optional heading and a number of columns, and holds items: text, pictures, videos, 3D models, cards (e.g. awards), lists and buttons. Click **Add Section**, then **Add Item** inside it. Drag the ═ handle to change the order."
+        fields:
+          - { name: label, label: Small label (optional), required: false, hint: "Shown above the heading, e.g. 2018–2020 · Studio name, City" }
+          - { name: heading, label: Heading (optional), required: false }
+          - { name: intro, label: Intro (optional), required: false, hint: One line shown next to the heading. }
+          - name: columns
+            label: Columns
+            widget: select
+            default: 1
+            options:
+              - { label: "1: every item gets a whole row", value: 1 }
+              - { label: "2 side by side", value: 2 }
+              - { label: "3 side by side", value: 3 }
+            hint: "How many items sit next to each other. Items fill each row from left to right, then start a new row. On phones they stack."
+          - name: items
+            label: Items
+            label_singular: Item
+            widget: list
+            collapsed: auto
+            types:
 
-          - name: video
-            label: Big video (full width)
-            widget: object
-            summary: "Big video · {{fields.title}}"
-            fields:
-              - &youtube
-                name: youtube
-                label: YouTube link
-                hint: "Upload the video to YouTube first (Unlisted is fine), then copy its link from your browser and paste it here. Video files can't be uploaded to this site."
-                pattern: ['^\s*((https?://)?(www\.|m\.)?(youtube\.com/(watch\?(.*&)?v=|shorts/|embed/|live/)|youtu\.be/)[\w-]{11}\S*|[\w-]{11})\s*$', 'Must be a YouTube link, e.g. https://www.youtube.com/watch?v=…']
-              - &vtitle
-                { name: title, label: Video title, hint: "What the video is, e.g. Launch trailer. Blind visitors hear this read aloud." }
-              - &vlabel
-                { name: label, label: Small label (optional), required: false, hint: "Shown on the video, e.g. Official trailer" }
-              - &vplay
-                { name: play, label: Play button text (optional), required: false, hint: "Leave empty for Play video (big video) or Play (smaller ones)." }
-              - &thumbnail
-                name: thumbnail
-                label: Cover picture (optional)
-                widget: image
-                required: false
-                accept: image/jpeg,image/png,image/webp,image/avif
-                choose_url: false
-                hint: Shown before the video plays. Leave empty to use the one from YouTube.
-              - &valt
-                { name: alt, label: Cover picture description (optional), required: false, hint: Leave empty to use the video title. }
-
-          - name: model
-            label: Big 3D model (full width)
-            widget: object
-            summary: "Big 3D model · {{fields.title}}"
-            fields:
-              - &model
-                name: model
-                label: Sketchfab or ArtStation link
-                widget: text
-                hint: "**Sketchfab:** open the model on sketchfab.com and copy the link from your browser's address bar. **ArtStation:** open your artwork, copy the embed code under the 3D viewer and paste all of it here. The artwork's page link on its own won't work. Sketchfab tends to load more reliably for visitors."
-                pattern: ['(sketchfab\.com/(3d-models/[^\s"''?#/]*-|models/)[0-9a-f]{32}|artstation\.com/embed/\d+)', "This isn't a Sketchfab model link or an ArtStation embed code. For ArtStation, copy the embed code under the 3D viewer, not the page link."]
-              - &mtitle
-                { name: title, label: Model title, hint: "What the model is, e.g. Hero character, game-ready. Blind visitors hear this read aloud." }
-
-          - name: awards
-            label: Awards row
-            widget: object
-            summary: Awards row
-            fields:
-              - name: items
-                label: Awards
-                label_singular: Award
-                widget: list
-                summary: "{{fields.title}}"
+              - name: text
+                label: Text
+                widget: object
+                summary: "Text · {{fields.heading}}"
                 fields:
-                  - { name: badge, label: Badge text, required: false, hint: "Small blue label, e.g. Winner or Best Game. Only shown when there's no logo." }
+                  - { name: heading, label: Heading (optional), required: false, hint: "Some themes number headings (01, 02…) for you." }
+                  - name: body
+                    label: Text
+                    widget: richtext
+                    modes: [rich_text]
+                    buttons: [bold, italic, link, bulleted-list, numbered-list]
+                    editor_components: []
+                    hint: "Use the toolbar for bold, italic, links and bullet points."
+                  - &width
+                    name: width
+                    label: Width (optional)
+                    widget: select
+                    required: false
+                    options:
+                      - { label: "Wide (two columns)", value: wide }
+                      - { label: Whole row, value: full }
+                    hint: "Leave it on (None) for one column. Only matters when the section has 2 or 3 columns, e.g. in 3 columns a Wide item next to a normal one fills the row."
+
+              - name: picture
+                label: Picture
+                widget: object
+                summary: "Picture · {{fields.caption}}"
+                fields:
+                  - name: image
+                    label: Picture
+                    widget: image
+                    accept: image/jpeg,image/png,image/webp,image/avif
+                    choose_url: false
+                  - { name: alt, label: Picture description, hint: *alt_hint }
+                  - { name: label, label: Small label (optional), required: false, hint: "e.g. Lobby · UI" }
+                  - { name: caption, label: Caption (optional), required: false, hint: "A few words about the picture, e.g. Game one." }
+                  - { name: contain, label: Show the whole picture, widget: boolean, default: false, required: false, hint: "Pictures are normally cropped to fill their space. Switch this on for tall pictures, such as phone screenshots, so nothing gets cut off." }
+                  - *width
+
+              - name: video
+                label: Video
+                widget: object
+                summary: "Video · {{fields.title}}"
+                fields:
+                  - name: youtube
+                    label: YouTube link
+                    hint: "Upload the video to YouTube first (Unlisted is fine), then copy its link from your browser and paste it here. Video files can't be uploaded to this site."
+                    pattern: ['^\s*((https?://)?(www\.|m\.)?(youtube\.com/(watch\?(.*&)?v=|shorts/|embed/|live/)|youtu\.be/)[\w-]{11}\S*|[\w-]{11})\s*$', 'Must be a YouTube link, e.g. https://www.youtube.com/watch?v=…']
+                  - { name: title, label: Video title, hint: "What the video is, e.g. Launch trailer. Blind visitors hear this read aloud." }
+                  - { name: label, label: Small label (optional), required: false, hint: "e.g. Official trailer" }
+                  - { name: play, label: Play button text (optional), required: false, hint: "Leave empty for Play." }
+                  - name: cover
+                    label: Cover picture (optional)
+                    widget: image
+                    required: false
+                    accept: image/jpeg,image/png,image/webp,image/avif
+                    choose_url: false
+                    hint: Shown before the video plays. Leave empty to use the one from YouTube.
+                  - { name: cover_alt, label: Cover picture description (optional), required: false, hint: Leave empty to use the video title. }
+                  - *width
+
+              - name: model
+                label: 3D model
+                widget: object
+                summary: "3D model · {{fields.title}}"
+                fields:
+                  - name: model
+                    label: Sketchfab or ArtStation link
+                    widget: text
+                    hint: "**Sketchfab:** open the model on sketchfab.com and copy the link from your browser's address bar. **ArtStation:** open your artwork, copy the embed code under the 3D viewer and paste all of it here. The artwork's page link on its own won't work. Sketchfab tends to load more reliably for visitors."
+                    pattern: ['(sketchfab\.com/(3d-models/[^\s"''?#/]*-|models/)[0-9a-f]{32}|artstation\.com/embed/\d+)', "This isn't a Sketchfab model link or an ArtStation embed code. For ArtStation, copy the embed code under the 3D viewer, not the page link."]
+                  - { name: title, label: Model title, hint: "What the model is, e.g. Hero character, game-ready. Blind visitors hear this read aloud." }
+                  - *width
+
+              - name: card
+                label: Card (e.g. an award)
+                widget: object
+                summary: "Card · {{fields.title}}"
+                fields:
+                  - { name: label, label: Small label (optional), required: false, hint: "Highlighted, e.g. Winner or Best Game. Only shown when there's no logo." }
                   - name: logo
                     label: Logo (optional)
                     widget: image
                     required: false
                     accept: image/jpeg,image/png,image/webp,image/avif
                     choose_url: false
-                    hint: Shown instead of the badge. A black logo on a see-through background (PNG) works best. It turns white automatically in dark mode.
+                    hint: Shown instead of the small label. A black logo on a see-through background (PNG) works best. It turns white automatically in dark mode.
                   - { name: logo_alt, label: Logo description, required: false, hint: "The name of the award or organiser, for blind visitors." }
-                  - { name: title, label: Award name }
-                  - { name: subtitle, label: Details (optional), required: false, hint: "e.g. 2025 · Best Multiplayer" }
-                  - *cut
+                  - { name: title, label: Title, hint: "e.g. the award's name" }
+                  - { name: text, label: Details (optional), required: false, hint: "e.g. 2025 · Best Multiplayer" }
+                  - *width
 
-          - name: columns
-            label: Two boxes side by side
-            widget: object
-            summary: Two boxes side by side
-            fields:
-              - name: items
-                label: Boxes
-                label_singular: Box
-                widget: list
-                max: 2
-                hint: Add up to two. The first one goes on the left.
-                types:
-                  - name: text
-                    label: Text
-                    widget: object
-                    summary: "Text · {{fields.heading}}"
+              - name: list
+                label: List (e.g. quick facts)
+                widget: object
+                summary: "List · {{fields.heading}}"
+                fields:
+                  - &list_heading { name: heading, label: Heading (optional), required: false, hint: "e.g. Recognition or Quick facts" }
+                  - &list_rows
+                    name: rows
+                    label: Rows
+                    label_singular: Row
+                    widget: list
+                    summary: "{{fields.label}} · {{fields.title}}"
+                    hint: "A row is a small label with a title and details, e.g. Winner · Award name · Project One. Or leave the title empty for a label and text, e.g. Location · City, Country."
                     fields:
-                      - &heading
-                        { name: heading, label: Heading, hint: "The number in front (01, 02…) is added for you." }
-                      - &bullets
-                        name: bullets
-                        label: Bullet points
-                        label_singular: Bullet point
-                        widget: list
-                        field: { name: bullet, label: Bullet point, widget: text, hint: &fmt_short "Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link." }
-                      - *cut
-                  - name: image
-                    label: Picture
-                    widget: object
-                    summary: "Picture · {{fields.caption}}"
-                    fields:
-                      - &image
-                        name: image
-                        label: Picture
-                        widget: image
-                        accept: image/jpeg,image/png,image/webp,image/avif
-                        choose_url: false
-                      - *alt
-                      - &caption
-                        { name: caption, label: Small label (optional), required: false, hint: "Shown on the picture, e.g. Lobby · UI" }
-                      - &stitle
-                        { name: title, label: Caption (optional), required: false, hint: Bold text next to the small label. }
-                      - &contain
-                        { name: contain, label: Show the whole picture, widget: boolean, default: false, required: false, hint: "Pictures are normally cropped to fill the box. Switch this on for tall pictures, such as phone screenshots, so nothing gets cut off." }
-                      - *cut
-                  - name: video
-                    label: Video
-                    widget: object
-                    summary: "Video · {{fields.title}}"
-                    fields: [*youtube, *vtitle, *vlabel, *vplay, *thumbnail, *valt, *cut]
-                  - name: model
-                    label: 3D model
-                    widget: object
-                    summary: "3D model · {{fields.title}}"
-                    fields: [*model, *mtitle, *cut]
+                      - { name: label, label: Small label, hint: "e.g. Winner, or Location" }
+                      - { name: highlight, label: Highlight the label, widget: boolean, default: false, required: false, hint: Only for rows with a title. }
+                      - { name: title, label: Title (optional), required: false, hint: "e.g. the award's name" }
+                      - { name: text, label: Details (optional), widget: text, required: false, hint: &fmt_short "Formatting: `**two stars**` for **bold**, `*one star*` for *italic*, `[words](https://…)` for a link." }
+                  - *width
 
-          - name: text
-            label: Text box (full width)
-            widget: object
-            summary: "Text · {{fields.heading}}"
-            fields: [*heading, *bullets, *cut]
-
-          - name: gallery
-            label: Gallery
-            widget: object
-            summary: "Gallery · {{fields.heading}}"
-            fields:
-              - { name: cap, label: Small label (optional), required: false, hint: "Shown above the heading, e.g. 2018–2020 · Studio name, City" }
-              - { name: heading, label: Heading (optional), required: false }
-              - { name: intro, label: Intro (optional), required: false, hint: One line shown next to the heading. }
-              - name: items
-                label: Tiles
-                label_singular: Tile
-                widget: list
-                hint: Tiles fill each row from left to right, then start a new row.
-                types:
-                  - name: image
-                    label: Picture
-                    widget: object
-                    summary: "Picture · {{fields.caption}}"
-                    fields:
-                      - &width
-                        name: width
-                        label: Width
-                        widget: select
-                        default: 3
-                        options:
-                          - { label: ⅓ of a row, value: 2 }
-                          - { label: Half a row, value: 3 }
-                          - { label: ⅔ of a row, value: 4 }
-                          - { label: Full row, value: 6 }
-                        hint: "Make each row add up to a full row, e.g. Half + Half, ⅓ + ⅓ + ⅓, or ⅔ + ⅓."
-                      - *image
-                      - *alt
-                      - *caption
-                      - *stitle
-                      - *contain
-                      - *cut
-                  - name: video
-                    label: Video
-                    widget: object
-                    summary: "Video · {{fields.title}}"
-                    fields: [*width, *youtube, *vtitle, *vlabel, *vplay, *thumbnail, *valt, *cut]
-                  - name: model
-                    label: 3D model
-                    widget: object
-                    summary: "3D model · {{fields.title}}"
-                    fields: [*width, *model, *mtitle, *cut]
+              - name: buttons
+                label: Buttons (links)
+                widget: object
+                summary: "Buttons · {{fields.label}}"
+                fields:
+                  - *buttons_label
+                  - *web_links
+                  - *width
 
   # ------------------------------------------------------------------ home page
   - name: home
@@ -386,7 +419,7 @@ collections:
         icon: grid_view
         file: _data/home/work.yml
         fields:
-          - &sec_cap { name: cap, label: Small label, hint: Small blue label above the section heading. }
+          - &sec_label { name: label, label: Small label, hint: Small highlighted label above the section heading. }
           - { name: heading, label: Heading, hint: "The project cards under this heading come from Projects." }
           - &sec_note { name: note, label: Note (optional), required: false, hint: "Small text to the right of the heading, e.g. Newest first." }
 
@@ -395,7 +428,7 @@ collections:
         icon: work_history
         file: _data/home/experience.yml
         fields:
-          - *sec_cap
+          - *sec_label
           - &sec_heading { name: heading, label: Heading }
           - *sec_note
           - name: jobs
@@ -420,8 +453,7 @@ collections:
                 label_singular: Bullet point
                 widget: list
                 field: { name: bullet, label: Bullet point, widget: text, hint: *fmt_short }
-              - { name: wide, label: Wide box, widget: boolean, default: false, required: false, hint: "Makes this job full width, with the heading on the left. Good for your current job." }
-              - *cut
+              - { name: highlight, label: Highlight, widget: boolean, default: false, required: false, hint: "Makes this job stand out, e.g. as a wider box. Good for your current job." }
           - name: education
             label: Education
             widget: object
@@ -430,14 +462,13 @@ collections:
               - { name: degree, label: Degree }
               - { name: school, label: School }
               - { name: note, label: Note (optional), required: false, hint: "e.g. Honours, a scholarship or your thesis topic" }
-              - *cut
 
       - name: skills
         label: Skills
         icon: handyman
         file: _data/home/skills.yml
         fields:
-          - *sec_cap
+          - *sec_label
           - *sec_heading
           - *sec_note
           - name: groups
@@ -447,55 +478,31 @@ collections:
             summary: "{{fields.name}}"
             fields:
               - { name: name, label: Group name, hint: "e.g. Engines & languages" }
-              - { name: top, label: Main skills (dark tags), label_singular: Skill, widget: list, required: false, hint: "Your strongest skills in this group. They're shown first, in dark tags.", field: { name: skill, label: Skill } }
-              - { name: other, label: Other skills (light tags), label_singular: Skill, widget: list, required: false, field: { name: skill, label: Skill } }
-              - *cut
+              - { name: top, label: Main skills (highlighted), label_singular: Skill, widget: list, required: false, hint: "Your strongest skills in this group. They're shown first, highlighted.", field: { name: skill, label: Skill } }
+              - { name: other, label: Other skills, label_singular: Skill, widget: list, required: false, field: { name: skill, label: Skill } }
 
       - name: about
-        label: Recognition and quick facts
+        label: About
         icon: emoji_events
         file: _data/home/about.yml
         fields:
-          - *sec_cap
+          - *sec_label
           - *sec_heading
-          - name: recognition
-            label: Recognition box (left)
-            widget: object
-            fields:
-              - { name: title, label: Box title, hint: "e.g. Recognition" }
-              - *cut
-              - name: items
-                label: Awards
-                label_singular: Award
-                widget: list
-                summary: "{{fields.badge}} · {{fields.title}}"
-                fields:
-                  - { name: badge, label: Badge, hint: "Small label, e.g. Winner or Nominee" }
-                  - { name: accent, label: Blue badge, widget: boolean, default: true, required: false, hint: Switch off for a grey badge. }
-                  - { name: title, label: Award name }
-                  - { name: project, label: Project (optional), required: false, hint: Which project it was for. }
-          - name: facts
-            label: Quick facts box (right)
-            widget: object
-            fields:
-              - { name: title, label: Box title, hint: "e.g. Quick facts" }
-              - *cut
-              - name: items
-                label: Facts
-                label_singular: Fact
-                widget: list
-                summary: "{{fields.label}}"
-                fields:
-                  - { name: label, label: Label, hint: "e.g. Location" }
-                  - { name: text, label: Text, widget: text, hint: *fmt_short }
+          - name: boxes
+            label: Boxes
+            label_singular: Box
+            widget: list
+            summary: "{{fields.heading}}"
+            hint: "Short lists shown side by side, e.g. Recognition (your awards) and Quick facts. Add, remove or rename them as you like."
+            fields: [*list_heading, *list_rows]
 
       - name: contact
         label: Contact
         icon: mail
         file: _data/home/contact.yml
         fields:
-          - *sec_cap
+          - *sec_label
           - { name: heading, label: Heading, hint: "e.g. Hiring for your next project?" }
-          - { name: heading_accent, label: "Heading, blue part (optional)", required: false, hint: "Shown in blue right after the heading, e.g. Let's talk." }
+          - { name: heading_highlight, label: "Heading, highlighted part (optional)", required: false, hint: "Shown highlighted right after the heading, e.g. Let's talk." }
           - { name: text, label: Text (optional), widget: text, required: false, hint: *fmt_short }
           - *links

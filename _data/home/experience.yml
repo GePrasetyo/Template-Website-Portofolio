@@ -1,4 +1,4 @@
-cap: Experience
+label: Experience
 heading: Where I've worked
 note: Newest first.
 jobs:
@@ -12,8 +12,7 @@ jobs:
       - "What you owned and shipped, with the result: **a number or an award** if you have one."
       - "Who you led or worked with, e.g. a team of **6 engineers** across two time zones."
       - "Tools or pipeline work that made the team faster."
-    wide: true
-    cut: w
+    highlight: true
   - dates: Jun 2019 – Dec 2021
     company: Another Studio
     location: City, Country
@@ -22,7 +21,6 @@ jobs:
     bullets:
       - "Shipped **Project Two** on PC and console."
       - "Networking, gameplay systems or tools: pick the two things you want a hiring manager to remember."
-    cut: c
   - dates: Sep 2017 – May 2019
     company: First Studio
     location: City, Country
@@ -30,10 +28,8 @@ jobs:
       - Junior Developer
     bullets:
       - "First studio job. Two mobile games shipped on **Android and iOS**."
-    cut: d
 education:
   dates: 2013 – 2017
   degree: BSc Computer Science
   school: University Name
   note: Honours, scholarships or a thesis topic
-  cut: a

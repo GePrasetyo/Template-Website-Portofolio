@@ -1,0 +1,81 @@
+{%- comment -%}
+  One content item, as theme-neutral markup that every theme styles. A project page is a list of
+  `sections` ({ label, heading, intro, columns: 1-3, items }) and each item has a `type`, an
+  optional `width` (wide = two columns, full = the whole row; one column when empty) and these fields:
+    text     heading, body (Markdown)
+    picture  image, alt, label, caption, contain (show the whole picture, no crop)
+    video    youtube, title, label, play, cover, cover_alt
+    model    model (Sketchfab / ArtStation link or embed code), title
+    card     label, logo, logo_alt, title, text
+    list     heading, rows: [{ label, title, text, highlight }]
+    buttons  label, links: [{ label, url }]
+  Parameters: include.it (the item); include.type, to set the type (About boxes are lists);
+  include.num, to number a text heading (01, 02…); include.level, the heading level (default 3);
+  include.eager, to load pictures and video covers straight away.
+{%- endcomment -%}
+{%- assign item = include.it -%}
+{%- assign kind = include.type | default: item.type -%}
+{%- assign hn = include.level | default: 3 -%}
+{%- case kind -%}
+
+{%- when 'text' %}
+<div class="item-text">
+  {%- if item.heading %}
+  <h{{ hn }}>{% if include.num %}<span class="num">{% if include.num < 10 %}0{% endif %}{{ include.num }}</span>{% endif %}{{ item.heading | escape }}</h{{ hn }}>
+  {%- endif %}
+  {{ item.body | markdownify }}
+</div>
+
+{%- when 'picture' %}
+<figure class="item-picture{% if item.contain %} contain{% endif %}">
+  <img src="{{ item.image | relative_url }}" alt="{{ item.alt | escape }}" loading="{% if include.eager %}eager{% else %}lazy{% endif %}">
+  {%- if item.label or item.caption %}
+  <figcaption>{% if item.label %}<span class="tag">{{ item.label | escape }}</span>{% endif %}{% if item.caption %}<b>{{ item.caption | escape }}</b>{% endif %}</figcaption>
+  {%- endif %}
+</figure>
+
+{%- when 'video' %}
+{% include video.html v=item eager=include.eager %}
+
+{%- when 'model' %}
+{% include model.html m=item %}
+
+{%- when 'card' %}
+<div class="item-card">
+  {%- if item.logo %}
+  <img class="logo" src="{{ item.logo | relative_url }}" alt="{{ item.logo_alt | escape }}">
+  {%- elsif item.label %}
+  <span class="tag hi">{{ item.label | escape }}</span>
+  {%- endif %}
+  <div><b>{{ item.title | escape }}</b>{% if item.text %}<small>{% include md.html text=item.text %}</small>{% endif %}</div>
+</div>
+
+{%- when 'list' %}
+<div class="item-list">
+  {%- if item.heading %}
+  <h{{ hn }}>{{ item.heading | escape }}</h{{ hn }}>
+  {%- endif %}
+  <ul>
+    {%- for row in item.rows %}
+    {%- if row.title %}
+    <li class="entry">{% if row.label %}<span class="tag{% if row.highlight %} hi{% endif %}">{{ row.label | escape }}</span>{% endif %}<div><b>{{ row.title | escape }}</b>{% if row.text %}<small>{% include md.html text=row.text %}</small>{% endif %}</div></li>
+    {%- else %}
+    <li class="fact"><b>{{ row.label | escape }}</b><span>{% include md.html text=row.text %}</span></li>
+    {%- endif %}
+    {%- endfor %}
+  </ul>
+</div>
+
+{%- when 'buttons' %}
+<div class="item-buttons">
+  {%- if item.label %}
+  <span class="tag">{{ item.label | escape }}</span>
+  {%- endif %}
+  <ul class="links">
+    {%- for l in item.links %}
+    {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+    {%- endfor %}
+  </ul>
+</div>
+
+{%- endcase -%}

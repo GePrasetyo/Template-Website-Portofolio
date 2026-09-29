@@ -67,30 +67,40 @@ Your browser remembers you. On a shared computer, sign out when you're finished:
 
 Your copy starts with example text and placeholder pictures. Replace them with your own.
 
-On the left of the editor you'll see two things:
+On the left of the editor you'll see:
 
 - **Projects:** each project gets its own page and a card on the home page.
 - **Home page:** your main page, split into parts in the same order as on the page:
   - **Profile:** your name, job title, email and résumé (PDF)
   - **Intro (top of page):** your title lines, a short "about me" and your links
-  - **Work section (heading), Experience, Skills, Recognition and quick facts, Contact:** the rest of the page
+  - **Work section (heading), Experience, Skills, About, Contact:** the rest of the page
+- **Look & feel:** how your whole site looks (see below).
 
 Every field has a short explanation in grey underneath it. Fields marked with a star (*) must be filled in.
 
 **To change something:** open it, edit the fields, then click **Save**. Your website updates by itself about a minute later. Refresh the page to see it.
 
+**Look & feel:**
+- **Theme:** how the whole site is laid out. **Comic** has slanted comic-book boxes, **Showcase** puts your pictures and videos first, and **Editorial** looks like a magazine. Your words, pictures and videos stay the same when you switch.
+- **Colours:** each theme has its own, or pick another set, or choose **My own colours**.
+- **Fonts:** each theme has its own, or pick another pair.
+- **Light and dark:** follow the visitor's phone or computer (with a switch on the page), or always light, or always dark.
+- Click **See what each theme looks like** under Theme for pictures of every theme, colour set and font.
+
 **Projects:**
 - To **add a project**, open **Projects** and click **New**.
 - The **Order** number decides where a project appears: 1 comes first.
-- Switch on **Featured (wide card)** to make the project's card extra wide on the home page.
-- A project page is built from **Page sections**, which you can add, remove and reorder:
-  - a big video
-  - a big 3D model
-  - a row of awards
-  - two boxes side by side (text, a picture, a video or a 3D model)
-  - a wide text box
-  - a gallery of pictures, videos and 3D models
+- Switch on **Highlight** to make a project stand out on the home page, for example with a bigger card.
+- A project page is built from **Page sections**, which you can add, remove and reorder. Each section has an optional heading and 1, 2 or 3 **columns**, and holds **items**:
+  - text, with bold, italic, links and bullet points
+  - a picture, a video or a 3D model
+  - a card, for example an award
+  - a list, for example quick facts
+  - buttons (links)
+- An item fills one column. Set its **Width** to Wide (two columns) or Whole row to make it bigger.
 - To hide an example project, switch off **Show on site** and save. Or delete it.
+
+**About:** the About part of your home page is a set of boxes, such as Recognition and Quick facts. Rename them, remove them or add more.
 
 **Pictures:**
 - JPG, PNG, WebP or AVIF, up to **5 MB** each.
@@ -109,11 +119,10 @@ Every field has a short explanation in grey underneath it. Fields marked with a 
 - Sketchfab tends to be more reliable. ArtStation's viewer is sometimes blocked by its bot protection, and those visitors see an empty box.
 
 **Text styling:**
-- Put two stars on each side to make text **bold**: `**like this**`
+- Text items in project sections have a toolbar for bold, italic, links and bullet points.
+- In other text fields, put two stars on each side to make text **bold**: `**like this**`
 - One star on each side makes it *italic*: `*like this*`
 - For a link: `[the words people click](https://the-address.com)`
-
-**Panel shape:** each box on the page has a slightly slanted, comic-book edge. It's only decoration: leave it empty and the site picks one for you. To choose yourself, click **See the shapes** under the field for a picture of each shape and which ones go together.
 
 ## 6. When your key runs out
 
@@ -156,6 +165,8 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 ## For developers
 
 - **How it's built:** the site is built with Jekyll by GitHub Actions (`.github/workflows/pages.yml`). Content lives in `_data/` and `_work/`, and templates in `index.html`, `_layouts/` and `_includes/`. The editor is [Sveltia CMS](https://github.com/sveltia/sveltia-cms), configured in `admin/config.yml`.
+- **Themes:** content never says how it looks. `_layouts/default.html` reads Look & feel (`_data/look.yml`) and hands the page to the chosen theme: `_includes/themes/<theme>/` (`frame.html`, `home.html`, `work.html`), styled by `assets/css/<theme>.css`. Project items share one markup, `_includes/item.html`, which also documents the content model. Colours and fonts reach every theme as CSS custom properties (`_includes/look.html`), from the presets in `_data/palettes.yml` and `_data/fonts.yml`.
+- **Adding a theme:** add its folder under `_includes/themes/` and its stylesheet, register it in `_data/themes.yml`, add it to the Theme options in `admin/config.yml`, and add screenshots to `admin/looks/`.
 - **Custom domain:** on `github.io`, the site address and repository are detected automatically. On a custom domain, set `url` and `baseurl` in `_config.yml`, and `backend.repo`, `site_url` and `display_url` in `admin/config.yml`.
 - **Local preview:**
 
@@ -169,7 +180,7 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 
 - Editor: [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (MIT licence)
 - Placeholder videos: open movies by the [Blender Foundation](https://studio.blender.org/films/)
-- Fonts: Archivo, IBM Plex Sans and Anton from Google Fonts (SIL Open Font Licence)
+- Fonts: Archivo, IBM Plex Sans, Anton, Space Grotesk, Inter, Fraunces and JetBrains Mono from Google Fonts (SIL Open Font Licence)
 
 ## Licence
 

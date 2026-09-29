@@ -1,0 +1,13 @@
+{%- comment -%}
+  CSS declarations for one colour set. include.c: { background, text, accent, on_accent }, where
+  on_accent (text on accent-coloured backgrounds) is optional: without it, it's black or white,
+  whichever suits the accent. include.dark marks a dark set.
+{%- endcomment -%}
+{%- assign on_accent = include.c.on_accent -%}
+{%- unless on_accent -%}
+  {%- capture accent_brightness %}{% include brightness.html hex=include.c.accent %}{% endcapture -%}
+  {%- assign accent_brightness = accent_brightness | strip | plus: 0 -%}
+  {%- if accent_brightness < 128 %}{% assign on_accent = '#ffffff' %}{% else %}{% assign on_accent = '#111111' %}{% endif -%}
+{%- endunless -%}
+--bg:{{ include.c.background }};--fg:{{ include.c.text }};--accent:{{ include.c.accent }};--on-accent:{{ on_accent }};
+{%- if include.dark %}--logo-filter:invert(1);color-scheme:dark{% else %}--logo-filter:none;color-scheme:light{% endif -%}

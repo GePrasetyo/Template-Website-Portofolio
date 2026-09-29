@@ -1,20 +1,16 @@
-cap: Skills
+label: Skills
 heading: What I work with
-note: Dark tags mark the deepest experience.
+note: Highlighted tags mark the deepest experience.
 groups:
   - name: Engines & languages
     top: [Unity, "C#"]
     other: [Unreal Engine, "C++", Python]
-    cut: a
   - name: Multiplayer & backend
     top: [Netcode]
     other: [Cloud services, REST APIs, Databases]
-    cut: b
   - name: Performance & live ops
     top: []
     other: [Profiling, Memory optimisation, Crash reporting, Analytics]
-    cut: c
   - name: Pipeline & collaboration
     top: []
     other: [Git, CI/CD, Jira, Figma]
-    cut: d

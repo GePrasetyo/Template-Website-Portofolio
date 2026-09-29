@@ -1,0 +1,8 @@
+theme: comic
+palette: theme
+fonts: theme
+mode: auto
+custom:
+  background: "#F4F2EC"
+  text: "#15151A"
+  accent: "#2648D1"

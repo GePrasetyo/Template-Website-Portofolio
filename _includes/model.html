@@ -1,5 +1,5 @@
 {%- comment -%}
-  3D model tile. include.m: { model, title }. `model` is whatever the editor pasted: a Sketchfab model
+  3D model viewer. include.m: { model, title }. `model` is whatever the editor pasted: a Sketchfab model
   link or embed code, or an ArtStation embed code (the artwork page link has no scene ID in it).
   Both viewers open on a still image with their own play button; the iframe itself loads lazily.
   Renders nothing when no model ID can be found.
@@ -20,7 +20,7 @@
   {%- if id != '' -%}{%- assign src = 'https://www.artstation.com/embed/' | append: id -%}{%- endif -%}
 {%- endif -%}
 {%- if src != '' %}
-<div class="model">
-        <iframe src="{{ src | escape }}" title="{{ include.m.title | escape }}" loading="lazy" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>
-      </div>
+<div class="item-model">
+  <iframe src="{{ src | escape }}" title="{{ include.m.title | escape }}" loading="lazy" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>
+</div>
 {%- endif -%}

@@ -1,0 +1,131 @@
+{%- comment -%}
+  Editorial theme: home page. Large type and plenty of space. The projects are an index, like a
+  magazine's contents: highlighted ones lead with their picture, the others show it on hover.
+{%- endcomment -%}
+{%- assign profile = site.data.profile -%}
+{%- assign home = site.data.home -%}
+<main class="wrap">
+
+  <section class="hero">
+    <h1>{{ profile.first_name | escape }} {{ profile.last_name | escape }}</h1>
+    <ul class="titles" aria-label="Roles, platforms and tools">
+      {%- for line in home.hero.title_lines %}
+      <li>{{ line | escape }}</li>
+      {%- endfor %}
+    </ul>
+    <div class="hero-about">
+      {{ home.hero.about | markdownify }}
+    </div>
+    <ul class="links" aria-label="Profiles">
+      {%- for l in home.hero.links %}
+      {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+      {%- endfor %}
+    </ul>
+  </section>
+
+  <section class="section" id="work">
+    <div class="section-head">
+      <p class="label">{{ home.work.label | escape }}</p>
+      <h2>{{ home.work.heading | escape }}</h2>
+      {% if home.work.note %}<p class="note">{{ home.work.note | escape }}</p>{% endif %}
+    </div>
+    <ol class="index">
+      {%- assign works = site.work | sort: 'order' -%}
+      {%- for w in works %}
+      {%- capture meta %}{{ w.dates | escape }}{% if w.dates and w.role %} · {% endif %}{{ w.role | escape }}{% endcapture %}
+      <li class="entry{% if w.highlight %} feature{% endif %} reveal">
+        <a href="{{ w.url | relative_url }}">
+          <img src="{{ w.image | relative_url }}" alt="{{ w.image_alt | escape }}" loading="{% if w.highlight and forloop.index <= 2 %}eager{% else %}lazy{% endif %}">
+          <span class="n">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          <span class="entry-title">{{ w.title | escape }}</span>
+          <span class="entry-summary">{{ w.summary | escape }}</span>
+          <span class="entry-meta">{{ meta }}</span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+
+  {%- assign xp = home.experience %}
+  <section class="section" id="experience">
+    <div class="section-head">
+      <p class="label">{{ xp.label | escape }}</p>
+      <h2>{{ xp.heading | escape }}</h2>
+      {% if xp.note %}<p class="note">{{ xp.note | escape }}</p>{% endif %}
+    </div>
+    <div class="timeline">
+      {%- for j in xp.jobs %}
+      <article class="job{% if j.highlight %} hi{% endif %} reveal">
+        <p class="when">{{ j.dates | escape }}</p>
+        <div>
+          <h3>{{ j.company | escape }}{% if j.location %} <span class="where">{{ j.location | escape }}</span>{% endif %}</h3>
+          <ul class="roles">
+            {%- for r in j.roles %}
+            <li>{{ r | escape }}</li>
+            {%- endfor %}
+          </ul>
+          <ul class="notes">
+            {%- for b in j.bullets %}
+            <li>{% include md.html text=b %}</li>
+            {%- endfor %}
+          </ul>
+        </div>
+      </article>
+      {%- endfor %}
+      {%- if xp.education.degree %}
+      <article class="job reveal">
+        <p class="when">{{ xp.education.dates | escape }}</p>
+        <div>
+          <h3>{{ xp.education.degree | escape }} <span class="where">{{ xp.education.school | escape }}</span></h3>
+          {% if xp.education.note %}<p class="notes">{{ xp.education.note | escape }}</p>{% endif %}
+        </div>
+      </article>
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- assign sk = home.skills %}
+  <section class="section" id="skills">
+    <div class="section-head">
+      <p class="label">{{ sk.label | escape }}</p>
+      <h2>{{ sk.heading | escape }}</h2>
+      {% if sk.note %}<p class="note">{{ sk.note | escape }}</p>{% endif %}
+    </div>
+    <dl class="skills">
+      {%- for g in sk.groups %}
+      <div class="reveal">
+        <dt>{{ g.name | escape }}</dt>
+        <dd><ul>{% for c in g.top %}<li class="hi">{{ c | escape }}</li>{% endfor %}{% for c in g.other %}<li>{{ c | escape }}</li>{% endfor %}</ul></dd>
+      </div>
+      {%- endfor %}
+    </dl>
+  </section>
+
+  {%- assign ab = home.about %}
+  <section class="section" id="about">
+    <div class="section-head">
+      <p class="label">{{ ab.label | escape }}</p>
+      <h2>{{ ab.heading | escape }}</h2>
+    </div>
+    <div class="boxes">
+      {%- for box in ab.boxes %}
+      <div class="reveal">
+        {% include item.html it=box type='list' %}
+      </div>
+      {%- endfor %}
+    </div>
+  </section>
+
+  {%- assign ct = home.contact %}
+  <section class="section contact" id="contact">
+    <p class="label">{{ ct.label | escape }}</p>
+    <h2>{{ ct.heading | escape }}{% if ct.heading_highlight %} <span>{{ ct.heading_highlight | escape }}</span>{% endif %}</h2>
+    {% if ct.text %}<p class="contact-text">{% include md.html text=ct.text %}</p>{% endif %}
+    <ul class="links" aria-label="Contact links">
+      {%- for l in ct.links %}
+      {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+      {%- endfor %}
+    </ul>
+  </section>
+
+</main>

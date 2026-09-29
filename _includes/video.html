@@ -1,16 +1,17 @@
 {%- comment -%}
-  Lite YouTube tile. include.v: { youtube (URL or 11-char ID), title, alt, label, play, thumbnail }.
-  Without a thumbnail upload it falls back to YouTube's own hqdefault image.
+  Lite YouTube tile: a cover picture with a play button, swapped for the player on click
+  (assets/js/site.js). include.v: { youtube (link or 11-character ID), title, label, play, cover,
+  cover_alt }. Without a cover it uses YouTube's own thumbnail. include.eager loads it straight away.
 {%- endcomment -%}
 {%- assign yt = include.v.youtube | strip -%}
 {%- if yt contains 'v=' -%}{%- assign yt = yt | split: 'v=' | last | split: '&' | first -%}
 {%- elsif yt contains '/' -%}{%- assign yt = yt | split: '?' | first | split: '/' | last -%}{%- endif -%}
-{%- if include.v.thumbnail -%}{%- assign thumb = include.v.thumbnail | relative_url -%}
+{%- if include.v.cover -%}{%- assign thumb = include.v.cover | relative_url -%}
 {%- else -%}{%- assign thumb = 'https://i.ytimg.com/vi/' | append: yt | append: '/hqdefault.jpg' -%}{%- endif -%}
-<div class="yt" data-id="{{ yt }}" data-title="{{ include.v.title | escape }}">
-        <img src="{{ thumb }}" alt="{{ include.v.alt | default: include.v.title | escape }}" loading="{% if include.eager %}eager{% else %}lazy{% endif %}">
-        <span class="play"><svg viewBox="0 0 16 16"><path d="M3 2l11 6-11 6z"/></svg>{{ include.v.play | default: include.play | escape }}</span>
-        {%- if include.v.label %}
-        <span class="cap vtitle">{{ include.v.label | escape }}</span>
-        {%- endif %}
-      </div>
+<div class="item-video" data-id="{{ yt }}" data-title="{{ include.v.title | escape }}">
+  <img src="{{ thumb }}" alt="{{ include.v.cover_alt | default: include.v.title | escape }}" loading="{% if include.eager %}eager{% else %}lazy{% endif %}">
+  <span class="yt-play"><svg viewBox="0 0 16 16"><path d="M3 2l11 6-11 6z"/></svg>{{ include.v.play | default: 'Play' | escape }}</span>
+  {%- if include.v.label %}
+  <span class="yt-label">{{ include.v.label | escape }}</span>
+  {%- endif %}
+</div>
