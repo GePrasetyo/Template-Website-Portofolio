@@ -1,0 +1,16 @@
+---
+# The saved site data for the editor's live preview (admin/preview.js): everything in _data/, and
+# the fields of each project that the home page and Previous / Next use.
+---
+{%- assign works = site.work | sort: 'order' -%}
+{
+  "title": {{ site.title | jsonify }},
+  "baseurl": {{ site.baseurl | default: '' | jsonify }},
+  "asset_version": {{ site.asset_version | jsonify }},
+  "data": {{ site.data | jsonify }},
+  "work": [
+    {%- for w in works %}
+    {"url": {{ w.url | jsonify }}, "title": {{ w.title | jsonify }}, "order": {{ w.order | jsonify }}, "dates": {{ w.dates | jsonify }}, "role": {{ w.role | jsonify }}, "summary": {{ w.summary | jsonify }}, "image": {{ w.image | jsonify }}, "image_alt": {{ w.image_alt | jsonify }}, "highlight": {{ w.highlight | jsonify }}}{% unless forloop.last %},{% endunless %}
+    {%- endfor %}
+  ]
+}

@@ -3,9 +3,8 @@
   (assets/js/site.js). include.v: { youtube (link or 11-character ID), title, label, play, cover,
   cover_alt }. Without a cover it uses YouTube's own thumbnail. include.eager loads it straight away.
 {%- endcomment -%}
-{%- assign yt = include.v.youtube | strip -%}
-{%- if yt contains 'v=' -%}{%- assign yt = yt | split: 'v=' | last | split: '&' | first -%}
-{%- elsif yt contains '/' -%}{%- assign yt = yt | split: '?' | first | split: '/' | last -%}{%- endif -%}
+{%- capture yt %}{% include youtube-id.html url=include.v.youtube %}{% endcapture -%}
+{%- assign yt = yt | strip -%}
 {%- if include.v.cover -%}{%- assign thumb = include.v.cover | relative_url -%}
 {%- else -%}{%- assign thumb = 'https://i.ytimg.com/vi/' | append: yt | append: '/hqdefault.jpg' -%}{%- endif -%}
 <div class="item-video" data-id="{{ yt }}" data-title="{{ include.v.title | escape }}">

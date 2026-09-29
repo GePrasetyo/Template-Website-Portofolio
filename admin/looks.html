@@ -10,7 +10,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Look & feel</title>
   {%- for f in site.data.fonts %}
-  <link href="https://fonts.googleapis.com/css2?{{ f[1].google }}&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?{{ f[1].google | escape }}&amp;display=swap" rel="stylesheet">
   {%- endfor %}
   <style>
     :root { --bg: #fff; --fg: #111; --muted: #555; --line: #ddd; color-scheme: light; }
@@ -85,7 +85,8 @@
   </div>
 
   <h2 id="fonts">Fonts</h2>
-  <p>Each choice is a pair: one for headings, one for the rest of the text.</p>
+  <p>Each choice is a pair: one for headings, one for the rest of the text. You can also choose
+     <b>My own Google Fonts</b> and use any font from <a href="https://fonts.google.com">fonts.google.com</a>.</p>
   {%- for f in site.data.fonts %}
   <div class="font" style="--h: {{ f[1].hero | escape }}; --hw: {{ f[1].hero_weight }}; --d: {{ f[1].display | escape }}; --b: {{ f[1].body | escape }}">
     <h3>{{ f[1].label }}</h3>

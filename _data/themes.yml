@@ -1,5 +1,7 @@
 # Themes offered under Look & feel in /admin. A theme is _includes/themes/<key>/ (frame.html,
 # home.html, work.html) plus assets/css/<key>.css, and assets/js/<key>.js when `script` is true.
+# A theme script that draws on the page should define window.refreshTheme(), which the editor's
+# live preview (admin/preview.js) calls after every redraw.
 # `palette` and `fonts` are what "The theme's own" picks; `label` and `about` are shown on
 # admin/looks.html. Keys must match admin/config.yml.
 comic:

@@ -4,12 +4,13 @@
     --bg-2 --bg-3 --fg-2 --fg-3         tints of those: panels, borders, secondary text
     --logo-filter                       turns black logos white in dark mode
     --font-display --font-body --font-hero --hero-weight
-  The layout decides which sets apply: look_main, look_dark and main_dark, look_fonts, and
-  mode_switch when visitors can switch between light and dark.
+  The layout decides what applies: the colour sets look_main and look_dark (main_dark when the
+  main set is dark), mode_switch when visitors can switch between light and dark, and font_google,
+  font_display, font_body, font_hero and hero_weight.
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?{{ look_fonts.google }}&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?{{ font_google | escape }}&amp;display=swap" rel="stylesheet">
   <style>
     :root{ {%- include colour-vars.html c=look_main dark=main_dark -%} }
     {%- if mode_switch %}
@@ -19,5 +20,5 @@
     @media (prefers-color-scheme:dark){:root:not([data-mode=light]) .mode-btn .sun{display:none}:root:not([data-mode=light]) .mode-btn .moon{display:block}}
     :root[data-mode=dark] .mode-btn .sun{display:none}:root[data-mode=dark] .mode-btn .moon{display:block}
     {%- endif %}
-    :root{--bg-2:color-mix(in srgb,var(--fg) 5%,var(--bg));--bg-3:color-mix(in srgb,var(--fg) 12%,var(--bg));--fg-2:color-mix(in srgb,var(--fg) 74%,var(--bg));--fg-3:color-mix(in srgb,var(--fg) 50%,var(--bg));--font-display:{{ look_fonts.display }};--font-body:{{ look_fonts.body }};--font-hero:{{ look_fonts.hero }};--hero-weight:{{ look_fonts.hero_weight }}}
+    :root{--bg-2:color-mix(in srgb,var(--fg) 5%,var(--bg));--bg-3:color-mix(in srgb,var(--fg) 12%,var(--bg));--fg-2:color-mix(in srgb,var(--fg) 74%,var(--bg));--fg-3:color-mix(in srgb,var(--fg) 50%,var(--bg));--font-display:{{ font_display }};--font-body:{{ font_body }};--font-hero:{{ font_hero }};--hero-weight:{{ hero_weight }}}
   </style>

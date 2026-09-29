@@ -1,0 +1,48 @@
+{%- comment -%}
+  Welcome screen: an optional full-screen first view of the home page with a title and one button,
+  over a colour, a picture, a muted YouTube video or a Sketchfab / ArtStation model
+  (_data/home/welcome.yml). _layouts/default.html decides before the page draws whether it opens,
+  assets/js/site.js starts the video or model and closes it, assets/css/welcome.css lays it out,
+  and each theme styles .welcome-title, .welcome-text and .welcome-btn.
+{%- endcomment -%}
+{%- assign welcome = site.data.home.welcome -%}
+{%- assign background = welcome.background | default: 'colour' -%}
+{%- assign picture = welcome.picture -%}
+{%- assign media = '' -%}
+{%- if background == 'video' and welcome.youtube -%}
+  {%- capture yt %}{% include youtube-id.html url=welcome.youtube %}{% endcapture -%}
+  {%- assign yt = yt | strip -%}
+  {%- assign media = 'https://www.youtube-nocookie.com/embed/' | append: yt | append: '?autoplay=1&mute=1&loop=1&playlist=' | append: yt | append: '&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0' -%}
+  {%- unless picture -%}{%- assign picture = 'https://i.ytimg.com/vi/' | append: yt | append: '/hqdefault.jpg' -%}{%- endunless -%}
+{%- elsif background == 'model' and welcome.model -%}
+  {%- capture media %}{% include model-src.html model=welcome.model %}{% endcapture -%}
+  {%- assign media = media | strip -%}
+  {%- if media contains 'sketchfab.com' -%}
+    {%- assign media = media | append: '&autostart=1&preload=1&ui_hint=0&ui_infos=0&ui_controls=0&ui_stop=0&ui_inspector=0&ui_settings=0&ui_help=0&ui_vr=0&ui_ar=0&ui_fullscreen=0&ui_annotations=0&ui_watermark=0&ui_watermark_link=0' -%}
+  {%- endif -%}
+{%- elsif background == 'colour' -%}
+  {%- assign picture = nil -%}
+{%- endif -%}
+{%- if background == 'colour' and welcome.colour -%}
+  {%- capture colour_brightness %}{% include brightness.html hex=welcome.colour %}{% endcapture -%}
+  {%- assign colour_brightness = colour_brightness | strip | plus: 0 -%}
+  {%- if colour_brightness < 128 %}{% assign colour_text = '#ffffff' %}{% else %}{% assign colour_text = '#111111' %}{% endif -%}
+{%- endif %}
+<div class="welcome is-{{ background }}" role="dialog" aria-modal="true" aria-labelledby="welcome-title" data-key="{{ welcome_key }}"
+  {%- if colour_text %} style="--welcome-bg: {{ welcome.colour | escape }}; --welcome-fg: {{ colour_text }}"{% endif %}>
+  {%- if picture %}
+  <img class="welcome-picture" src="{{ picture | relative_url }}" alt="" fetchpriority="high">
+  {%- endif %}
+  {%- if media != '' %}
+  <iframe class="welcome-media" data-src="{{ media | escape }}" title="{% if background == 'video' %}Background video{% else %}3D model{% endif %}"
+    allow="autoplay; fullscreen; xr-spatial-tracking"{% if background == 'video' %} tabindex="-1" aria-hidden="true"{% endif %}{% if welcome.phones %} data-phones{% endif %}></iframe>
+  {%- endif %}
+  <div class="welcome-content">
+    <p class="welcome-title" id="welcome-title">{{ welcome.title | default: full_name | escape }}</p>
+    {%- assign welcome_text = welcome.text | default: profile.tagline -%}
+    {%- if welcome_text %}
+    <p class="welcome-text">{{ welcome_text | escape }}</p>
+    {%- endif %}
+    <button class="welcome-btn" type="button">{{ welcome.button | default: 'Enter' | escape }}</button>
+  </div>
+</div>

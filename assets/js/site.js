@@ -1,6 +1,44 @@
-/* Shared by every theme: light/dark switch, lite YouTube, scroll reveal. No dependencies. */
+/* Shared by every theme: welcome screen, light/dark switch, lite YouTube, scroll reveal.
+   No dependencies. */
 (function () {
   'use strict';
+
+  /* ---- welcome screen ---------------------------------------------
+     _layouts/default.html adds .welcome-open to <html> before the page draws when the screen
+     should show. The video or 3D model only loads then, and on phones only when the editor
+     allowed it (data-phones); anyone who prefers less motion gets the picture instead of video. */
+  var welcome = document.querySelector('.welcome');
+  if (welcome && !document.documentElement.classList.contains('welcome-open')) {
+    welcome.parentNode.removeChild(welcome);
+  } else if (welcome) {
+    var hidden = Array.prototype.filter.call(document.body.children, function (el) {
+      return el !== welcome && el.tagName !== 'SCRIPT';
+    });
+    hidden.forEach(function (el) { el.inert = true; });
+    var media = welcome.querySelector('.welcome-media');
+    var phone = window.matchMedia('(max-width: 700px)').matches;
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (media && (!phone || media.hasAttribute('data-phones')) && !(calm && welcome.classList.contains('is-video'))) {
+      media.addEventListener('load', function () { welcome.classList.add('loaded'); });
+      media.src = media.getAttribute('data-src');
+    }
+    var enter = welcome.querySelector('.welcome-btn');
+    var closed = false;
+    var close = function () {
+      if (closed) { return; }
+      closed = true;
+      try { sessionStorage.setItem(welcome.getAttribute('data-key'), '1'); } catch (e) {}
+      hidden.forEach(function (el) { el.inert = false; });
+      welcome.classList.add('closing');
+      setTimeout(function () {
+        document.documentElement.classList.remove('welcome-open');
+        welcome.parentNode.removeChild(welcome);
+      }, calm ? 0 : 500);
+    };
+    enter.addEventListener('click', close);
+    welcome.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
+    enter.focus({ preventScroll: true });
+  }
 
   /* ---- light/dark switch ------------------------------------------
      Only rendered when Look & feel follows the visitor's device. The choice is kept in

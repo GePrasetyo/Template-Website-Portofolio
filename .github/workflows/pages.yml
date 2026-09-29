@@ -39,6 +39,9 @@ jobs:
             exit 1
           fi
 
+      - name: Bundle templates for the editor preview
+        run: python3 _tools/preview_bundle.py
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

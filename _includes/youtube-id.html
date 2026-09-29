@@ -1,0 +1,8 @@
+{%- comment -%}
+  Prints the 11-character video ID from include.url: a YouTube link (watch?v=, youtu.be/, shorts/,
+  embed/, live/) or the bare ID. Use it through capture.
+{%- endcomment -%}
+{%- assign yt = include.url | strip -%}
+{%- if yt contains 'v=' -%}{%- assign yt = yt | split: 'v=' | last | split: '&' | first -%}
+{%- elsif yt contains '/' -%}{%- assign yt = yt | split: '?' | first | split: '/' | last -%}{%- endif -%}
+{{ yt }}

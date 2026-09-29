@@ -36,7 +36,7 @@
   function layout(el) {
     var p = el.__cutPreset;
     var w = el.clientWidth, h = el.clientHeight;
-    if (!p || !w || !h) { return; }
+    if (!p || !el.__cutPoly || !w || !h) { return; }
     var vx = clamp(h * V, MIN_V, MAX_V), hy = clamp(w * H, MIN_H, MAX_H);
     var pts = [
       [p[0] * vx,     p[1] * hy],
@@ -48,7 +48,7 @@
     el.__cutPoly.setAttribute('points', pts.map(function (q) { return q[0] + ',' + q[1]; }).join(' '));
   }
 
-  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var panels = [];
 
   /* Panels that share a parent and a top edge form a row. */
   function assignShapes() {
@@ -101,7 +101,15 @@
     });
   }
   function applyMode() { if (phone.matches) { disableCuts(); } else { enableCuts(); } }
-  applyMode();
+
+  /* Pick up the panels on the page. The editor's live preview (admin/preview.js) calls this again
+     each time it redraws the page. */
+  window.refreshTheme = function () {
+    if (ro) { panels.forEach(function (el) { ro.unobserve(el); }); }
+    panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+    applyMode();
+  };
+  window.refreshTheme();
   if (phone.addEventListener) { phone.addEventListener('change', applyMode); }
   else if (phone.addListener) { phone.addListener(applyMode); }
   /* Rows re-form when the window width changes, e.g. three cards per row become two. */

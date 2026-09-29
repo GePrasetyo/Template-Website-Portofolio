@@ -1,0 +1,64 @@
+/* ------------------------------------------------------------------
+   Welcome screen (_includes/welcome.html), shared by every theme and only loaded when it's on.
+   It shows while <html> has .welcome-open, which _layouts/default.html sets before the page
+   draws. Themes restyle .welcome-title, .welcome-text and .welcome-btn in their own stylesheet,
+   which loads after this one.
+   ------------------------------------------------------------------ */
+
+.welcome {
+  display: none;
+  position: fixed; inset: 0; z-index: 1000; overflow: hidden;
+  align-items: end;
+  background: var(--welcome-bg, var(--bg));
+  color: var(--welcome-fg, var(--fg));
+  transition: opacity .5s ease;
+}
+.welcome-open { overflow: hidden; }
+.welcome-open .welcome { display: grid; }
+.welcome.closing { opacity: 0; }
+
+/* the picture, and the video or model over it once loaded */
+.welcome-picture, .welcome-media { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.welcome-picture { object-fit: cover; }
+.welcome-media { opacity: 0; transition: opacity .8s ease; }
+.welcome.loaded .welcome-media { opacity: 1; }
+/* a 16:9 video cropped to cover the screen, a little larger so YouTube's title bar is cut off,
+   and not clickable */
+.welcome.is-video .welcome-media {
+  inset: auto; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(1.2);
+  width: max(100%, 177.78vh); height: max(100%, 56.25vw);
+  pointer-events: none;
+}
+/* pictures, video and 3D sit on black with white words and a shade behind them */
+.welcome:not(.is-colour) { background: #111; color: #fff; }
+.welcome:not(.is-colour)::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%);
+}
+
+/* the words sit bottom left; everything around them stays free for turning the 3D model */
+.welcome-content {
+  position: relative; z-index: 1;
+  display: grid; justify-items: start; gap: 14px;
+  padding: clamp(24px, 6vw, 72px);
+  max-width: 100%;
+  pointer-events: none;
+}
+.welcome-content > * { pointer-events: auto; }
+.welcome-title {
+  margin: 0;
+  font-family: var(--font-hero); font-weight: var(--hero-weight);
+  font-size: clamp(2.8rem, 9vw, 7rem); line-height: .95; letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.welcome-text { margin: 0; font-size: clamp(1rem, 1.6vw, 1.25rem); opacity: .85; }
+.welcome-btn {
+  margin-top: 10px; padding: 14px 30px; border: 0; cursor: pointer;
+  font: 600 1rem/1 var(--font-body);
+  background: var(--accent); color: var(--on-accent);
+}
+.welcome-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome, .welcome-media { transition: none; }
+}

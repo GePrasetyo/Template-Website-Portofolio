@@ -1,0 +1,21 @@
+{%- comment -%}
+  Prints the viewer address for include.model, whatever the editor pasted: a Sketchfab model link
+  or embed code, or an ArtStation embed code (the artwork page link has no scene ID in it). Prints
+  nothing when no model ID can be found. Use it through capture.
+{%- endcomment -%}
+{%- assign raw = include.model | strip -%}
+{%- assign src = '' -%}
+{%- if raw contains 'sketchfab.com/models/' -%}
+  {%- assign parts = raw | split: 'sketchfab.com/models/' -%}
+  {%- assign id = parts[1] | slice: 0, 32 -%}
+  {%- if id.size == 32 -%}{%- assign src = 'https://sketchfab.com/models/' | append: id | append: '/embed?dnt=1' -%}{%- endif -%}
+{%- elsif raw contains 'sketchfab.com/3d-models/' -%}
+  {%- assign parts = raw | split: 'sketchfab.com/3d-models/' -%}
+  {%- assign id = parts[1] | split: '"' | first | split: '?' | first | split: '#' | first | split: '/' | first | split: '-' | last -%}
+  {%- if id.size == 32 -%}{%- assign src = 'https://sketchfab.com/models/' | append: id | append: '/embed?dnt=1' -%}{%- endif -%}
+{%- elsif raw contains 'artstation.com/embed/' -%}
+  {%- assign parts = raw | split: 'artstation.com/embed/' -%}
+  {%- assign id = parts[1] | split: '"' | first | split: "'" | first | split: '?' | first | split: '/' | first | split: ' ' | first | split: '>' | first -%}
+  {%- if id != '' -%}{%- assign src = 'https://www.artstation.com/embed/' | append: id -%}{%- endif -%}
+{%- endif -%}
+{{ src }}

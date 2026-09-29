@@ -1,24 +1,10 @@
 {%- comment -%}
-  3D model viewer. include.m: { model, title }. `model` is whatever the editor pasted: a Sketchfab model
-  link or embed code, or an ArtStation embed code (the artwork page link has no scene ID in it).
-  Both viewers open on a still image with their own play button; the iframe itself loads lazily.
-  Renders nothing when no model ID can be found.
+  3D model viewer. include.m: { model, title }, where `model` is a Sketchfab link or embed code or
+  an ArtStation embed code (see model-src.html). Both viewers open on a still image with their own
+  play button; the iframe itself loads lazily. Renders nothing when no model ID can be found.
 {%- endcomment -%}
-{%- assign raw = include.m.model | strip -%}
-{%- assign src = '' -%}
-{%- if raw contains 'sketchfab.com/models/' -%}
-  {%- assign parts = raw | split: 'sketchfab.com/models/' -%}
-  {%- assign id = parts[1] | slice: 0, 32 -%}
-  {%- if id.size == 32 -%}{%- assign src = 'https://sketchfab.com/models/' | append: id | append: '/embed?dnt=1' -%}{%- endif -%}
-{%- elsif raw contains 'sketchfab.com/3d-models/' -%}
-  {%- assign parts = raw | split: 'sketchfab.com/3d-models/' -%}
-  {%- assign id = parts[1] | split: '"' | first | split: '?' | first | split: '#' | first | split: '/' | first | split: '-' | last -%}
-  {%- if id.size == 32 -%}{%- assign src = 'https://sketchfab.com/models/' | append: id | append: '/embed?dnt=1' -%}{%- endif -%}
-{%- elsif raw contains 'artstation.com/embed/' -%}
-  {%- assign parts = raw | split: 'artstation.com/embed/' -%}
-  {%- assign id = parts[1] | split: '"' | first | split: "'" | first | split: '?' | first | split: '/' | first | split: ' ' | first | split: '>' | first -%}
-  {%- if id != '' -%}{%- assign src = 'https://www.artstation.com/embed/' | append: id -%}{%- endif -%}
-{%- endif -%}
+{%- capture src %}{% include model-src.html model=include.m.model %}{% endcapture -%}
+{%- assign src = src | strip -%}
 {%- if src != '' %}
 <div class="item-model">
   <iframe src="{{ src | escape }}" title="{{ include.m.title | escape }}" loading="lazy" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>

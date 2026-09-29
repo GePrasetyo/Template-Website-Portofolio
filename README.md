@@ -71,6 +71,7 @@ On the left of the editor you'll see:
 
 - **Projects:** each project gets its own page and a card on the home page.
 - **Home page:** your main page, split into parts in the same order as on the page:
+  - **Welcome screen (optional):** a full-screen first view with your name and one button (see below)
   - **Profile:** your name, job title, email and résumé (PDF)
   - **Intro (top of page):** your title lines, a short "about me" and your links
   - **Work section (heading), Experience, Skills, About, Contact:** the rest of the page
@@ -80,10 +81,12 @@ Every field has a short explanation in grey underneath it. Fields marked with a 
 
 **To change something:** open it, edit the fields, then click **Save**. Your website updates by itself about a minute later. Refresh the page to see it.
 
+**Preview:** the right half of the editor shows the page you're editing in your site's theme, and changes as you type. It's a close preview: the real site is built a minute after you save, and small details such as curly quotes can differ.
+
 **Look & feel:**
 - **Theme:** how the whole site is laid out. **Comic** has slanted comic-book boxes, **Showcase** puts your pictures and videos first, and **Editorial** looks like a magazine. Your words, pictures and videos stay the same when you switch.
 - **Colours:** each theme has its own, or pick another set, or choose **My own colours**.
-- **Fonts:** each theme has its own, or pick another pair.
+- **Fonts:** each theme has its own, or pick another pair, or choose **My own Google Fonts**: on [fonts.google.com](https://fonts.google.com), add one or two fonts to your selection, click **Get embed code** and paste the code into the editor. The first font is for headings, the second for the rest of the text.
 - **Light and dark:** follow the visitor's phone or computer (with a switch on the page), or always light, or always dark.
 - Click **See what each theme looks like** under Theme for pictures of every theme, colour set and font.
 
@@ -101,6 +104,8 @@ Every field has a short explanation in grey underneath it. Fields marked with a 
 - To hide an example project, switch off **Show on site** and save. Or delete it.
 
 **About:** the About part of your home page is a set of boxes, such as Recognition and Quick facts. Rename them, remove them or add more.
+
+**Welcome screen:** switch on **Show a welcome screen** under Home page for a full-screen first view with your name and one button, for example "Enter". Behind it you can have a colour, a picture, a YouTube video (plays without sound, on repeat) or a 3D model from Sketchfab or ArtStation that visitors can turn. It shows once per visit, and not to people coming back from a project page. Phones get the picture instead of the video or 3D model, unless you switch that on.
 
 **Pictures:**
 - JPG, PNG, WebP or AVIF, up to **5 MB** each.
@@ -167,6 +172,7 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 - **How it's built:** the site is built with Jekyll by GitHub Actions (`.github/workflows/pages.yml`). Content lives in `_data/` and `_work/`, and templates in `index.html`, `_layouts/` and `_includes/`. The editor is [Sveltia CMS](https://github.com/sveltia/sveltia-cms), configured in `admin/config.yml`.
 - **Themes:** content never says how it looks. `_layouts/default.html` reads Look & feel (`_data/look.yml`) and hands the page to the chosen theme: `_includes/themes/<theme>/` (`frame.html`, `home.html`, `work.html`), styled by `assets/css/<theme>.css`. Project items share one markup, `_includes/item.html`, which also documents the content model. Colours and fonts reach every theme as CSS custom properties (`_includes/look.html`), from the presets in `_data/palettes.yml` and `_data/fonts.yml`.
 - **Adding a theme:** add its folder under `_includes/themes/` and its stylesheet, register it in `_data/themes.yml`, add it to the Theme options in `admin/config.yml`, and add screenshots to `admin/looks/`.
+- **Editor preview:** `admin/preview.js` renders the page being edited in the browser with [LiquidJS](https://liquidjs.com), from the same templates Jekyll uses. `_tools/preview_bundle.py` packs `_includes/` and `_layouts/` into `admin/preview/templates.json` before each build (`.github/workflows/pages.yml`), and Jekyll writes the saved data to `admin/preview/site.json`. Keep templates to Liquid that both Jekyll and LiquidJS understand, and don't name fields `size`, `first` or `last` (Liquid reads those as list properties).
 - **Custom domain:** on `github.io`, the site address and repository are detected automatically. On a custom domain, set `url` and `baseurl` in `_config.yml`, and `backend.repo`, `site_url` and `display_url` in `admin/config.yml`.
 - **Local preview:**
 
@@ -179,6 +185,7 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 ## Credits
 
 - Editor: [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (MIT licence)
+- Editor preview: [LiquidJS](https://github.com/harttle/liquidjs) and [marked](https://github.com/markedjs/marked) (MIT licence)
 - Placeholder videos: open movies by the [Blender Foundation](https://studio.blender.org/films/)
 - Fonts: Archivo, IBM Plex Sans, Anton, Space Grotesk, Inter, Fraunces and JetBrains Mono from Google Fonts (SIL Open Font Licence)
 

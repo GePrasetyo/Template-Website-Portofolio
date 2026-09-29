@@ -1,5 +1,6 @@
 _*.html
 work/_*.html
 _site/
+admin/preview/templates.json
 .jekyll-cache/
 __pycache__/

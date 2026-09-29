@@ -248,6 +248,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 .pager-link small { display: block; margin-bottom: 6px; font: 600 .7rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
 .pager-link.next { justify-content: flex-end; text-align: right; }
 
+/* ---------- welcome screen (layout in welcome.css) ---------- */
+.welcome-btn { border-radius: 999px; padding: 15px 32px; transition: transform .25s var(--ease); }
+.welcome-btn:hover { transform: scale(1.04); }
+
 /* ---------- scroll reveal ---------- */
 .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease), transform .7s var(--ease); }
 .js .reveal.in { opacity: 1; transform: none; }

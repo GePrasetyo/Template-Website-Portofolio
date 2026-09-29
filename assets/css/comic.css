@@ -374,6 +374,12 @@ ul { margin: 0; padding: 0; list-style: none; }
 .chapter-nav .panel { transition: transform .25s var(--ease); }
 .chapter-nav .panel:hover { transform: rotate(-.6deg) translateY(-2px); }
 
+/* ---------- welcome screen (layout in welcome.css) ---------- */
+.welcome-title { text-transform: uppercase; letter-spacing: .01em; }
+.welcome-text { display: inline-block; opacity: 1; padding: 5px 10px; background: var(--bg); color: var(--fg); border: var(--stroke) solid var(--fg); box-shadow: 3px 3px 0 var(--fg); font: 700 .8rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; transform: rotate(-1.5deg); }
+.welcome-btn { border: var(--stroke) solid var(--fg); box-shadow: 4px 4px 0 var(--fg); font-family: var(--font-display); font-weight: 800; transform: rotate(-1deg); transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+.welcome-btn:hover { transform: translate(-2px, -2px) rotate(0deg); box-shadow: 6px 6px 0 var(--fg); }
+
 /* ---------- scroll reveal ---------- */
 .js .reveal { opacity: 0; transform: translateY(22px) rotate(.6deg); transition: opacity .7s var(--ease), transform .8s var(--ease); }
 .js .reveal.in { opacity: 1; transform: none; }

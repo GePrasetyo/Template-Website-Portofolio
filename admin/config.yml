@@ -101,13 +101,21 @@ singletons:
         label: Fonts
         widget: select
         default: theme
+        dropdown_threshold: 10
         options:
           - { label: "The theme's own", value: theme }
           - { label: "Bold: Archivo and IBM Plex Sans", value: grotesk }
           - { label: "Modern: Space Grotesk and Inter", value: modern }
           - { label: "Classic: Fraunces (serif) and Inter", value: serif }
           - { label: "Code: JetBrains Mono and Inter", value: mono }
+          - { label: "My own Google Fonts (below)", value: google }
         hint: "[See the fonts](looks.html#fonts)"
+      - name: google_fonts
+        label: My own Google Fonts (optional)
+        widget: text
+        required: false
+        pattern: ['fonts\.googleapis\.com/css2\?', "This isn't a Google Fonts link. On fonts.google.com, pick your fonts, click Get embed code and copy the code."]
+        hint: "Only used when Fonts is set to My own Google Fonts. On [fonts.google.com](https://fonts.google.com), add one or two fonts to your selection, click **Get embed code**, copy the code and paste all of it here. The first font is for headings, the second for the rest of the text. With one font, it's used for both."
       - name: mode
         label: Light and dark
         widget: select
@@ -357,6 +365,45 @@ collections:
     description: Your main page, one part at a time, in order from top to bottom. The project cards come from Projects.
     files:
 
+      - name: welcome
+        label: Welcome screen (optional)
+        icon: door_open
+        file: _data/home/welcome.yml
+        fields:
+          - { name: show, label: Show a welcome screen, widget: boolean, default: false, required: false, hint: "A full-screen first view of your home page with your name and one button. Visitors click the button to see your site. It only shows once per visit, and not to people coming back from a project page." }
+          - name: background
+            label: Background
+            widget: select
+            default: picture
+            options:
+              - { label: A colour, value: colour }
+              - { label: A picture, value: picture }
+              - { label: A YouTube video, value: video }
+              - { label: A 3D model (Sketchfab or ArtStation), value: model }
+          - { name: colour, label: Colour (optional), widget: color, required: false, hint: "For the colour background. Leave empty to use your site's background colour." }
+          - name: picture
+            label: Picture (optional)
+            widget: image
+            required: false
+            accept: image/jpeg,image/png,image/webp,image/avif
+            choose_url: false
+            hint: "For the picture background. With a video or 3D model it's shown while they load, and on phones instead of them. A wide (landscape) picture works best."
+          - name: youtube
+            label: YouTube link (optional)
+            required: false
+            hint: "For the video background. It plays without sound, over and over, and can't be clicked. Copy the link from your browser."
+            pattern: ['^\s*((https?://)?(www\.|m\.)?(youtube\.com/(watch\?(.*&)?v=|shorts/|embed/|live/)|youtu\.be/)[\w-]{11}\S*|[\w-]{11})\s*$', 'Must be a YouTube link, e.g. https://www.youtube.com/watch?v=…']
+          - name: model
+            label: Sketchfab or ArtStation link (optional)
+            widget: text
+            required: false
+            hint: "For the 3D background. Visitors can turn the model before they click the button. Paste the same kind of link as for a 3D model item. On a free Sketchfab account, Sketchfab's logo stays on the model."
+            pattern: ['(sketchfab\.com/(3d-models/[^\s"''?#/]*-|models/)[0-9a-f]{32}|artstation\.com/embed/\d+)', "This isn't a Sketchfab model link or an ArtStation embed code. For ArtStation, copy the embed code under the 3D viewer, not the page link."]
+          - { name: phones, label: Play the video or 3D model on phones too, widget: boolean, default: false, required: false, hint: "Off: phones show the picture instead, which loads faster and saves their battery." }
+          - { name: title, label: Title (optional), required: false, hint: "Leave empty to show your name." }
+          - { name: text, label: Text (optional), required: false, hint: "One line under the title. Leave empty to show your job title." }
+          - { name: button, label: Button text, default: Enter, hint: "e.g. Enter, or See my work" }
+
       - name: profile
         label: Profile
         icon: person
@@ -414,7 +461,7 @@ collections:
               - { name: label, label: Link text, required: false, hint: "The words people click, e.g. LinkedIn. For email, leave empty to show the address itself." }
               - { name: url, label: Web address, required: false, hint: "Only for the Web address type. Copy it from your browser, e.g. https://www.linkedin.com/in/yourname" }
 
-      - name: work
+      - name: work_section
         label: Work section (heading)
         icon: grid_view
         file: _data/home/work.yml

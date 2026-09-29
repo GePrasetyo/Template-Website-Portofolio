@@ -4,16 +4,17 @@ Emulates the Jekyll features this site uses: _config.yml, _data/ (nested folders
 collection with its permalink and front matter defaults, `published: false`, layout chains,
 Jekyll's include tag (`include.x` parameters, sub-folders of _includes/, and file names built
 from variables such as `themes/{{ site.data.look.theme }}/home.html`), and the relative_url /
-absolute_url / markdownify filters.
+absolute_url / markdownify / jsonify filters. Also writes the editor preview's template bundle
+(_tools/preview_bundle.py), which GitHub Actions makes for the real site.
 
 Needs:  pip install python-liquid markdown pyyaml
 Usage:  python _tools/render.py   then serve _site/ at the root (e.g. python -m http.server -d _site 8765)
 """
-import datetime, io, os, re, shutil, sys
+import datetime, io, json, os, re, shutil, sys
 
 import markdown
 import yaml
-from liquid import DictLoader, Environment
+from liquid import DictLoader, Environment, Undefined
 from liquid.ast import Node
 from liquid.builtin.expressions import parse_primitive, tokenize
 from liquid.exceptions import LiquidSyntaxError
@@ -21,8 +22,12 @@ from liquid.stream import TokenStream
 from liquid.tag import Tag
 from liquid.token import TOKEN_EXPRESSION, TOKEN_TAG
 
+import preview_bundle
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, '_site')
+# Like Jekyll, any of these with front matter is rendered; everything else is copied as is.
+TEXT_PAGES = ('.html', '.md', '.json', '.xml', '.txt')
 
 
 def read(p): return open(p, encoding='utf-8').read()
@@ -115,9 +120,13 @@ def make_env(site):
     def markdownify(v):
         return markdown.markdown('' if v is None else str(v), extensions=['smarty']) + '\n'
 
+    def jsonify(v):
+        return json.dumps(None if isinstance(v, Undefined) else v, ensure_ascii=False, default=str)
+
     env.filters['relative_url'] = relative_url
     env.filters['absolute_url'] = absolute_url
     env.filters['markdownify'] = markdownify
+    env.filters['jsonify'] = jsonify
     return env
 
 
@@ -165,7 +174,7 @@ def main():
             if f.startswith(('_', '.')) or f in site.get('exclude', []): continue
             src = os.path.join(dirpath, f)
             relf = f if rel == '.' else rel.replace(os.sep, '/') + '/' + f
-            fm, body = split_front_matter(read(src)) if f.endswith(('.html', '.md')) else (None, None)
+            fm, body = split_front_matter(read(src)) if f.endswith(TEXT_PAGES) else (None, None)
             if fm is None:
                 dst = os.path.join(OUT, relf)
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -193,6 +202,7 @@ def main():
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         open(dst, 'w', encoding='utf-8', newline='\n').write(html)
         print('rendered', url)
+    preview_bundle.write(os.path.join(OUT, 'admin', 'preview', 'templates.json'))
     print('done ->', OUT)
 
 
