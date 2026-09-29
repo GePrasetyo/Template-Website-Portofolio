@@ -1,0 +1,26 @@
+# GitHub Pages builds this with Jekyll on every push (.github/workflows/pages.yml).
+# Content lives in _data/ and _work/ and is edited through /admin (Sveltia CMS, admin/config.yml).
+#
+# `url` and `baseurl` are filled in automatically on GitHub Pages. Set them only for a custom setup,
+# e.g.  url: https://example.com  and  baseurl: ""
+title: Portfolio
+
+# Bump when style.css or main.js change so browsers fetch the new file.
+asset_version: 1
+
+collections:
+  work:
+    output: true
+    permalink: /work/:name.html
+
+defaults:
+  - scope:
+      path: ""
+      type: work
+    values:
+      layout: work
+
+exclude:
+  - _tools
+  - README.md
+  - LICENSE

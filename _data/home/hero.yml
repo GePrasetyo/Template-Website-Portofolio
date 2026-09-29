@@ -1,0 +1,18 @@
+meta_title: "Your Name — Game Developer"
+meta_description: "Portfolio of Your Name, game developer. Replace this with one or two sentences for search results and link previews."
+share_image: /assets/img/placeholder/project-one.jpg
+title_lines:
+  - "Game Developer · Tech Lead"
+  - "Mobile · PC · Console"
+  - "Unity (C#) · Unreal (C++)"
+about: |
+  Hi, I'm **Your Name**. Write two or three short paragraphs here: where you are, what you've shipped,
+  and what kind of work you want next.
+
+  Keep it human. What do you enjoy building, and what are you known for on a team?
+  Markdown works: **bold**, *italic* and [links](https://example.com).
+links:
+  - { kind: link, label: LinkedIn, url: "https://www.linkedin.com/" }
+  - { kind: link, label: GitHub, url: "https://github.com/" }
+  - { kind: email, label: Email }
+  - { kind: resume, label: Résumé (PDF) }

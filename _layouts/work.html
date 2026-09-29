@@ -1,0 +1,138 @@
+---
+layout: default
+---
+{%- comment -%}
+  One project page, built from the front matter of a file in _work/ (edited through /admin).
+  `sections` is a list of blocks: video (full-width splash), awards, columns (two equal panels),
+  text (full-width text panel) and gallery (6-column grid, each item sets its width).
+  Text panels are numbered 01, 02… in page order. `cut` picks the comic panel shape; blank lets
+  main.js choose.
+{%- endcomment -%}
+<main class="wrap">
+
+  <section class="chapter-head reveal">
+    <div class="caps">
+      {% if page.eyebrow %}<span class="cap accent">{{ page.eyebrow | escape }}</span>{% endif %}
+      {% if page.role %}<span class="cap tilt-r">{{ page.role | escape }}</span>{% endif %}
+    </div>
+    <h1>{{ page.title | escape }}</h1>
+    {%- if page.lede %}
+    <p class="lede">{% include md.html text=page.lede %}</p>
+    {%- endif %}
+    {%- if page.facts.first %}
+    <div class="facts">
+      {%- for f in page.facts %}
+      <span><b>{{ f.label | escape }}</b> {{ f.value | escape }}</span>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+    {%- if page.stores.first %}
+    <div class="store">
+      <span class="cap">{{ page.stores_label | default: 'Get the game' | escape }}</span>
+      <ul class="links" aria-label="Store pages">
+        {%- for l in page.stores %}
+        {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+        {%- endfor %}
+      </ul>
+    </div>
+    {%- endif %}
+  </section>
+
+{%- assign n = 0 -%}
+{%- for s in page.sections -%}
+{%- assign sec_first = forloop.first -%}
+{%- case s.type -%}
+
+{%- when 'video' %}
+
+  <section class="splash reveal">
+    <div class="panel" data-cut="{{ s.cut | default: 'w' }}">
+      {% include video.html v=s eager=sec_first play='Play video' %}
+    </div>
+  </section>
+
+{%- when 'awards' %}
+
+  <section class="section tight">
+    <div class="awards">
+      {%- for a in s.items %}
+      <div class="panel award reveal"{% if a.cut %} data-cut="{{ a.cut }}"{% endif %}>
+        {% if a.logo %}<img src="{{ a.logo | relative_url }}" alt="{{ a.logo_alt | escape }}">{% else %}<span class="cap accent">{{ a.badge | escape }}</span>{% endif %}
+        <div><b>{{ a.title | escape }}</b>{% if a.subtitle %}<small>{{ a.subtitle | escape }}</small>{% endif %}</div>
+      </div>
+      {%- endfor %}
+    </div>
+  </section>
+
+{%- when 'text' %}{% assign n = n | plus: 1 %}
+
+  <section class="section tight">
+    <div class="panel text-panel reveal" data-cut="{{ s.cut | default: 'w2' }}">
+      {% include text-panel.html t=s num=n %}
+    </div>
+  </section>
+
+{%- when 'columns' %}
+
+  <section class="section tight">
+    <div class="two-col">
+      {%- for it in s.items %}
+      {%- if it.type == 'text' %}{% assign n = n | plus: 1 %}
+      <div class="panel text-panel reveal"{% if it.cut %} data-cut="{{ it.cut }}"{% endif %}>
+        {% include text-panel.html t=it num=n %}
+      </div>
+      {%- else %}
+      <div class="panel reveal"{% if it.cut %} data-cut="{{ it.cut }}"{% endif %}>
+        {% if it.type == 'video' %}{% include video.html v=it play='Play' %}{% else %}{% include shot.html s=it %}{% endif %}
+      </div>
+      {%- endif %}
+      {%- endfor %}
+    </div>
+  </section>
+
+{%- when 'gallery' %}
+
+  <section class="section tight">
+    {%- if s.cap or s.heading or s.intro %}
+    <div class="section-head reveal">
+      <div>
+        {% if s.cap %}<span class="cap">{{ s.cap | escape }}</span>{% endif %}
+        {% if s.heading %}<h2>{{ s.heading | escape }}</h2>{% endif %}
+      </div>
+      {% if s.intro %}<p>{{ s.intro | escape }}</p>{% endif %}
+    </div>
+    {%- endif %}
+    <div class="gallery">
+      {%- for it in s.items %}
+      {%- if sec_first and forloop.index <= 2 %}{% assign eager = true %}{% else %}{% assign eager = false %}{% endif %}
+      <div class="panel span-{{ it.width | default: 3 }} reveal"{% if it.cut %} data-cut="{{ it.cut }}"{% endif %}>
+        {% if it.type == 'video' %}{% include video.html v=it eager=eager play='Play' %}{% else %}{% include shot.html s=it eager=eager %}{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </section>
+
+{%- endcase -%}
+{%- endfor %}
+
+{%- assign works = site.work | sort: 'order' -%}
+{%- for w in works -%}{%- if w.url == page.url -%}{%- assign idx = forloop.index0 -%}{%- endif -%}{%- endfor -%}
+{%- assign prev_i = idx | minus: 1 -%}
+{%- assign next_i = idx | plus: 1 -%}
+{%- assign next = works[next_i] -%}
+{%- if page.nav_cut == 'cd' -%}{%- assign c1 = 'c' -%}{%- assign c2 = 'd' -%}{%- else -%}{%- assign c1 = 'a' -%}{%- assign c2 = 'b' -%}{%- endif %}
+
+  <nav class="chapter-nav" aria-label="More work">
+    {%- if idx > 0 %}{% assign prev = works[prev_i] %}
+    <div class="panel reveal" data-cut="{{ c1 }}"><a href="{{ prev.url | relative_url }}"><small>Previous</small><b>{{ prev.title | escape }}</b></a></div>
+    {%- else %}
+    <div class="panel reveal" data-cut="{{ c1 }}"><a href="{{ '/#work' | relative_url }}"><small>Back</small><b>All work</b></a></div>
+    {%- endif %}
+    {%- if next %}
+    <div class="panel reveal" data-cut="{{ c2 }}"><a class="next" href="{{ next.url | relative_url }}"><small>Next</small><b>{{ next.title | escape }}</b></a></div>
+    {%- else %}
+    <div class="panel reveal" data-cut="{{ c2 }}"><a class="next" href="{{ '/#work' | relative_url }}"><small>Back</small><b>All work</b></a></div>
+    {%- endif %}
+  </nav>
+
+</main>

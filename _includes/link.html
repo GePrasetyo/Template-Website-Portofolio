@@ -1,0 +1,23 @@
+{%- comment -%}
+  include.l: { kind: link | email | resume, label, url }. include.arrow adds the ↗ icon.
+  Renders nothing when the link has no target (no email or résumé set in the profile, empty URL).
+{%- endcomment -%}
+{%- assign ext = true -%}
+{%- case include.l.kind -%}
+{%- when 'email' -%}
+  {%- if site.data.profile.email -%}{%- assign href = 'mailto:' | append: site.data.profile.email -%}{%- else -%}{%- assign href = '' -%}{%- endif -%}
+  {%- assign label = include.l.label | default: site.data.profile.email -%}
+  {%- assign ext = false -%}
+{%- when 'resume' -%}
+  {%- if site.data.profile.resume -%}{%- assign href = site.data.profile.resume | relative_url -%}{%- else -%}{%- assign href = '' -%}{%- endif -%}
+  {%- assign label = include.l.label | default: 'Résumé (PDF)' -%}
+{%- else -%}
+  {%- assign href = include.l.url | strip -%}
+  {%- assign label = include.l.label | default: href -%}
+  {%- assign head = href | slice: 0 -%}
+  {%- if head == '/' -%}{%- assign href = href | relative_url -%}{%- endif -%}
+  {%- if href contains 'mailto:' -%}{%- assign ext = false -%}{%- endif -%}
+{%- endcase -%}
+{%- if href != '' %}
+<a href="{{ href }}"{% if ext %} target="_blank" rel="noopener"{% endif %}>{{ label | escape }}{% if include.arrow %} <svg viewBox="0 0 16 16"><path d="M5 3h8v8h-2V6.4l-6.3 6.3-1.4-1.4L9.6 5H5z"/></svg>{% endif %}</a>
+{%- endif -%}

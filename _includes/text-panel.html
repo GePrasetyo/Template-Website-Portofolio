@@ -1,0 +1,6 @@
+<h2><span class="cap">{% if include.num < 10 %}0{% endif %}{{ include.num }}</span>{{ include.t.heading | escape }}</h2>
+        <ul>
+          {%- for b in include.t.bullets %}
+          <li>{% include md.html text=b %}</li>
+          {%- endfor %}
+        </ul>

@@ -1,0 +1,1 @@
+{{ include.text | markdownify | remove: '<p>' | remove: '</p>' | strip | replace: '<a href="http', '<a target="_blank" rel="noopener" href="http' }}

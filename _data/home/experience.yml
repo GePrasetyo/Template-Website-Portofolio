@@ -1,0 +1,39 @@
+cap: Experience
+heading: Where I've worked
+note: Newest first.
+jobs:
+  - dates: Jan 2022 – present
+    company: Studio Name
+    location: City, Country
+    roles:
+      - "Lead Developer · Mar 2023 – present"
+      - "Senior Developer · Jan 2022 – Feb 2023"
+    bullets:
+      - "What you owned and shipped, with the result: **a number or an award** if you have one."
+      - "Who you led or worked with, e.g. a team of **6 engineers** across two time zones."
+      - "Tools or pipeline work that made the team faster."
+    wide: true
+    cut: w
+  - dates: Jun 2019 – Dec 2021
+    company: Another Studio
+    location: City, Country
+    roles:
+      - Gameplay Programmer
+    bullets:
+      - "Shipped **Project Two** on PC and console."
+      - "Networking, gameplay systems or tools: pick the two things you want a hiring manager to remember."
+    cut: c
+  - dates: Sep 2017 – May 2019
+    company: First Studio
+    location: City, Country
+    roles:
+      - Junior Developer
+    bullets:
+      - "First studio job. Two mobile games shipped on **Android and iOS**."
+    cut: d
+education:
+  dates: 2013 – 2017
+  degree: BSc Computer Science
+  school: University Name
+  note: Honours, scholarships or a thesis topic
+  cut: a

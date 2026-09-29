@@ -1,0 +1,431 @@
+# Sveltia CMS: https://sveltiacms.app/en/docs
+# Open <your site>/admin/ and choose "Sign In with Token". Use a fine-grained GitHub token scoped to
+# this repository only, with Contents: Read and write. The public site needs no login.
+#
+# Uploads are stills only: every image field accepts jpg/png/webp/avif up to 5 MB, and video is
+# always a YouTube link. The asset library itself cannot be restricted by type, so
+# .github/workflows/pages.yml refuses to deploy if anything else lands under assets/.
+
+# On <user>.github.io/<repo>/admin/, admin/index.html fills in backend.repo, site_url and
+# display_url from the address, so a fork works without editing this file. On a custom domain,
+# set them here.
+backend:
+  name: github
+  repo: your-username/your-repo
+  branch: main
+  auth_methods: [token]
+
+app_title: Portfolio Admin
+logo:
+  src: ../favicon.svg
+
+media_folder: /assets/img
+public_folder: /assets/img
+media_libraries:
+  default:
+    config:
+      max_file_size: 5242880
+      slugify_filename: true
+
+collections:
+
+  # ------------------------------------------------------------------ work pages
+  - name: work
+    label: Work
+    label_singular: Project
+    description: One page per project. The home page lists them by Order, and Previous / Next follow the same order.
+    folder: _work
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    identifier_field: title
+    summary: "{{order}}. {{title}}"
+    sortable_fields:
+      fields: [order, title]
+      default: { field: order, direction: ascending }
+    thumbnail: image
+    preview_path: "work/{{slug}}.html"
+    fields:
+      - { name: title, label: Title, hint: Page heading and home card title. }
+      - { name: order, label: Order, widget: number, value_type: int, min: 1, hint: 1 is first on the home page. }
+      - { name: published, label: Show on site, widget: boolean, default: true, required: false }
+      - { name: description, label: Share description, widget: text, hint: Used by search engines and link previews (WhatsApp, LinkedIn, Slack). }
+      - name: image
+        label: Card and share image
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        choose_url: false
+        hint: Home page card and link-preview thumbnail. Landscape, about 1600 px wide.
+      - name: card
+        label: Home page card
+        widget: object
+        collapsed: true
+        fields:
+          - { name: cap, label: Tag, hint: "e.g. 2024 · Lead Developer" }
+          - { name: subtitle, label: Subtitle, hint: "e.g. Multiplayer racing game · Unity · PC" }
+          - { name: alt, label: Image description, hint: Alt text for screen readers. }
+          - { name: featured, label: Featured (wide card), widget: boolean, default: false, required: false }
+          - &cut
+            name: cut
+            label: Panel shape
+            widget: select
+            required: false
+            options: [a, b, c, d, m1, m2, w, w2]
+            hint: "Comic panel cut. Neighbours pair up as a|b, c|d, c|m1|b and c|m1|m2|d; w and w2 are full width. Leave empty to let the site pick."
+      - { name: eyebrow, label: Dates tag, required: false, hint: "Blue tag above the title, e.g. 2024 · PC & Console" }
+      - { name: role, label: Role tag, required: false, hint: "e.g. Lead Developer" }
+      -
+        name: lede
+        label: Intro
+        widget: text
+        required: false
+        hint: "Markdown: **bold**, *italic*, [link](https://…)"
+      - name: facts
+        label: Facts
+        widget: list
+        required: false
+        summary: "{{fields.label}}: {{fields.value}}"
+        fields:
+          - { name: label, label: Label, hint: "e.g. Studio, Engine, Netcode" }
+          - { name: value, label: Value }
+      - { name: stores_label, label: Store links heading, required: false, default: Get the game }
+      - name: stores
+        label: Store links
+        widget: list
+        required: false
+        summary: "{{fields.label}}"
+        fields:
+          - { name: label, label: Label }
+          - { name: url, label: URL, pattern: ['^https?://', 'Must start with https://'] }
+      - name: nav_cut
+        label: Previous / Next panel shapes
+        widget: select
+        required: false
+        default: ab
+        options: [ab, cd]
+        hint: Pick cd when the panels right above end in a|b.
+      - name: sections
+        label: Sections
+        label_singular: Section
+        widget: list
+        required: false
+        collapsed: true
+        types:
+
+          - name: video
+            label: Video (full width)
+            widget: object
+            summary: "Video · {{fields.title}}"
+            fields:
+              - &youtube
+                name: youtube
+                label: YouTube link
+                hint: Paste the video URL (youtube.com/watch?v=…, youtu.be/…, /shorts/…) or the 11-character ID. Video files cannot be uploaded.
+                pattern: ['^\s*((https?://)?(www\.|m\.)?(youtube\.com/(watch\?(.*&)?v=|shorts/|embed/|live/)|youtu\.be/)[\w-]{11}\S*|[\w-]{11})\s*$', 'Must be a YouTube URL or video ID']
+              - &vtitle
+                { name: title, label: Video title, hint: Read out by screen readers and used as the player title. }
+              - &vlabel
+                { name: label, label: Caption tag, required: false, hint: "Small tag on the tile, e.g. Official trailer" }
+              - &vplay
+                { name: play, label: Play button text, required: false, hint: "Defaults to Play video (full width) or Play (grid)." }
+              - &thumbnail
+                name: thumbnail
+                label: Thumbnail
+                widget: image
+                required: false
+                accept: image/jpeg,image/png,image/webp,image/avif
+                choose_url: false
+                hint: Optional. Leave empty to use YouTube's own thumbnail.
+              - &valt
+                { name: alt, label: Thumbnail description, required: false, hint: Defaults to the video title. }
+
+          - name: awards
+            label: Awards
+            widget: object
+            summary: Awards
+            fields:
+              - name: items
+                label: Awards
+                label_singular: Award
+                widget: list
+                summary: "{{fields.title}}"
+                fields:
+                  - { name: badge, label: Badge text, required: false, hint: "Blue tag, e.g. Best Game. Shown when there is no logo." }
+                  - name: logo
+                    label: Logo
+                    widget: image
+                    required: false
+                    accept: image/jpeg,image/png,image/webp,image/avif
+                    choose_url: false
+                    hint: Optional. Black on transparent PNG; it is inverted in dark mode.
+                  - { name: logo_alt, label: Logo description, required: false }
+                  - { name: title, label: Award }
+                  - { name: subtitle, label: Detail, required: false }
+                  - *cut
+
+          - name: columns
+            label: Two columns
+            widget: object
+            summary: Two columns
+            fields:
+              - name: items
+                label: Panels
+                label_singular: Panel
+                widget: list
+                max: 2
+                types:
+                  - name: text
+                    label: Text
+                    widget: object
+                    summary: "Text · {{fields.heading}}"
+                    fields:
+                      - &heading
+                        { name: heading, label: Heading, hint: Numbered 01, 02… automatically. }
+                      - &bullets
+                        name: bullets
+                        label: Bullet points
+                        widget: list
+                        field: { name: bullet, label: Bullet, widget: text, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+                      - *cut
+                  - name: image
+                    label: Image
+                    widget: object
+                    summary: "Image · {{fields.caption}}"
+                    fields:
+                      - &image
+                        name: image
+                        label: Image
+                        widget: image
+                        accept: image/jpeg,image/png,image/webp,image/avif
+                        choose_url: false
+                      - &alt
+                        { name: alt, label: Image description, hint: Alt text for screen readers. }
+                      - &caption
+                        { name: caption, label: Caption tag, required: false }
+                      - &stitle
+                        { name: title, label: Caption title, required: false }
+                      - &contain
+                        { name: contain, label: Show whole image (no crop), widget: boolean, default: false, required: false, hint: For portrait phone screenshots. }
+                      - *cut
+                  - name: video
+                    label: Video
+                    widget: object
+                    summary: "Video · {{fields.title}}"
+                    fields: [*youtube, *vtitle, *vlabel, *vplay, *thumbnail, *valt, *cut]
+
+          - name: text
+            label: Text (full width)
+            widget: object
+            summary: "Text · {{fields.heading}}"
+            fields: [*heading, *bullets, *cut]
+
+          - name: gallery
+            label: Gallery
+            widget: object
+            summary: "Gallery · {{fields.heading}}"
+            fields:
+              - { name: cap, label: Tag, required: false, hint: "Optional section heading tag, e.g. 2018–2020 · Studio name, City" }
+              - { name: heading, label: Heading, required: false }
+              - { name: intro, label: Intro, required: false }
+              - name: items
+                label: Tiles
+                label_singular: Tile
+                widget: list
+                types:
+                  - name: image
+                    label: Image
+                    widget: object
+                    summary: "Image · {{fields.caption}} ({{fields.width}}/6)"
+                    fields:
+                      - &width
+                        name: width
+                        label: Width
+                        widget: select
+                        default: 3
+                        options:
+                          - { label: 1/3 row, value: 2 }
+                          - { label: Half row, value: 3 }
+                          - { label: 2/3 row, value: 4 }
+                          - { label: Full row, value: 6 }
+                        hint: Make each row add up to a full row.
+                      - *image
+                      - *alt
+                      - *caption
+                      - *stitle
+                      - *contain
+                      - *cut
+                  - name: video
+                    label: Video
+                    widget: object
+                    summary: "Video · {{fields.title}} ({{fields.width}}/6)"
+                    fields: [*width, *youtube, *vtitle, *vlabel, *vplay, *thumbnail, *valt, *cut]
+
+  # ------------------------------------------------------------------ home page
+  - name: home
+    label: Home page
+    files:
+
+      - name: profile
+        label: Profile
+        file: _data/profile.yml
+        fields:
+          - { name: first_name, label: First name }
+          - { name: last_name, label: Last name }
+          - { name: tagline, label: Tagline, hint: Shown next to the name in the top bar. }
+          - { name: email, label: Email, pattern: ['^[^@\s]+@[^@\s]+$', 'Must be an email address'] }
+          - name: resume
+            label: Résumé PDF
+            widget: file
+            accept: application/pdf,.pdf
+            choose_url: false
+            media_folder: /assets/doc
+            public_folder: /assets/doc
+            hint: Linked from the top bar, the hero and the contact section.
+
+      - name: hero
+        label: Hero
+        file: _data/home/hero.yml
+        fields:
+          - { name: meta_title, label: Browser tab title }
+          - { name: meta_description, label: Share description, widget: text }
+          - name: share_image
+            label: Share image
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            choose_url: false
+            hint: Link-preview thumbnail for the home page.
+          - name: title_lines
+            label: Title lines
+            widget: list
+            hint: "Separate items with ' · ' (space, middle dot, space)."
+            field: { name: line, label: Line }
+          - { name: about, label: About, widget: text, hint: "Blank line between paragraphs. Markdown: **bold**, *italic*, [link](https://…)" }
+          - &links
+            name: links
+            label: Links
+            label_singular: Link
+            widget: list
+            summary: "{{fields.label}} ({{fields.kind}})"
+            fields:
+              - name: kind
+                label: Kind
+                widget: select
+                default: link
+                options:
+                  - { label: Web link, value: link }
+                  - { label: Email (from Profile), value: email }
+                  - { label: Résumé PDF (from Profile), value: resume }
+              - { name: label, label: Label, required: false, hint: Email links default to the address. }
+              - { name: url, label: URL, required: false, hint: Web links only. }
+
+      - name: work
+        label: Work section
+        file: _data/home/work.yml
+        fields:
+          - &sec_cap { name: cap, label: Tag }
+          - &sec_heading { name: heading, label: Heading }
+          - &sec_note { name: note, label: Note, required: false, hint: Small text on the right of the heading. }
+
+      - name: experience
+        label: Experience
+        file: _data/home/experience.yml
+        fields:
+          - *sec_cap
+          - *sec_heading
+          - *sec_note
+          - name: jobs
+            label: Jobs
+            label_singular: Job
+            widget: list
+            collapsed: true
+            summary: "{{fields.company}} · {{fields.dates}}"
+            fields:
+              - { name: dates, label: Dates, hint: "e.g. Jan 2022 – present" }
+              - { name: company, label: Company }
+              - { name: location, label: Location }
+              - name: roles
+                label: Roles
+                widget: list
+                field: { name: role, label: Role, hint: "e.g. Lead Developer · Mar 2023 – present" }
+              - name: bullets
+                label: Bullet points
+                widget: list
+                field: { name: bullet, label: Bullet, widget: text, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+              - { name: wide, label: Wide panel, widget: boolean, default: false, required: false, hint: Full width, heading on the left. Use for the current job. }
+              - *cut
+          - name: education
+            label: Education
+            widget: object
+            fields:
+              - { name: dates, label: Dates }
+              - { name: degree, label: Degree }
+              - { name: school, label: School }
+              - { name: note, label: Note, required: false }
+              - *cut
+
+      - name: skills
+        label: Skills
+        file: _data/home/skills.yml
+        fields:
+          - *sec_cap
+          - *sec_heading
+          - *sec_note
+          - name: groups
+            label: Groups
+            label_singular: Group
+            widget: list
+            summary: "{{fields.name}}"
+            fields:
+              - { name: name, label: Name }
+              - { name: top, label: Deepest experience (dark tags), widget: list, required: false, field: { name: skill, label: Skill } }
+              - { name: other, label: Other skills, widget: list, required: false, field: { name: skill, label: Skill } }
+              - *cut
+
+      - name: about
+        label: Recognition and quick facts
+        file: _data/home/about.yml
+        fields:
+          - *sec_cap
+          - *sec_heading
+          - name: recognition
+            label: Recognition
+            widget: object
+            fields:
+              - { name: title, label: Panel title }
+              - *cut
+              - name: items
+                label: Awards
+                label_singular: Award
+                widget: list
+                summary: "{{fields.badge}} · {{fields.title}}"
+                fields:
+                  - { name: badge, label: Badge }
+                  - { name: accent, label: Blue badge, widget: boolean, default: true, required: false }
+                  - { name: title, label: Award }
+                  - { name: project, label: Project, required: false }
+          - name: facts
+            label: Quick facts
+            widget: object
+            fields:
+              - { name: title, label: Panel title }
+              - *cut
+              - name: items
+                label: Facts
+                label_singular: Fact
+                widget: list
+                summary: "{{fields.label}}"
+                fields:
+                  - { name: label, label: Label }
+                  - { name: text, label: Text, widget: text, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+
+      - name: contact
+        label: Contact
+        file: _data/home/contact.yml
+        fields:
+          - *sec_cap
+          - { name: heading, label: Heading }
+          - { name: heading_accent, label: Heading (blue part), required: false }
+          - { name: text, label: Text, widget: text, required: false, hint: "Markdown: **bold**, *italic*, [link](https://…)" }
+          - *links

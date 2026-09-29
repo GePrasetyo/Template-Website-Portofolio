@@ -1,0 +1,21 @@
+cap: About
+heading: Recognition and quick facts
+recognition:
+  title: Recognition
+  cut: c
+  items:
+    - { badge: Winner, title: Award Name 2025, project: Project One }
+    - { badge: Nominee, title: Another Award · Category, project: Project One }
+    - { badge: Featured, title: Festival or showcase, project: Project Two, accent: false }
+facts:
+  title: Quick facts
+  cut: d
+  items:
+    - label: Location
+      text: "**City, Country.** Work authorisation, time zone, or whether you relocate."
+    - label: Looking for
+      text: The roles you want, on which platforms. On-site, hybrid or remote.
+    - label: Working style
+      text: One sentence on how you like to work with a team.
+    - label: Elsewhere
+      text: "[LinkedIn](https://www.linkedin.com/), [GitHub](https://github.com/) or anywhere else people can find you."

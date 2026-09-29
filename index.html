@@ -1,0 +1,202 @@
+---
+layout: default
+---
+{%- comment -%}
+  Home page. All copy lives in _data/profile.yml and _data/home/*.yml, and the work cards come
+  from the _work collection sorted by `order`. Edit through /admin.
+{%- endcomment -%}
+{%- assign profile = site.data.profile -%}
+{%- assign home = site.data.home -%}
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-strip">
+      <div class="panel hero-name reveal" data-cut="a">
+        <h1>{{ profile.first_name | escape }}<br>{{ profile.last_name | escape }}</h1>
+        <ul class="titles" aria-label="Roles, platforms and tools">
+          {%- for line in home.hero.title_lines %}
+          <li>{{ line | escape | replace: ' · ', ' <span class="sep">·</span> ' }}</li>
+          {%- endfor %}
+        </ul>
+      </div>
+      <div class="panel hero-about reveal" data-cut="b">
+        <div>
+          {{ home.hero.about | markdownify }}
+        </div>
+        <ul class="links" aria-label="Profiles">
+          {%- for l in home.hero.links %}
+          {% capture a %}{% include link.html l=l arrow=true %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+          {%- endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ WORK ============ -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="cap accent">{{ home.work.cap | escape }}</span>
+          <h2>{{ home.work.heading | escape }}</h2>
+        </div>
+        {% if home.work.note %}<p>{{ home.work.note | escape }}</p>{% endif %}
+      </div>
+
+      <div class="strip">
+        {%- assign works = site.work | sort: 'order' -%}
+        {%- for w in works %}
+
+        <div class="panel{% if w.card.featured %} feature span-4{% else %} span-2{% endif %} reveal"{% if w.card.cut %} data-cut="{{ w.card.cut }}"{% endif %}>
+          <a class="work-card{% if w.card.featured %} feature{% endif %}" href="{{ w.url | relative_url }}">
+            <div class="media"><img src="{{ w.image | relative_url }}" alt="{{ w.card.alt | escape }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"></div>
+            <div class="meta">
+              <span class="cap">{{ w.card.cap | escape }}</span>
+              <div class="title"><h3>{{ w.title | escape }}</h3><small>{{ w.card.subtitle | escape }}</small></div>
+            </div>
+          </a>
+        </div>
+        {%- endfor %}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  {%- assign xp = home.experience %}
+  <section class="section" id="experience">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="cap accent">{{ xp.cap | escape }}</span>
+          <h2>{{ xp.heading | escape }}</h2>
+        </div>
+        {% if xp.note %}<p>{{ xp.note | escape }}</p>{% endif %}
+      </div>
+
+      <div class="xp">
+        {%- for j in xp.jobs %}
+
+        <div class="panel{% if j.wide %} span-2{% endif %} reveal"{% if j.cut %} data-cut="{{ j.cut }}"{% endif %}>
+          <div class="xp-item">
+            {%- if j.wide %}
+            <div class="head">
+              <span class="cap">{{ j.dates | escape }}</span>
+              <h3>{{ j.company | escape }} <small>{{ j.location | escape }}</small></h3>
+              <div>
+                {%- for r in j.roles %}
+                <div class="role">{{ r | escape }}</div>
+                {%- endfor %}
+              </div>
+            </div>
+            {%- else %}
+            <span class="cap">{{ j.dates | escape }}</span>
+            <h3>{{ j.company | escape }} <small>{{ j.location | escape }}</small></h3>
+            {%- for r in j.roles %}
+            <div class="role">{{ r | escape }}</div>
+            {%- endfor %}
+            {%- endif %}
+            <ul>
+              {%- for b in j.bullets %}
+              <li>{% include md.html text=b %}</li>
+              {%- endfor %}
+            </ul>
+          </div>
+        </div>
+        {%- endfor %}
+        {%- if xp.education.degree %}
+
+        <div class="panel reveal"{% if xp.education.cut %} data-cut="{{ xp.education.cut }}"{% endif %}>
+          <div class="xp-item edu">
+            <span class="cap">{{ xp.education.dates | escape }}</span>
+            <h3>Education</h3>
+            <b>{{ xp.education.degree | escape }}</b>
+            <span>{{ xp.education.school | escape }}</span>
+            {% if xp.education.note %}<small>{{ xp.education.note | escape }}</small>{% endif %}
+          </div>
+        </div>
+        {%- endif %}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  {%- assign sk = home.skills %}
+  <section class="section" id="skills">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="cap accent">{{ sk.cap | escape }}</span>
+          <h2>{{ sk.heading | escape }}</h2>
+        </div>
+        {% if sk.note %}<p>{{ sk.note | escape }}</p>{% endif %}
+      </div>
+
+      <div class="skills">
+        {%- for g in sk.groups %}
+        <div class="panel skill reveal"{% if g.cut %} data-cut="{{ g.cut }}"{% endif %}>
+          <h3><span class="cap">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>{{ g.name | escape }}</h3>
+          <ul class="chips">
+            {% for c in g.top %}<li class="hi">{{ c | escape }}</li>{% endfor %}
+            {% for c in g.other %}<li>{{ c | escape }}</li>{% endfor %}
+          </ul>
+        </div>
+        {%- endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RECOGNITION + ABOUT ============ -->
+  {%- assign ab = home.about %}
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="cap accent">{{ ab.cap | escape }}</span>
+          <h2>{{ ab.heading | escape }}</h2>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="panel text-panel reveal"{% if ab.recognition.cut %} data-cut="{{ ab.recognition.cut }}"{% endif %}>
+          <h2><span class="cap">{{ ab.recognition.title | escape }}</span></h2>
+          <ul class="rec-list">
+            {%- for r in ab.recognition.items %}
+            <li><span class="cap{% unless r.accent == false %} accent{% endunless %}">{{ r.badge | escape }}</span><div><b>{{ r.title | escape }}</b>{% if r.project %}<small>{{ r.project | escape }}</small>{% endif %}</div></li>
+            {%- endfor %}
+          </ul>
+        </div>
+        <div class="panel text-panel reveal"{% if ab.facts.cut %} data-cut="{{ ab.facts.cut }}"{% endif %}>
+          <h2><span class="cap">{{ ab.facts.title | escape }}</span></h2>
+          <ul class="about-list">
+            {%- for f in ab.facts.items %}
+            <li><b>{{ f.label | escape }}</b><span>{% include md.html text=f.text %}</span></li>
+            {%- endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  {%- assign ct = home.contact %}
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="panel contact-panel reveal" data-cut="w2">
+        <div>
+          <span class="cap">{{ ct.cap | escape }}</span>
+          <h2>{{ ct.heading | escape }}{% if ct.heading_accent %} <span>{{ ct.heading_accent | escape }}</span>{% endif %}</h2>
+          {% if ct.text %}<p>{% include md.html text=ct.text %}</p>{% endif %}
+        </div>
+        <ul class="links" aria-label="Contact links">
+          {%- for l in ct.links %}
+          {% capture a %}{% include link.html l=l %}{% endcapture %}{% assign a = a | strip %}{% if a != '' %}<li>{{ a }}</li>{% endif %}
+          {%- endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>

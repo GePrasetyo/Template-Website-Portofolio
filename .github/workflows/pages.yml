@@ -1,0 +1,63 @@
+# Builds and deploys the site to GitHub Pages on every push to main, including commits made from /admin.
+# Requires Settings → Pages → Build and deployment → Source: GitHub Actions.
+#
+# The upload check runs first: CMS uploads are meant to be stills (and the résumé PDF) only, video is
+# always a YouTube link. If anything else lands under assets/, or a video file anywhere, the deploy stops.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check uploads
+        run: |
+          bad=$(
+            git ls-files assets | grep -viE '\.(jpe?g|png|webp|avif|pdf|css|js)$' || true
+            git ls-files | grep -iE '\.(mp4|m4v|mov|webm|mkv|avi|wmv|flv|mpe?g|3gp|ogv|gif)$' || true
+            git ls-files -z assets | xargs -0 -r sh -c 'find "$@" -maxdepth 0 -size +5M' _ || true
+          )
+          if [ -n "$bad" ]; then
+            echo "::error::Disallowed files. Images must be jpg/png/webp/avif up to 5 MB, video must be a YouTube link."
+            printf '%s\n' "$bad" | sort -u
+            exit 1
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
