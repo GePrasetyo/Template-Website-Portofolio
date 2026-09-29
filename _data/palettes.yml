@@ -29,3 +29,7 @@ mono:
   label: Black and white
   light: { background: "#ffffff", text: "#111111", accent: "#111111", on_accent: "#ffffff" }
   dark: { background: "#0e0e0e", text: "#f2f2f2", accent: "#f2f2f2", on_accent: "#0e0e0e" }
+graphite:
+  label: Graphite
+  light: { background: "#ebeae6", text: "#16171a", accent: "#a83c08", on_accent: "#ffffff" }
+  dark: { background: "#1a1b1e", text: "#ecebe7", accent: "#ff8a3d", on_accent: "#1e0e03" }

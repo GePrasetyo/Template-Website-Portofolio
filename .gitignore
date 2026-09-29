@@ -4,3 +4,6 @@ _site/
 admin/preview/templates.json
 .jekyll-cache/
 __pycache__/
+
+# Design handoffs (e.g. from Claude Design): local reference only, never pushed
+docs/themes/

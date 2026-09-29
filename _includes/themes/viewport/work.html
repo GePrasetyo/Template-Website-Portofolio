@@ -1,0 +1,102 @@
+{%- comment -%}
+  Viewport theme: project page. A breadcrumb with the project's position, the header with a
+  Details panel (facts and content counts), the main picture unless the page opens on a video or
+  3D model, then the sections on a 6-column grid (see viewport.css). 3D models sit in a viewport
+  frame; text headings are numbered when a section has two or more of them.
+{%- endcomment -%}
+{%- assign position = idx | plus: 1 -%}
+{%- assign first_item = page.sections.first.items.first -%}
+<main class="project">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="{{ '/#work' | relative_url }}">Work</a><span class="sep">/</span><span class="here">{{ page.title | escape }}</span>
+      <span class="count">{% if position < 10 %}0{% endif %}{{ position }} / {% if works.size < 10 %}0{% endif %}{{ works.size }}</span>
+    </nav>
+
+    <header class="project-head{% unless page.facts.first %} solo{% endunless %}">
+      <div>
+        {%- if page.dates or page.role %}
+        <p class="label">{{ page.dates | escape }}{% if page.dates and page.role %} · {% endif %}{{ page.role | escape }}</p>
+        {%- endif %}
+        <h1>{{ page.title | escape }}</h1>
+        {%- if page.intro %}
+        <p class="lede">{% include md.html text=page.intro %}</p>
+        {%- endif %}
+        {%- if page.buttons.links.first %}
+        {% include item.html it=page.buttons type='buttons' %}
+        {%- endif %}
+      </div>
+      {%- if page.facts.first %}
+      <aside class="panel inspector" aria-label="Project details">
+        <div class="item-list">
+          <p class="panel-bar">Details{% include themes/viewport/counts.html w=page row='counts' chip='count' %}</p>
+          <ul>
+            {%- for f in page.facts %}
+            <li class="fact"><b>{{ f.label | escape }}</b><span>{{ f.value | escape }}</span></li>
+            {%- endfor %}
+          </ul>
+        </div>
+      </aside>
+      {%- endif %}
+    </header>
+
+    {%- unless first_item.type == 'video' or first_item.type == 'model' %}
+    <div class="viewport project-cover reveal">
+      <div class="vp-stage"><img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | escape }}" fetchpriority="high"><span class="vp-ticks"></span></div>
+    </div>
+    {%- endunless %}
+
+{%- for s in page.sections -%}
+{%- assign first_section = forloop.first -%}
+{%- if s.heading %}{% assign item_level = 3 %}{% else %}{% assign item_level = 2 %}{% endif -%}
+{%- assign headed_texts = 0 -%}
+{%- for it in s.items -%}{%- if it.type == 'text' and it.heading -%}{%- assign headed_texts = headed_texts | plus: 1 -%}{%- endif -%}{%- endfor -%}
+{%- assign n = 0 %}
+
+    <section class="section tight">
+      {%- if s.label or s.heading or s.intro %}
+      <div class="section-head">
+        {% if s.label %}<p class="label">{{ s.label | escape }}</p>{% endif %}
+        {% if s.heading %}<h2>{{ s.heading | escape }}</h2>{% endif %}
+        {% if s.intro %}<p class="note">{{ s.intro | escape }}</p>{% endif %}
+      </div>
+      {%- endif %}
+      <div class="grid cols-{{ s.columns | default: 1 }}">
+        {%- for it in s.items %}
+        {%- if first_section and forloop.index <= 2 %}{% assign eager = true %}{% else %}{% assign eager = false %}{% endif -%}
+        {%- if it.type == 'model' %}
+        {%- capture viewer %}{% include model.html m=it %}{% endcapture -%}
+        {%- if viewer contains 'iframe' %}
+        <div class="cell is-model width-{{ it.width | default: 'normal' }} reveal">
+          <div class="viewport">
+            <div class="vp-bar"><span class="vp-dot"></span>{% include themes/viewport/icon.html name='cube' %}<span class="vp-title">{{ it.title | escape }}</span><span class="vp-meta" title="Drag to turn the model">{% include themes/viewport/icon.html name='orbit' %}</span></div>
+            <div class="vp-stage">{{ viewer | strip }}<span class="vp-ticks"></span></div>
+          </div>
+        </div>
+        {%- endif %}
+        {%- else %}
+        {%- assign num = nil -%}
+        {%- if it.type == 'text' and it.heading and headed_texts > 1 %}{% assign n = n | plus: 1 %}{% assign num = n %}{% endif %}
+        <div class="cell is-{{ it.type }} width-{{ it.width | default: 'normal' }} reveal">
+          {% include item.html it=it num=num level=item_level eager=eager %}
+        </div>
+        {%- endif %}
+        {%- endfor %}
+      </div>
+    </section>
+{%- endfor %}
+
+    <nav class="pager" aria-label="More work">
+      {%- if prev_work %}
+      <a class="viewport is-link pager-link" href="{{ prev_work.url | relative_url }}"><img src="{{ prev_work.image | relative_url }}" alt="" loading="lazy"><span><small>Previous</small><b>{{ prev_work.title | escape }}</b></span></a>
+      {%- else %}
+      <a class="viewport is-link pager-link no-img" href="{{ '/#work' | relative_url }}"><span><small>Back</small><b>All work</b></span></a>
+      {%- endif %}
+      {%- if next_work %}
+      <a class="viewport is-link pager-link next" href="{{ next_work.url | relative_url }}"><img src="{{ next_work.image | relative_url }}" alt="" loading="lazy"><span><small>Next</small><b>{{ next_work.title | escape }}</b></span></a>
+      {%- else %}
+      <a class="viewport is-link pager-link next no-img" href="{{ '/#work' | relative_url }}"><span><small>Back</small><b>All work</b></span></a>
+      {%- endif %}
+    </nav>
+  </div>
+</main>

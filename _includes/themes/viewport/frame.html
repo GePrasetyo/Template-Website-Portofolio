@@ -1,0 +1,19 @@
+{%- comment -%} Viewport theme: header, page content, and a footer like an editor's status bar. {%- endcomment -%}
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="{{ '/' | relative_url }}"><span class="brand-name">{{ full_name | escape }}</span>{% if profile.tagline %}<span class="brand-role">{{ profile.tagline | escape }}</span>{% endif %}</a>
+    {% include nav.html %}
+  </div>
+</header>
+
+{{ content }}
+
+<footer class="footer">
+  <div class="wrap">
+    <span>© {{ site.time | date: '%Y' }} {{ full_name | escape }}</span>
+    {%- if profile.tagline %}
+    <span>{{ profile.tagline | escape }}</span>
+    {%- endif %}
+    <a class="top" href="#top">Top {% include themes/viewport/icon.html name='up' %}</a>
+  </div>
+</footer>

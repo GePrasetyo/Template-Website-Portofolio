@@ -86,7 +86,7 @@ Every field has a short explanation in grey underneath it. Fields marked with a 
 **Preview:** the right half of the editor shows the page you're editing in your site's theme, and changes as you type. It includes everything you've saved, even before you publish. It's a close preview: small details such as curly quotes can differ on the real site.
 
 **Look & feel:**
-- **Theme:** how the whole site is laid out. **Showcase** puts your pictures and videos first, and **Editorial** looks like a magazine. Your words, pictures and videos stay the same when you switch.
+- **Theme:** how the whole site is laid out. **Showcase** puts your pictures and videos first, **Editorial** looks like a magazine, and **Viewport** frames your work like a 3D editor, for game artists (click a picture on a project page to see it full screen). Your words, pictures and videos stay the same when you switch.
 - **Colours:** each theme has its own, or pick another set, or choose **My own colours**.
 - **Fonts:** each theme has its own, or pick another pair, or choose **My own Google Fonts**: on [fonts.google.com](https://fonts.google.com), add one or two fonts to your selection, click **Get embed code** and paste the code into the editor. The first font is for headings, the second for the rest of the text.
 - **Light and dark:** follow the visitor's phone or computer (with a switch on the page), or always light, or always dark.
@@ -190,7 +190,7 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 - Editor: [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (MIT licence)
 - Editor preview: [LiquidJS](https://github.com/harttle/liquidjs) and [marked](https://github.com/markedjs/marked) (MIT licence)
 - Placeholder videos: open movies by the [Blender Foundation](https://studio.blender.org/films/)
-- Fonts: Archivo, IBM Plex Sans, Anton, Space Grotesk, Inter, Fraunces and JetBrains Mono from Google Fonts (SIL Open Font Licence)
+- Fonts: Archivo, IBM Plex Sans, Anton, Space Grotesk, Inter, Fraunces, JetBrains Mono, Geist and Geist Mono from Google Fonts (SIL Open Font Licence)
 
 ## Licence
 

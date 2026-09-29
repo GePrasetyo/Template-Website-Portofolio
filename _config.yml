@@ -6,7 +6,7 @@
 title: Portfolio
 
 # Bump when anything in assets/css or assets/js changes so browsers fetch the new files.
-asset_version: 4
+asset_version: 5
 
 collections:
   work:

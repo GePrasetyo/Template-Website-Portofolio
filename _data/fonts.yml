@@ -30,3 +30,10 @@ mono:
   body: '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif'
   hero: '"JetBrains Mono", ui-monospace, monospace'
   hero_weight: 800
+studio:
+  label: "Studio: Geist and Geist Mono"
+  google: "family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600"
+  display: '"Geist", system-ui, -apple-system, "Segoe UI", sans-serif'
+  body: '"Geist", system-ui, -apple-system, "Segoe UI", sans-serif'
+  hero: '"Geist", system-ui, -apple-system, "Segoe UI", sans-serif'
+  hero_weight: 700

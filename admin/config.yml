@@ -63,6 +63,7 @@ singletons:
         options:
           - { label: "Showcase: big pictures and videos, few words, dark", value: showcase }
           - { label: "Editorial: large type and lots of space, like a magazine", value: editorial }
+          - { label: "Viewport: work framed like a 3D editor, for game artists", value: viewport }
         hint: "How your whole site is laid out. Your words, pictures and videos stay the same when you switch. [See what each theme looks like](looks.html)"
       - name: palette
         label: Colours
@@ -78,6 +79,7 @@ singletons:
           - { label: "Tangerine: orange", value: tangerine }
           - { label: "Plum: purple", value: plum }
           - { label: "Black and white", value: mono }
+          - { label: "Graphite: viewport grey and orange", value: graphite }
           - { label: "My own colours (below)", value: custom }
         hint: "Every set has a light and a dark version. [See all the colours](looks.html#colours)"
       - name: custom
@@ -112,6 +114,7 @@ singletons:
           - { label: "Modern: Space Grotesk and Inter", value: modern }
           - { label: "Classic: Fraunces (serif) and Inter", value: serif }
           - { label: "Code: JetBrains Mono and Inter", value: mono }
+          - { label: "Studio: Geist and Geist Mono", value: studio }
           - { label: "My own Google Fonts (below)", value: google }
         hint: "[See the fonts](looks.html#fonts)"
       - name: google_fonts

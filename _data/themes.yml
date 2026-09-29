@@ -14,3 +14,9 @@ editorial:
   about: Large type, thin rules and lots of space, like a magazine. Projects read as an index and case studies.
   palette: paper
   fonts: serif
+viewport:
+  label: Viewport
+  about: Your work framed like a 3D editor's viewport, with grey frames, a grid floor and mono labels. Made for 3D, environment and prop artists.
+  palette: graphite
+  fonts: studio
+  script: true

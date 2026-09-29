@@ -1,0 +1,26 @@
+{%- comment -%}
+  Viewport theme: how many 3D models, videos and pictures a project's sections hold, as icons with
+  numbers. include.w is the project, include.row the class of the wrapper and include.chip the
+  class of each count. Prints nothing when the project has none of them.
+{%- endcomment -%}
+{%- assign n_model = 0 -%}{%- assign n_video = 0 -%}{%- assign n_picture = 0 -%}
+{%- for s in include.w.sections -%}{%- for it in s.items -%}
+  {%- case it.type -%}
+  {%- when 'model' -%}{%- assign n_model = n_model | plus: 1 -%}
+  {%- when 'video' -%}{%- assign n_video = n_video | plus: 1 -%}
+  {%- when 'picture' -%}{%- assign n_picture = n_picture | plus: 1 -%}
+  {%- endcase -%}
+{%- endfor -%}{%- endfor -%}
+{%- assign n_total = n_model | plus: n_video | plus: n_picture -%}
+{%- if n_total > 0 -%}
+  {%- capture spoken -%}
+    {%- if n_model > 0 %}{{ n_model }} 3D model{% if n_model > 1 %}s{% endif %}{% endif -%}
+    {%- if n_video > 0 %}{% if n_model > 0 %}, {% endif %}{{ n_video }} video{% if n_video > 1 %}s{% endif %}{% endif -%}
+    {%- if n_picture > 0 %}{% if n_model > 0 or n_video > 0 %}, {% endif %}{{ n_picture }} picture{% if n_picture > 1 %}s{% endif %}{% endif -%}
+  {%- endcapture -%}
+<span class="{{ include.row }}" role="img" aria-label="{{ spoken }}">
+  {%- if n_model > 0 %}<span class="{{ include.chip }}">{% include themes/viewport/icon.html name='cube' %}{{ n_model }}</span>{% endif -%}
+  {%- if n_video > 0 %}<span class="{{ include.chip }}">{% include themes/viewport/icon.html name='play' %}{{ n_video }}</span>{% endif -%}
+  {%- if n_picture > 0 %}<span class="{{ include.chip }}">{% include themes/viewport/icon.html name='picture' %}{{ n_picture }}</span>{% endif -%}
+</span>
+{%- endif -%}
