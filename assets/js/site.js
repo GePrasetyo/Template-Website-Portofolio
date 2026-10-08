@@ -41,7 +41,7 @@
   }
 
   /* ---- light/dark switch ------------------------------------------
-     Only rendered when Look & feel follows the visitor's device. The choice is kept in
+     Only rendered when Theme follows the visitor's device. The choice is kept in
      localStorage and applied early by the inline script in _layouts/default.html. */
   var root = document.documentElement;
   function systemDark() { return window.matchMedia('(prefers-color-scheme: dark)').matches; }

@@ -5,7 +5,7 @@
    Phones, short screens, reduced motion, or a roadside item taller than the screen get the
    same markup as a normal vertical page (.drive without .on), with the car as a progress bar.
 
-   Built only on the Look & feel variables from _includes/look.html: --bg --fg --accent
+   Built only on the Theme variables from _includes/look.html: --bg --fg --accent
    --on-accent --font-display --font-body --hero-weight. Day and night come from light-dark(),
    which follows the color-scheme look.html sets on the light and dark colour sets. Signs use
    Overpass when the Road trip fonts are picked, and the body font otherwise.

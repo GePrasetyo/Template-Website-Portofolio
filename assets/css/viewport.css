@@ -2,7 +2,7 @@
    Viewport theme
    The site as a 3D editor viewport: graphite frames with a title bar, a perspective grid floor,
    mono "scene stat" labels, keyframes on a timeline, and the accent as the selection outline.
-   Colours and fonts are custom properties from Look & feel, see _includes/look.html. Nothing
+   Colours and fonts are custom properties from Theme, see _includes/look.html. Nothing
    here hard-codes a palette colour, except the fixed overlay used on top of artwork and the
    decorative axis colours. Labels use Geist Mono when the Studio fonts are picked, and the
    system monospace otherwise.

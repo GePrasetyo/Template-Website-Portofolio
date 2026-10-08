@@ -1,4 +1,4 @@
-# Themes offered under Look & feel in /admin. A theme is _includes/themes/<key>/ (frame.html,
+# Themes offered under Theme in /admin. A theme is _includes/themes/<key>/ (frame.html,
 # home.html, work.html) plus assets/css/<key>.css, and assets/js/<key>.js when `script` is true.
 # A theme script that draws on the page registers window.themeRefresh.<key>, a function the
 # editor's live preview (admin/preview.js) calls after every redraw.

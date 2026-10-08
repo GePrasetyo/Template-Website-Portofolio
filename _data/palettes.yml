@@ -1,4 +1,4 @@
-# Colour presets offered under Look & feel in /admin. Keys must match admin/config.yml.
+# Colour presets offered under Theme in /admin. Keys must match admin/config.yml.
 # Each has a light and a dark set; on_accent is the text colour on accent-coloured backgrounds.
 cobalt:
   light: { background: "#f4f2ec", text: "#15151a", accent: "#2648d1", on_accent: "#ffffff" }

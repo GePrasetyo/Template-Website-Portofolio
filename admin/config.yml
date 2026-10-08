@@ -10,7 +10,7 @@
 # field that isn't obvious has a hint. Hints are rendered as Markdown, so show literal syntax in
 # `backticks`.
 #
-# Content never says how it looks: the theme chosen under Look & feel lays it out. Project pages are
+# Content never says how it looks: the theme chosen under Theme lays it out. Project pages are
 # sections of items (see _includes/item.html); the theme, palette and font options below must match
 # the keys in _data/themes.yml, _data/palettes.yml and _data/fonts.yml.
 #
@@ -50,9 +50,9 @@ output:
 
 singletons:
 
-  # ------------------------------------------------------------------ look & feel
-  - name: look
-    label: Look & feel
+  # ------------------------------------------------------------------ theme
+  - name: theme
+    label: Theme
     icon: palette
     file: _data/look.yml
     fields:

@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------
    Editorial theme
    Laid out like a magazine: large type, hairline rules, a reading column and plenty of space.
-   Colours and fonts are custom properties from Look & feel, see _includes/look.html.
+   Colours and fonts are custom properties from Theme, see _includes/look.html.
    ------------------------------------------------------------------ */
 
 :root {

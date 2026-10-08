@@ -17,7 +17,7 @@
   /* Where each editor file lives in site.data. Keep in step with the file names in
      admin/config.yml. The Projects collection is previewed as a project page instead. */
   var DATA_FILES = {
-    look: ['look'],
+    theme: ['look'],
     profile: ['profile'],
     welcome: ['home', 'welcome'],
     hero: ['home', 'hero'],
@@ -214,7 +214,7 @@
       media.src = media.getAttribute('data-src');
     }
     /* The site's light/dark button switches the preview too, and the choice stays while you move
-       between pages in the editor. Without the button (Look & feel fixes one mode) it has no effect. */
+       between pages in the editor. Without the button (Theme fixes one mode) it has no effect. */
     var saved;
     try { saved = localStorage.getItem(MODE_KEY); } catch (e) {}
     if (saved) { doc.documentElement.setAttribute('data-mode', saved); }

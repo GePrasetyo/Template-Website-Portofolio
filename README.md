@@ -78,7 +78,7 @@ On the left of the editor you'll see:
   - **Profile:** your name, job title, email and résumé (PDF)
   - **Intro (top of page):** your title lines, a short "about me" and your links
   - **Work section (heading), Experience, Skills, About, Contact:** the rest of the page
-- **Look & feel:** how your whole site looks (see below).
+- **Theme:** how your whole site looks (see below).
 
 Every field has a short explanation in grey underneath it. Fields marked with a star (*) must be filled in.
 
@@ -88,7 +88,7 @@ Every field has a short explanation in grey underneath it. Fields marked with a 
 
 **Preview:** the right half of the editor shows the page you're editing in your site's theme, and changes as you type. It includes everything you've saved, even before you publish. It's a close preview: small details such as curly quotes can differ on the real site.
 
-**Look & feel:**
+**Theme:**
 - **Theme:** how the whole site is laid out. **Showcase** puts your pictures and videos first, **Editorial** looks like a magazine, **Viewport** frames your work like a 3D editor, for game artists (click a picture on a project page to see it full screen), and **Road Trip** drives sideways past your work as you scroll, on big enough screens (smaller ones get the same page top to bottom). Your words, pictures and videos stay the same when you switch.
 - **Colours:** each theme has its own, or pick another set, or choose **My own colours**.
 - **Fonts:** each theme has its own, or pick another pair, or choose **My own Google Fonts**: on [fonts.google.com](https://fonts.google.com), add one or two fonts to your selection, click **Get embed code** and paste the code into the editor. The first font is for headings, the second for the rest of the text.
@@ -176,7 +176,7 @@ If your token was ever seen by someone else, click **Delete** on the same page. 
 ## For developers
 
 - **How it's built:** the site is built with Jekyll by GitHub Actions (`.github/workflows/pages.yml`). Content lives in `_data/` and `_work/`, and templates in `index.html`, `_layouts/` and `_includes/`. The editor is [Sveltia CMS](https://github.com/sveltia/sveltia-cms), configured in `admin/config.yml`. Editor saves are committed with `[skip ci]` (`skip_ci` in `admin/config.yml`) and deploy when someone clicks Publish Changes, which sends the `sveltia-cms-publish` event the workflow listens for; other pushes to `main` deploy as usual.
-- **Themes:** content never says how it looks. `_layouts/default.html` reads Look & feel (`_data/look.yml`) and hands the page to the chosen theme: `_includes/themes/<theme>/` (`frame.html`, `home.html`, `work.html`), styled by `assets/css/<theme>.css`. Project items share one markup, `_includes/item.html`, which also documents the content model. Colours and fonts reach every theme as CSS custom properties (`_includes/look.html`), from the presets in `_data/palettes.yml` and `_data/fonts.yml`.
+- **Themes:** content never says how it looks. `_layouts/default.html` reads the Theme settings (`_data/look.yml`) and hands the page to the chosen theme: `_includes/themes/<theme>/` (`frame.html`, `home.html`, `work.html`), styled by `assets/css/<theme>.css`. Project items share one markup, `_includes/item.html`, which also documents the content model. Colours and fonts reach every theme as CSS custom properties (`_includes/look.html`), from the presets in `_data/palettes.yml` and `_data/fonts.yml`.
 - **Adding a theme:** add its folder under `_includes/themes/` and its stylesheet, register it in `_data/themes.yml`, and add it to the Theme options in `admin/config.yml`. A theme script (`assets/js/<theme>.js`, `script: true`) that works on the page registers `window.themeRefresh.<theme>`, which the editor preview calls after every redraw.
 - **Editor preview:** `admin/preview.js` renders the page being edited in the browser with [LiquidJS](https://liquidjs.com), from the same templates Jekyll uses. `_tools/preview_bundle.py` packs `_includes/` and `_layouts/` into `admin/preview/templates.json` before each build (`.github/workflows/pages.yml`), and Jekyll writes the saved data to `admin/preview/site.json`. Keep templates to Liquid that both Jekyll and LiquidJS understand, and don't name fields `size`, `first` or `last` (Liquid reads those as list properties).
 - **Custom domain:** on `github.io`, the site address and repository are detected automatically. On a custom domain, set `url` and `baseurl` in `_config.yml`, and `backend.repo`, `site_url` and `display_url` in `admin/config.yml`.

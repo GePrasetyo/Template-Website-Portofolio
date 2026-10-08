@@ -1,4 +1,4 @@
-# Font presets offered under Look & feel in /admin, all from Google Fonts. Keys must match
+# Font presets offered under Theme in /admin, all from Google Fonts. Keys must match
 # admin/config.yml. `google` is the family part of a fonts.googleapis.com/css2 address; `hero` is
 # the face for the biggest heading (your name), set at `hero_weight`.
 grotesk:
